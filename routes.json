@@ -1,0 +1,78 @@
+[
+  {
+    "route": "/",
+    "label": "Home"
+  },
+  {
+    "route": "/smart-bed/",
+    "label": "The Smart Bed"
+  },
+  {
+    "route": "/smart-base/",
+    "label": "Smart Base"
+  },
+  {
+    "route": "/care-path/",
+    "label": "Care Path"
+  },
+  {
+    "route": "/proof/",
+    "label": "Proof"
+  },
+  {
+    "route": "/guide/",
+    "label": "Free Guide"
+  },
+  {
+    "route": "/learn/",
+    "label": "Care Library"
+  },
+  {
+    "route": "/learn/slower-after-rest/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/learn/restless-at-night/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/learn/changes-in-appetite/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/find-care/",
+    "label": "Find Care"
+  },
+  {
+    "route": "/pet-loss-support/",
+    "label": "Pet Loss Support"
+  },
+  {
+    "route": "/memorial-tree/",
+    "label": "Memorial Tree"
+  },
+  {
+    "route": "/wednesday-introductions/",
+    "label": "Wednesday Introductions"
+  },
+  {
+    "route": "/about/",
+    "label": "About"
+  },
+  {
+    "route": "/support/",
+    "label": "Support"
+  },
+  {
+    "route": "/privacy/",
+    "label": "Privacy"
+  },
+  {
+    "route": "/terms/",
+    "label": "Terms"
+  },
+  {
+    "route": "/accessibility/",
+    "label": "Accessibility"
+  }
+]

@@ -199,6 +199,116 @@
     });
   }
 
+  document.querySelectorAll("[data-lesson-intake]").forEach((intake) => {
+    const buildButton = intake.querySelector("[data-build-lesson]");
+    const error = intake.querySelector("[data-intake-error]");
+    const course = document.querySelector("[data-tailored-course]");
+    const urgentResult = document.querySelector("[data-urgent-intake-result]");
+    const profile = document.querySelector("[data-tailored-profile]");
+    const priority = document.querySelector("[data-tailored-priority]");
+
+    const selectValue = (name) => intake.querySelector(`[data-intake-field="${name}"]`)?.value.trim() || "";
+
+    intake.addEventListener("change", () => {
+      if (error) error.hidden = true;
+    });
+
+    buildButton?.addEventListener("click", () => {
+      const requiredNames = ["age", "condition", "duration", "impact"];
+      const missingField = requiredNames
+        .map((name) => intake.querySelector(`[data-intake-field="${name}"]`))
+        .find((element) => !element?.value);
+      const urgentChoice = intake.querySelector('[data-intake-field="urgent"]:checked');
+
+      if (missingField || !urgentChoice) {
+        if (error) error.hidden = false;
+        (missingField || intake.querySelector('[data-intake-field="urgent"]'))?.focus();
+        return;
+      }
+
+      if (error) error.hidden = true;
+      if (urgentChoice.value === "yes") {
+        if (course) course.hidden = true;
+        if (urgentResult) {
+          urgentResult.hidden = false;
+          urgentResult.focus({ preventScroll: true });
+          urgentResult.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        return;
+      }
+
+      if (urgentResult) urgentResult.hidden = true;
+      const context = selectValue("context");
+      if (profile) {
+        profile.textContent = `${selectValue("age")} · ${selectValue("condition")} · ${selectValue("duration")} · ${selectValue("impact")}${context ? ` · Context: ${context}` : ""}`;
+      }
+      if (priority) priority.textContent = `Start with: ${selectValue("condition")}`;
+      if (course) {
+        course.hidden = false;
+        course.classList.add("is-ready");
+        course.focus({ preventScroll: true });
+        course.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-chapter-quiz]").forEach((quiz) => {
+    const checkButton = quiz.querySelector("[data-check-quiz]");
+    const feedback = quiz.querySelector("[data-quiz-feedback]");
+    checkButton?.addEventListener("click", () => {
+      const selected = quiz.querySelector('input[type="radio"]:checked');
+      if (!selected) {
+        if (feedback) feedback.textContent = "Choose one answer first.";
+        quiz.classList.remove("is-correct");
+        quiz.classList.add("needs-answer");
+        return;
+      }
+      const correct = selected.value === quiz.dataset.answer;
+      if (feedback) {
+        feedback.textContent = correct
+          ? quiz.dataset.correctMessage || "Correct."
+          : quiz.dataset.retryMessage || "Try again.";
+      }
+      quiz.classList.toggle("is-correct", correct);
+      quiz.classList.toggle("needs-answer", !correct);
+    });
+  });
+
+  const circleFilters = [...document.querySelectorAll("[data-circle-filter]")];
+  const circlePosts = [...document.querySelectorAll("[data-care-post]")];
+  circleFilters.forEach((filter) => {
+    filter.addEventListener("click", () => {
+      const selectedTopic = filter.dataset.circleFilter;
+      circleFilters.forEach((candidate) => {
+        candidate.setAttribute("aria-pressed", String(candidate === filter));
+      });
+      circlePosts.forEach((post) => {
+        post.hidden = selectedTopic !== "all" && post.dataset.topic !== selectedTopic;
+      });
+    });
+  });
+
+  document.querySelectorAll("[data-preview-like]").forEach((button) => {
+    const count = button.querySelector("[data-like-count]");
+    const baseCount = Number(button.dataset.baseCount || count?.textContent || 0);
+    button.addEventListener("click", () => {
+      const liked = button.getAttribute("aria-pressed") !== "true";
+      button.setAttribute("aria-pressed", String(liked));
+      if (count) count.textContent = String(baseCount + (liked ? 1 : 0));
+    });
+  });
+
+  document.querySelectorAll("[data-comments-toggle]").forEach((button) => {
+    const comments = button.closest("[data-care-post]")?.querySelector("[data-preview-comments]");
+    button.addEventListener("click", () => {
+      if (!comments) return;
+      const willOpen = comments.hidden;
+      comments.hidden = !willOpen;
+      button.setAttribute("aria-expanded", String(willOpen));
+      if (willOpen) comments.querySelector("article")?.focus?.({ preventScroll: true });
+    });
+  });
+
   navigation?.querySelectorAll("a").forEach((link) => {
     const linkPath = new URL(link.href, window.location.href).pathname;
     if (linkPath !== "/" && currentPath.startsWith(linkPath)) {

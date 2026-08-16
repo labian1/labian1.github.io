@@ -16,16 +16,16 @@
     "label": "Care Path"
   },
   {
-    "route": "/proof/",
-    "label": "Proof"
-  },
-  {
     "route": "/guide/",
     "label": "Free Guide"
   },
   {
     "route": "/learn/",
     "label": "Care Library"
+  },
+  {
+    "route": "/care-circle/",
+    "label": "Care Circle"
   },
   {
     "route": "/learn/slower-after-rest/",
@@ -37,6 +37,18 @@
   },
   {
     "route": "/learn/changes-in-appetite/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/learn/drinking-more-water/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/learn/less-interest-in-life/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/learn/bathroom-accidents/",
     "label": "Lesson"
   },
   {

@@ -8266,3 +8266,400 @@ strong {
     font-size: clamp(2.25rem, 10vw, 2.8rem);
   }
 }
+
+/* 2026-08-19: result-led Bed and image-led support sections. */
+.home-page main img {
+  object-fit: contain !important;
+}
+
+.bed-comfort-story {
+  padding-block: 68px;
+  border-block: 1px solid var(--line);
+  background: #fffdf8;
+}
+
+.bed-comfort-grid {
+  display: grid;
+  grid-template-columns: minmax(380px, 0.82fr) minmax(480px, 1.18fr);
+  align-items: center;
+  gap: clamp(42px, 6vw, 82px);
+}
+
+.bed-comfort-copy .section-heading {
+  max-width: 560px;
+}
+
+.bed-comfort-copy .section-heading h2,
+.bed-tracking-intro .section-heading h2 {
+  margin-bottom: 14px;
+  font-size: clamp(2.45rem, 3.3vw, 3.25rem);
+  line-height: 1.02;
+}
+
+.bed-comfort-copy .section-heading p,
+.bed-tracking-intro .section-heading p {
+  max-width: 570px;
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.bed-comfort-points {
+  margin: 26px 0 30px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-block: 1px solid var(--line);
+}
+
+.bed-comfort-points article {
+  min-width: 0;
+  padding: 18px 14px;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  border-right: 1px solid var(--line);
+}
+
+.bed-comfort-points article:first-child {
+  padding-left: 0;
+}
+
+.bed-comfort-points article:last-child {
+  padding-right: 0;
+  border-right: 0;
+}
+
+.bed-comfort-points .line-icon {
+  width: 27px;
+  height: 27px;
+  color: var(--copper-dark);
+}
+
+.bed-comfort-points strong,
+.bed-comfort-points span {
+  display: block;
+}
+
+.bed-comfort-points strong {
+  margin-bottom: 5px;
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.bed-comfort-points span {
+  color: #6d6058;
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.bed-comfort-media {
+  min-width: 0;
+  margin: 0;
+  display: grid;
+  justify-items: end;
+  background: transparent;
+}
+
+.bed-comfort-media img {
+  width: auto;
+  max-width: 100%;
+  max-height: 690px;
+  height: auto;
+  display: block;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  box-shadow: 0 24px 64px rgba(66, 45, 32, 0.14);
+}
+
+.bed-tracking-story {
+  padding-block: 68px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(125deg, #f7f1e8, #fffdf8 58%);
+}
+
+.bed-tracking-grid {
+  display: grid;
+  grid-template-columns: minmax(380px, 0.86fr) minmax(500px, 1.14fr);
+  align-items: center;
+  gap: clamp(42px, 6vw, 76px);
+}
+
+.bed-tracking-visual {
+  margin: 30px 0 0;
+  padding: 0;
+  background: transparent;
+}
+
+.bed-tracking-visual img {
+  width: min(100%, 590px);
+  height: auto;
+  display: block;
+  background: transparent;
+}
+
+.tracking-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.tracking-metrics article {
+  min-width: 0;
+  min-height: 158px;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-content: center;
+  gap: 14px;
+  border: 1px solid #dfcfbc;
+  border-radius: 12px;
+  background: rgba(255, 253, 248, 0.94);
+  box-shadow: 0 13px 34px rgba(66, 45, 32, 0.07);
+}
+
+.tracking-metrics .line-icon {
+  width: 34px;
+  height: 34px;
+  color: var(--copper-dark);
+}
+
+.tracking-metrics strong,
+.tracking-metrics span {
+  display: block;
+}
+
+.tracking-metrics strong {
+  margin-bottom: 7px;
+  font-family: var(--serif);
+  font-size: 1.16rem;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.tracking-metrics span {
+  color: #655951;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.tracking-metrics > p {
+  grid-column: 1 / -1;
+  margin: 3px 0 0;
+  color: #70645c;
+  font-size: 0.69rem;
+  text-align: center;
+}
+
+.care-support-section {
+  width: min(1240px, calc(100vw - 48px));
+  margin: 0 auto 28px;
+  padding: 60px 0 16px;
+}
+
+.care-support-section > .section-heading {
+  margin: 0 auto 30px;
+}
+
+.care-support-section h2 {
+  font-size: clamp(2.35rem, 3.2vw, 3rem);
+  line-height: 1.05;
+}
+
+.care-support-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.care-support-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--ink);
+  background: #fffdf9;
+  text-decoration: none;
+  box-shadow: 0 14px 34px rgba(66, 45, 32, 0.07);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.care-support-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 42px rgba(66, 45, 32, 0.11);
+}
+
+.care-support-card figure {
+  margin: 0;
+  padding: 0;
+  aspect-ratio: 3 / 2;
+  display: grid;
+  place-items: center;
+  background: transparent;
+}
+
+.care-support-card figure img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.care-support-card > div {
+  padding: 22px;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  align-items: start;
+  gap: 13px;
+}
+
+.care-support-card .line-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--copper-dark);
+}
+
+.care-support-card strong,
+.care-support-card small,
+.care-support-card b {
+  display: block;
+}
+
+.care-support-card strong {
+  margin-bottom: 6px;
+  font-family: var(--serif);
+  font-size: 1.22rem;
+  font-weight: 400;
+}
+
+.care-support-card small {
+  min-height: 44px;
+  color: #6d6058;
+  font-size: 0.73rem;
+  line-height: 1.5;
+}
+
+.care-support-card b {
+  margin-top: 15px;
+  color: var(--copper-dark);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+@media (max-width: 1020px) {
+  .bed-comfort-grid,
+  .bed-tracking-grid {
+    grid-template-columns: minmax(320px, 0.9fr) minmax(390px, 1.1fr);
+    gap: 34px;
+  }
+
+  .bed-comfort-points {
+    grid-template-columns: 1fr;
+  }
+
+  .bed-comfort-points article,
+  .bed-comfort-points article:first-child,
+  .bed-comfort-points article:last-child {
+    padding: 13px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .bed-comfort-points article:last-child {
+    border-bottom: 0;
+  }
+
+  .tracking-metrics article {
+    min-height: 145px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 820px) {
+  .bed-comfort-grid,
+  .bed-tracking-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bed-comfort-copy .section-heading,
+  .bed-tracking-intro .section-heading {
+    max-width: 680px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .bed-comfort-copy > .button {
+    margin-inline: auto;
+  }
+
+  .bed-comfort-media {
+    justify-items: center;
+  }
+
+  .bed-tracking-visual img {
+    margin-inline: auto;
+  }
+
+  .care-support-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .care-support-card {
+    width: min(680px, 100%);
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .bed-comfort-story,
+  .bed-tracking-story {
+    padding-block: 46px;
+  }
+
+  .bed-comfort-grid,
+  .bed-tracking-grid {
+    gap: 30px;
+  }
+
+  .bed-comfort-copy .section-heading h2,
+  .bed-tracking-intro .section-heading h2 {
+    font-size: clamp(2.05rem, 9vw, 2.45rem);
+  }
+
+  .bed-comfort-points {
+    margin-block: 21px 25px;
+  }
+
+  .bed-comfort-media img {
+    max-height: none;
+  }
+
+  .tracking-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .tracking-metrics article {
+    min-height: 0;
+  }
+
+  .care-support-section {
+    width: calc(100vw - 28px);
+    padding-top: 46px;
+  }
+
+  .care-support-section h2 {
+    font-size: clamp(2rem, 9vw, 2.4rem);
+  }
+
+  .care-support-card > div {
+    padding: 19px 18px 21px;
+  }
+
+  .care-support-card small {
+    min-height: 0;
+  }
+}

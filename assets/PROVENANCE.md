@@ -30,6 +30,28 @@ The source files below come from `senior-care-platform/media/real/`. Its `SOURCE
 | --- | ---: | --- | --- | --- | --- |
 | `real-memorial-tree-planting.jpg` | 1600×1064 | Memorial tree: an actual seedling being planted | `senior-care-platform/media/products/memorial-tree.jpg` | [Seedling planting / Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Seedling_planting.jpg), public domain, USFS Region 5 | Documented public domain |
 
+## Public-source care-directory images — permission recheck required
+
+The profile and clinic images below are byte-identical copies of the source-labeled files in `senior-care-platform/media/profiles/`. They are included only in this private redesign preview so each listing can be identified visually. Recheck the official source, current facts, and image-reuse permission before a public launch.
+
+| Preview asset | Published subject | Official image source | Status | SHA-256 |
+| --- | --- | --- | --- | --- |
+| `deborah-silverstein.jpg` | Deborah C. Silverstein, DVM, DACVECC | [University of Pennsylvania](https://www.vet.upenn.edu/directory/deborahsilverstein/) | Preview only; source and permissions recheck | `0f61f158f17ad87bf6d1eb8137956516b563b844383f19ea0ee36a4aa5300e50` |
+| `melissa-goldberg.jpg` | Melissa Goldberg, DVM | [CodaPet](https://www.codapet.com/veterinarians/dr-melissa-goldberg) | Preview only; source and permissions recheck | `8ef241c2dee6e173db1142b22a74bd110a0db9fba3cd2f68e4f397d0e1483fe2` |
+| `katherine-todd.jpg` | Katherine Todd, DVM | [CodaPet](https://www.codapet.com/veterinarians/dr-katherine-todd) | Preview only; source and permissions recheck | `dacf6459f8878db97068bb336c703848f40a22d452bd03e08734ac353c992725` |
+| `ryan-veterinary-hospital.jpg` | Ryan Veterinary Hospital | [University of Pennsylvania](https://www.vet.upenn.edu/veterinary-hospitals/ryan-veterinary-hospital/emergencies) | Preview only; source and permissions recheck | `d77c72ae718e867762358c1ef1dee536dde174f82b4909ab84148bb6d7e405b6` |
+| `uc-davis-vmth.png` | William R. Pritchard Veterinary Medical Teaching Hospital | [UC Davis](https://www.vetmed.ucdavis.edu/hospital/small-animal) | Preview only; source and permissions recheck | `81369ad29857e757cb2fc1faf3773eb3d990f3b885e796a49a97b7f55f9c6d60` |
+| `virginia-tech-vth.jpg` | Veterinary Teaching Hospital | [Virginia Tech](https://vth.vetmed.vt.edu/small-animal-services/small-animal-emergency-and-critical-care.html/1000) | Preview only; source and permissions recheck | `adaa355a9656dddc4f827d647039bfdcee9f77f1257b153ed7f5374299b6dc42` |
+| `cornell-companion-animal-hospital.png` | Cornell Companion Animal Hospital | [Cornell University](https://www.vet.cornell.edu/about-us/facilities-services-and-resources/buildings-and-facilities) | Preview only; source and permissions recheck | `7522326b063c7ed82db8b36938e014b5895b16e240d9e04af810d168e03dbf8a` |
+| `cornell-behavior-medicine.jpg` | Cornell Behavior Medicine Service | [Cornell University](https://www.vet.cornell.edu/hospitals/services/behavior) | Preview only; source and permissions recheck | `89b5bbf5848f6fb2bf2871a167139f50e967bcc967a91f95884c971ac1092d4d` |
+| `uf-small-animal-hospital.jpg` | UF Small Animal Hospital | [University of Florida](https://smallanimal.vethospital.ufl.edu/clinical-services/emergency-critical-care/) | Preview only; source and permissions recheck | `7f37f494eab7c906db7ec0c67565648d1d4a8c6a5c86e01e16e2a3a91cfa7517` |
+| `msu-small-animal-clinic.png` | MSU Veterinary Medical Center | [Michigan State University](https://cvm.msu.edu/hospital/small-animal) | Preview only; source and permissions recheck | `28c261ff8690b2e4619b25328dff5ca15fa7d7b569071137642fc444b02cf449` |
+| `tamu-small-animal-hospital.jpg` | Texas A&M Small Animal Teaching Hospital | [Texas A&M](https://vetmed.tamu.edu/) | Preview only; source and permissions recheck | `4f927f4e2c652c64e1d881d8eeefe941239dfcc7bb0fd7b2ea96ab362e80c0ac` |
+| `bobbi-conner.jpg` | Bobbi Conner, DVM, DACVECC | [Virginia Tech](https://vth.vetmed.vt.edu/small-animal-services/small-animal-clinicians.html) | Preview only; source and permissions recheck | `43ff1a4f31ccb3ab25057791292a2736131bdabeb6b6e6ac215ae9b420b5ff5f` |
+| `cornell-sports-rehab.png` | Cornell Sports Medicine and Rehabilitation Service | [Cornell University](https://www.vet.cornell.edu/hospitals/services/sports-medicine-and-rehabilitation) | Preview only; source and permissions recheck | `c1bbabcbf94f06070069639e58cc23d38529701edaae85081d8536562b4c8aec` |
+| `cornell-nutrition.jpg` | Cornell Nutrition Service | [Cornell University](https://www.vet.cornell.edu/hospitals/services/nutrition) | Preview only; source and permissions recheck | `914509b80d903d43ceaa046dbfc62e7ea62295779b00e6843ed6e70e5b90ac8c` |
+| `christopher-frye.jpg` | Christopher Frye, DVM, DACVSMR | [Cornell University](https://www.vet.cornell.edu/hospitals/services/sports-medicine-and-rehabilitation/companion-animal-hospital-sports-medicine-and-rehabilitation-meet-our-specialists) | Preview only; source and permissions recheck | `2087969ad69a9f3a146bf7214ac827e0fd4b49f7a2fc1902b0d6ac66f00ccd39` |
+
 ## Staged-copy integrity hashes
 
 The SHA-256 values below were checked against the corresponding source files when these real-photo replacements were staged. Each staged copy matched its source byte-for-byte.

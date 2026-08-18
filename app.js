@@ -199,6 +199,39 @@
     });
   }
 
+  const lessonTailoring = {
+    "slower-after-rest": [
+      (condition) => `Watch ${condition} once during an ordinary routine; record the pause, first steps, slipping, and recovery.`,
+      (condition) => `Make the route around ${condition} easier with traction, shorter access, and one change at a time.`,
+      (condition) => `Tell your veterinarian when ${condition} began, how often it occurs, what helps, and which activity is now harder.`,
+    ],
+    "restless-at-night": [
+      (condition) => `Record when ${condition} begins, the exact sequence that follows, and what finally helps your dog settle.`,
+      (condition) => `Make tonight easier around ${condition} with a clear route, water, bathroom access, and gentle light.`,
+      (condition) => `Report the timing, breathing, toileting, pain clues, medicines, and how often ${condition} occurs.`,
+    ],
+    "changes-in-appetite": [
+      (condition) => `Measure food offered and eaten when ${condition} occurs; add water, stool, vomiting, and energy.`,
+      (condition) => `Watch chewing, swallowing, nausea clues, and mouth comfort around ${condition}.`,
+      (condition) => `Report the duration, amounts, weight, medicines, and paired signs that come with ${condition}.`,
+    ],
+    "drinking-more-water": [
+      (condition) => `Measure one ordinary day when you notice ${condition}, while keeping fresh water freely available.`,
+      (condition) => `Pair ${condition} with urine, appetite, energy, medicines, temperature, and recent food changes.`,
+      (condition) => `Report the measured change, timeline, and paired signs; ask how soon your dog should be examined.`,
+    ],
+    "less-interest-in-life": [
+      (condition) => `Choose one familiar routine affected by ${condition}; record whether your dog starts, joins, finishes, or avoids it.`,
+      () => "Offer a shorter, lower-effort version of that routine and let your dog choose whether to join.",
+      (condition) => `Report onset, frequency, movement, sleep, appetite, senses, and medicines alongside ${condition}.`,
+    ],
+    "bathroom-accidents": [
+      (condition) => `Record the time and sequence around ${condition}: last trip, route, urgency, posture, amount, and distress.`,
+      () => "Make access easier with a shorter, well-lit, non-slip route and more frequent calm opportunities.",
+      (condition) => `Report output, straining, pain, thirst, vomiting, medicines, and how often ${condition} occurs.`,
+    ],
+  };
+
   document.querySelectorAll("[data-lesson-intake]").forEach((intake) => {
     const buildButton = intake.querySelector("[data-build-lesson]");
     const error = intake.querySelector("[data-intake-error]");
@@ -206,6 +239,9 @@
     const urgentResult = document.querySelector("[data-urgent-intake-result]");
     const profile = document.querySelector("[data-tailored-profile]");
     const priority = document.querySelector("[data-tailored-priority]");
+    const chapterSummaries = course
+      ? [...course.querySelectorAll("[data-tailored-chapter-summary]")]
+      : [];
 
     const selectValue = (name) => intake.querySelector(`[data-intake-field="${name}"]`)?.value.trim() || "";
 
@@ -239,10 +275,23 @@
 
       if (urgentResult) urgentResult.hidden = true;
       const context = selectValue("context");
+      const condition = selectValue("condition");
+      const conditionPhrase = condition
+        ? `${condition.charAt(0).toLocaleLowerCase()}${condition.slice(1)}`
+        : "the selected change";
+      const templates = lessonTailoring[intake.dataset.lessonSlug] || [
+        (value) => `Observe ${value} once during an ordinary routine and record what happens before and after.`,
+        (value) => `Choose one low-risk change that makes ${value} safer or easier today.`,
+        (value) => `Bring the timeline for ${value}, what helps, and what daily activity has become harder to your veterinarian.`,
+      ];
+      const tailoredSummaries = templates.map((template) => template(conditionPhrase));
       if (profile) {
-        profile.textContent = `${selectValue("age")} · ${selectValue("condition")} · ${selectValue("duration")} · ${selectValue("impact")}${context ? ` · Context: ${context}` : ""}`;
+        profile.textContent = `${selectValue("age")} · ${condition} · ${selectValue("duration")} · ${selectValue("impact")}${context ? ` · Context: ${context}` : ""}`;
       }
-      if (priority) priority.textContent = `Start with: ${selectValue("condition")}`;
+      if (priority) priority.textContent = tailoredSummaries[0];
+      chapterSummaries.forEach((summary, index) => {
+        summary.textContent = tailoredSummaries[index] || summary.textContent;
+      });
       if (course) {
         course.hidden = false;
         course.classList.add("is-ready");
@@ -315,4 +364,67 @@
       link.setAttribute("aria-current", "page");
     }
   });
+})();
+
+(() => {
+  const directory = document.querySelector("[data-directory-controls]");
+  if (!directory) return;
+
+  const search = directory.querySelector("[data-directory-search]");
+  const category = directory.querySelector("[data-directory-category]");
+  const filterButtons = [...document.querySelectorAll("[data-directory-filter]")];
+  const items = [...document.querySelectorAll("[data-directory-item]")];
+  const totalCount = document.querySelector("[data-directory-results-count]");
+  const profileCount = document.querySelector("[data-directory-profile-count]");
+  const resourceCount = document.querySelector("[data-directory-resource-count]");
+  const profileEmpty = document.querySelector("[data-directory-profile-empty]");
+  const resourceEmpty = document.querySelector("[data-directory-resource-empty]");
+
+  const itemMatches = (item, query, selectedCategory) => {
+    const searchable = (item.dataset.search || "").toLocaleLowerCase();
+    const categories = (item.dataset.categories || "").split("|").filter(Boolean);
+    return (!query || searchable.includes(query))
+      && (selectedCategory === "all" || categories.includes(selectedCategory));
+  };
+
+  const resultLabel = (count, singular, plural) => `${count} ${count === 1 ? singular : plural}`;
+
+  const updateDirectory = () => {
+    const query = (search?.value || "").trim().toLocaleLowerCase();
+    const selectedCategory = category?.value || "all";
+    let visibleProfiles = 0;
+    let visibleResources = 0;
+
+    items.forEach((item) => {
+      const visible = itemMatches(item, query, selectedCategory);
+      item.hidden = !visible;
+      if (!visible) return;
+      if (item.hasAttribute("data-directory-profile")) visibleProfiles += 1;
+      if (item.hasAttribute("data-directory-resource")) visibleResources += 1;
+    });
+
+    if (profileCount) profileCount.textContent = resultLabel(visibleProfiles, "profile", "profiles");
+    if (resourceCount) resourceCount.textContent = resultLabel(visibleResources, "resource", "resources");
+    if (totalCount) totalCount.textContent = resultLabel(visibleProfiles + visibleResources, "result", "results");
+    if (profileEmpty) profileEmpty.hidden = visibleProfiles !== 0;
+    if (resourceEmpty) resourceEmpty.hidden = visibleResources !== 0;
+
+    filterButtons.forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.directoryFilter === selectedCategory));
+    });
+  };
+
+  search?.addEventListener("input", updateDirectory);
+  category?.addEventListener("change", updateDirectory);
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextCategory = button.dataset.directoryFilter || "all";
+      if (category && [...category.options].some((option) => option.value === nextCategory)) {
+        category.value = nextCategory;
+      }
+      updateDirectory();
+    });
+  });
+
+  updateDirectory();
 })();

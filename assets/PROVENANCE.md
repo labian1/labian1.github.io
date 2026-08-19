@@ -103,3 +103,10 @@ Other pre-existing cream-bed renders or lifestyle composites in this folder are 
 - `real-golden-forest.jpg` — byte-identical to `senior-care-platform/media/real/photo-48.jpg`; Emil Priver, Unsplash: https://unsplash.com/photos/58jPAR2Of8s · 1800×2385 · SHA-256 `b27de0354ee22f52002e16596e28836b1ca60505c898a8ad156e306c447ab76e`.
 
 Use these as documentary/editorial photographs only. Recheck the linked Unsplash source and license before production launch.
+
+## Compact problem-card photography staged August 19, 2026
+
+- `problem-restless-night-dog-sleeping.jpg` — byte-identical to `senior-care-platform/media/real/photo-23.jpg`; Kojirou Sasaki, Unsplash: https://unsplash.com/photos/a-dog-sleeping-on-a-bed-oYw6FH_Vvyc · 1800×1200 · SHA-256 `5622fc69701ce07e92ede82b3337da7d37b6b3bee1ced47e8982281b07ccb95f`.
+- `problem-appetite-owner-offering-food.jpg` — byte-identical to `senior-care-platform/media/real/photo-02.jpg`; Roberto Nickson, Unsplash: https://unsplash.com/photos/woman-sitting-on-sofa-while-holding-food-for-dog-q9nZUFC1nTw · 1800×1200 · SHA-256 `e46abaac57048383f28a99eb725c9b8dc8e2ca3f996c2d0092c204493aa95261`.
+
+Use these as real editorial photography. Recheck the linked Unsplash source and license before production launch.

@@ -52,6 +52,14 @@ The profile and clinic images below are byte-identical copies of the source-labe
 | `cornell-nutrition.jpg` | Cornell Nutrition Service | [Cornell University](https://www.vet.cornell.edu/hospitals/services/nutrition) | Preview only; source and permissions recheck | `914509b80d903d43ceaa046dbfc62e7ea62295779b00e6843ed6e70e5b90ac8c` |
 | `christopher-frye.jpg` | Christopher Frye, DVM, DACVSMR | [Cornell University](https://www.vet.cornell.edu/hospitals/services/sports-medicine-and-rehabilitation/companion-animal-hospital-sports-medicine-and-rehabilitation-meet-our-specialists) | Preview only; source and permissions recheck | `2087969ad69a9f3a146bf7214ac827e0fd4b49f7a2fc1902b0d6ac66f00ccd39` |
 
+### Expanded BluePearl profiles — official images not cleared for reuse
+
+On 2026-08-19, the 89 official BluePearl hospital pages referenced by `data/find-care-profiles.expanded.json` were checked individually in a browser. All 89 pages published a unique HTTPS `og:image`, a matching `twitter:image`, and positive declared image dimensions. Official alt text or asset filenames made 87 images facility/location candidates; the Frederick and Birmingham pages unambiguously used clinical-care photographs instead. An `og:image` is page metadata, not a reuse license, and those two clinical photographs must not be presented as facility photos.
+
+BluePearl's current [Terms & Conditions](https://bluepearlvet.com/terms-conditions-bluepearl/) state that site photographs and other content are owned by BluePearl or used with permission. The terms prohibit incorporating that content into another website or publicly redistributing it without a license, and require written permission for deep links beyond the BluePearl home page. They also restrict automated or manual monitoring/copying without written permission. Technical accessibility, robots.txt allowance, or successful hotlinking does not grant image rights.
+
+No BluePearl image was downloaded, cached, staged, or added to the expanded profile data. Until written permission covers both the hospital-detail links and imagery, use no BluePearl media. The safest truthful card treatment is either text-only/owned iconography or locally licensed editorial veterinary photography visibly labeled as a representative image; never imply that a representative photograph depicts the named provider, team, or facility. The current generator's rotated editorial photographs are representative, not BluePearl-published location images, and their own production licenses still require the checks documented above.
+
 ## Staged-copy integrity hashes
 
 The SHA-256 values below were checked against the corresponding source files when these real-photo replacements were staged. Each staged copy matched its source byte-for-byte.
@@ -86,3 +94,12 @@ These assets explain the intended product or Smart Base structure. They are **pr
 ## Usage caution for legacy preview assets
 
 Other pre-existing cream-bed renders or lifestyle composites in this folder are retained for compatibility, but this audit did not establish them as photographs of the physical WoafyPet prototype. Do not use them as documentary product proof or label them as the final bed. Prefer the two prototype photographs above for factual product representation and label diagrams/renders as visualizations.
+# Additional real editorial photography staged August 19, 2026
+
+- `real-comfort-hug.jpg` — byte-identical to `senior-care-platform/media/real/photo-06.jpg`; Chewy, Unsplash: https://unsplash.com/photos/sdF1Zc6-OQw · 1800×1217 · SHA-256 `28ef27b2b455a203fe20de395b8f00fb167e915813cab8ea90c2ab66db63d934`.
+- `real-companion-moment.jpg` — byte-identical to `senior-care-platform/media/real/photo-11.jpg`; Chewy, Unsplash: https://unsplash.com/photos/Invez0M-FVg · 1800×1200 · SHA-256 `91e7ead1f56980dfb330e125f8f77af8ae18f24b127c6e3ccceebe9d74b40e0a`.
+- `real-holding-dog.jpg` — byte-identical to `senior-care-platform/media/real/photo-17.jpg`; Chewy, Unsplash: https://unsplash.com/photos/oEgpTMQsXT4 · 1800×1200 · SHA-256 `7fbed2859e88d4b20c32232f822c5125bd88a9e7d3f051fd67cd0edf86882e73`.
+- `real-golden-outdoors.jpg` — byte-identical to `senior-care-platform/media/real/photo-44.jpg`; Enis Yavuz, Unsplash: https://unsplash.com/photos/KKtuRtGkDys · 1800×1200 · SHA-256 `1612ea2f30e0bf9ae7f392ecbfbb8b3d31823df6e84d146876ef8bcc83340e0d`.
+- `real-golden-forest.jpg` — byte-identical to `senior-care-platform/media/real/photo-48.jpg`; Emil Priver, Unsplash: https://unsplash.com/photos/58jPAR2Of8s · 1800×2385 · SHA-256 `b27de0354ee22f52002e16596e28836b1ca60505c898a8ad156e306c447ab76e`.
+
+Use these as documentary/editorial photographs only. Recheck the linked Unsplash source and license before production launch.

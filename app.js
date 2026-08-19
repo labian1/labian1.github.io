@@ -35,7 +35,13 @@
       event.preventDefault();
       const note = form.querySelector("[data-form-note]");
       if (!note) return;
-      note.textContent = "Preview confirmed — your information was not sent or stored.";
+      const stored = Object.fromEntries(new FormData(form).entries());
+      try {
+        localStorage.setItem(`woafypet-form-${form.id || form.dataset.formTitle || "request"}`, JSON.stringify(stored));
+        note.textContent = "Saved in this browser.";
+      } catch {
+        note.textContent = "Your details are ready on this screen.";
+      }
       note.classList.add("is-confirmed");
       note.setAttribute("aria-live", "polite");
       note.focus?.({ preventScroll: true });
@@ -44,8 +50,72 @@
     form.addEventListener("input", () => {
       const note = form.querySelector("[data-form-note]");
       if (note?.classList.contains("is-confirmed")) {
-        note.textContent = "Private preview: no information is sent or stored.";
+        note.textContent = "";
         note.classList.remove("is-confirmed");
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-provider-inquiry-form]").forEach((form) => {
+    const recipient = form.dataset.providerEmail;
+    const note = form.querySelector("[data-provider-inquiry-note]");
+    const button = form.querySelector("button[type='submit']");
+    const coveragePreset = form.querySelector("[data-coverage-preset]");
+    const coverageOtherLabel = form.querySelector("[data-coverage-other]");
+    const coverageOther = coverageOtherLabel?.querySelector("input");
+    const coverage = form.querySelector("[name='coverage']");
+
+    const syncCoverage = () => {
+      const needsOther = coveragePreset?.value === "other";
+      if (coverageOtherLabel) coverageOtherLabel.hidden = !needsOther;
+      if (coverageOther) {
+        coverageOther.required = Boolean(needsOther);
+        if (!needsOther) coverageOther.value = "";
+      }
+      if (coverage) coverage.value = needsOther ? coverageOther?.value.trim() || "" : coveragePreset?.value || "";
+    };
+
+    coveragePreset?.addEventListener("change", syncCoverage);
+    coverageOther?.addEventListener("input", syncCoverage);
+    syncCoverage();
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      syncCoverage();
+      if (!form.reportValidity()) return;
+
+      const values = Object.fromEntries(new FormData(form).entries());
+      if (values.companyWebsite) {
+        form.reset();
+        syncCoverage();
+        if (note) note.textContent = "Thank you. Your practice was submitted for review.";
+        return;
+      }
+
+      const subject = `WoafyPet practice listing — ${values.organization}`;
+      const body = [
+        "WoafyPet practice listing request",
+        "",
+        `Practice or service: ${values.organization}`,
+        `Contact: ${values.contactName}`,
+        `Work email: ${values.email}`,
+        `City and region: ${values.coverage}`,
+        `Service category: ${values.serviceType}`,
+        `Credential and official website: ${values.website}`,
+        "",
+        "How this practice helps pet owners:",
+        values.message,
+        "",
+        `Submitted from: ${window.location.href}`,
+      ].join("\n");
+      if (!recipient) {
+        if (note) note.textContent = "Email delivery is temporarily unavailable.";
+        return;
+      }
+      window.location.href = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      if (note) {
+        note.textContent = "Your email app is ready. Send the prepared message to complete your submission.";
+        note.classList.add("is-confirmed");
       }
     });
   });
@@ -372,6 +442,7 @@
 
   const search = directory.querySelector("[data-directory-search]");
   const category = directory.querySelector("[data-directory-category]");
+  const region = directory.querySelector("[data-directory-region]");
   const filterButtons = [...document.querySelectorAll("[data-directory-filter]")];
   const items = [...document.querySelectorAll("[data-directory-item]")];
   const totalCount = document.querySelector("[data-directory-results-count]");
@@ -379,12 +450,16 @@
   const resourceCount = document.querySelector("[data-directory-resource-count]");
   const profileEmpty = document.querySelector("[data-directory-profile-empty]");
   const resourceEmpty = document.querySelector("[data-directory-resource-empty]");
+  const loadMore = document.querySelector("[data-directory-load-more]");
+  let profileLimit = 12;
 
-  const itemMatches = (item, query, selectedCategory) => {
+  const itemMatches = (item, query, selectedCategory, selectedRegion) => {
     const searchable = (item.dataset.search || "").toLocaleLowerCase();
     const categories = (item.dataset.categories || "").split("|").filter(Boolean);
+    const itemRegion = item.dataset.region || "all";
     return (!query || searchable.includes(query))
-      && (selectedCategory === "all" || categories.includes(selectedCategory));
+      && (selectedCategory === "all" || categories.includes(selectedCategory))
+      && (selectedRegion === "all" || itemRegion === "all" || itemRegion === selectedRegion);
   };
 
   const resultLabel = (count, singular, plural) => `${count} ${count === 1 ? singular : plural}`;
@@ -392,22 +467,32 @@
   const updateDirectory = () => {
     const query = (search?.value || "").trim().toLocaleLowerCase();
     const selectedCategory = category?.value || "all";
-    let visibleProfiles = 0;
+    const selectedRegion = region?.value || "all";
+    let matchingProfiles = 0;
     let visibleResources = 0;
 
     items.forEach((item) => {
-      const visible = itemMatches(item, query, selectedCategory);
+      const matches = itemMatches(item, query, selectedCategory, selectedRegion);
+      let visible = matches;
+      if (matches && item.hasAttribute("data-directory-profile")) {
+        matchingProfiles += 1;
+        visible = matchingProfiles <= profileLimit;
+      }
       item.hidden = !visible;
-      if (!visible) return;
-      if (item.hasAttribute("data-directory-profile")) visibleProfiles += 1;
+      if (!matches) return;
       if (item.hasAttribute("data-directory-resource")) visibleResources += 1;
     });
 
-    if (profileCount) profileCount.textContent = resultLabel(visibleProfiles, "profile", "profiles");
+    if (profileCount) profileCount.textContent = resultLabel(matchingProfiles, "profile", "profiles");
     if (resourceCount) resourceCount.textContent = resultLabel(visibleResources, "resource", "resources");
-    if (totalCount) totalCount.textContent = resultLabel(visibleProfiles + visibleResources, "result", "results");
-    if (profileEmpty) profileEmpty.hidden = visibleProfiles !== 0;
+    if (totalCount) totalCount.textContent = resultLabel(matchingProfiles + visibleResources, "result", "results");
+    if (profileEmpty) profileEmpty.hidden = matchingProfiles !== 0;
     if (resourceEmpty) resourceEmpty.hidden = visibleResources !== 0;
+    if (loadMore) {
+      const remaining = Math.max(0, matchingProfiles - profileLimit);
+      loadMore.hidden = remaining === 0;
+      loadMore.textContent = remaining > 12 ? `Show 12 more providers (${remaining} remaining) →` : `Show ${remaining} more providers →`;
+    }
 
     filterButtons.forEach((button) => {
       button.setAttribute("aria-pressed", String(button.dataset.directoryFilter === selectedCategory));
@@ -415,15 +500,27 @@
   };
 
   search?.addEventListener("input", updateDirectory);
-  category?.addEventListener("change", updateDirectory);
+  category?.addEventListener("change", () => {
+    profileLimit = 12;
+    updateDirectory();
+  });
+  region?.addEventListener("change", () => {
+    profileLimit = 12;
+    updateDirectory();
+  });
   filterButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const nextCategory = button.dataset.directoryFilter || "all";
       if (category && [...category.options].some((option) => option.value === nextCategory)) {
         category.value = nextCategory;
       }
+      profileLimit = 12;
       updateDirectory();
     });
+  });
+  loadMore?.addEventListener("click", () => {
+    profileLimit += 12;
+    updateDirectory();
   });
 
   updateDirectory();

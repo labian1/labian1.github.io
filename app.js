@@ -133,6 +133,7 @@
 
     const carePaths = {
       mobility: {
+        slug: "slower-after-rest",
         title: "Start with mobility and stiffness",
         summary:
           "Learn what to notice after rest, what to make safer today, and what to record for your veterinarian.",
@@ -152,6 +153,7 @@
         },
       },
       night: {
+        slug: "restless-at-night",
         title: "Start with nighttime changes",
         summary:
           "Separate a one-off restless night from a pattern and prepare useful observations for your care team.",
@@ -171,6 +173,7 @@
         },
       },
       appetite: {
+        slug: "changes-in-appetite",
         title: "Start with appetite and weight changes",
         summary:
           "Learn what details make an eating change meaningful and what deserves a prompt veterinary call.",
@@ -190,6 +193,7 @@
         },
       },
       water: {
+        slug: "drinking-more-water",
         title: "Start with drinking and bathroom changes",
         summary:
           "Turn changes in thirst, urination, or accidents into clear observations your veterinarian can use.",
@@ -209,6 +213,7 @@
         },
       },
       general: {
+        slug: "less-interest-in-life",
         title: "Start by turning the change into a clear pattern",
         summary:
           "Use a simple baseline, safe next steps, and focused notes to decide what to discuss with your veterinarian.",
@@ -247,6 +252,9 @@
     });
     document.querySelectorAll("[data-care-lesson-summary]").forEach((element) => {
       element.textContent = selectedPath.summary;
+    });
+    document.querySelectorAll("[data-care-lesson-link]").forEach((link) => {
+      link.setAttribute("href", `/learn/${selectedPath.slug}/?personalize=1`);
     });
 
     Object.entries(selectedPath.chapters).forEach(([chapterKey, chapter]) => {
@@ -312,6 +320,22 @@
     const chapterSummaries = course
       ? [...course.querySelectorAll("[data-tailored-chapter-summary]")]
       : [];
+    const personalizer = intake.closest("[data-lesson-personalizer]");
+    const wantsPersonalization = new URLSearchParams(window.location.search).get("personalize") === "1";
+    let hasSeenPersonalizer = false;
+    try {
+      hasSeenPersonalizer = localStorage.getItem("woafypet-lesson-personalizer-seen") === "1";
+    } catch {
+      hasSeenPersonalizer = false;
+    }
+    if (personalizer && wantsPersonalization && !hasSeenPersonalizer) {
+      personalizer.hidden = false;
+      try {
+        localStorage.setItem("woafypet-lesson-personalizer-seen", "1");
+      } catch {
+        // The public course remains available even when storage is disabled.
+      }
+    }
 
     const selectValue = (name) => intake.querySelector(`[data-intake-field="${name}"]`)?.value.trim() || "";
 
@@ -368,6 +392,7 @@
         course.focus({ preventScroll: true });
         course.scrollIntoView({ behavior: "smooth", block: "start" });
       }
+      if (personalizer) personalizer.hidden = true;
     });
   });
 
@@ -428,6 +453,99 @@
     });
   });
 
+  document.querySelectorAll("[data-community-interaction]").forEach((interaction) => {
+    const key = interaction.dataset.communityInteraction || "lesson";
+    const likeButton = interaction.querySelector("[data-local-like]");
+    const likeCount = likeButton?.querySelector("[data-like-count]");
+    const baseLikes = Number(likeButton?.dataset.baseCount || likeCount?.textContent || 0);
+    const commentsButton = interaction.querySelector("[data-local-comments-toggle]");
+    const commentsPanel = interaction.querySelector("[data-local-comments]");
+    const commentForm = interaction.querySelector("[data-local-comment-form]");
+    const commentList = interaction.querySelector("[data-local-comment-list]");
+    const commentCount = interaction.querySelector("[data-comment-count]");
+    const storageKey = `woafypet-community-${key}`;
+    let saved = { liked: false, comments: [] };
+    try {
+      saved = { ...saved, ...JSON.parse(localStorage.getItem(storageKey) || "{}") };
+    } catch {
+      saved = { liked: false, comments: [] };
+    }
+
+    const render = () => {
+      if (likeButton) likeButton.setAttribute("aria-pressed", String(Boolean(saved.liked)));
+      if (likeCount) likeCount.textContent = String(baseLikes + (saved.liked ? 1 : 0));
+      const existingLocal = commentList?.querySelectorAll("[data-local-comment]").length || 0;
+      if (commentList && existingLocal === 0) {
+        saved.comments.forEach((copy) => {
+          const article = document.createElement("article");
+          article.dataset.localComment = "true";
+          const name = document.createElement("strong");
+          name.textContent = "You";
+          const paragraph = document.createElement("p");
+          paragraph.textContent = copy;
+          article.append(name, paragraph);
+          commentList.append(article);
+        });
+      }
+      if (commentCount) {
+        commentCount.textContent = String((commentList?.querySelectorAll("article").length || 0));
+      }
+    };
+
+    const save = () => {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(saved));
+      } catch {
+        // Interaction still works for the current page view.
+      }
+    };
+
+    likeButton?.addEventListener("click", () => {
+      saved.liked = !saved.liked;
+      save();
+      render();
+    });
+    commentsButton?.addEventListener("click", () => {
+      if (!commentsPanel) return;
+      const open = commentsPanel.hidden;
+      commentsPanel.hidden = !open;
+      commentsButton.setAttribute("aria-expanded", String(open));
+      if (open) commentForm?.querySelector("textarea")?.focus({ preventScroll: true });
+    });
+    commentForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const field = commentForm.querySelector("textarea");
+      const copy = field?.value.trim() || "";
+      if (!copy) return;
+      saved.comments.push(copy.slice(0, 600));
+      save();
+      if (field) field.value = "";
+      const status = commentForm.querySelector("[data-local-comment-status]");
+      if (status) status.textContent = "Comment added.";
+      const article = document.createElement("article");
+      article.dataset.localComment = "true";
+      const name = document.createElement("strong");
+      name.textContent = "You";
+      const paragraph = document.createElement("p");
+      paragraph.textContent = copy.slice(0, 600);
+      article.append(name, paragraph);
+      commentList?.append(article);
+      if (commentCount) commentCount.textContent = String(commentList?.querySelectorAll("article").length || 0);
+    });
+    render();
+  });
+
+  const treeDialog = document.querySelector("[data-tree-purchase]");
+  document.querySelectorAll("[data-tree-purchase-open]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (treeDialog?.showModal) treeDialog.showModal();
+    });
+  });
+  document.querySelector("[data-tree-purchase-close]")?.addEventListener("click", () => treeDialog?.close());
+  treeDialog?.addEventListener("click", (event) => {
+    if (event.target === treeDialog) treeDialog.close();
+  });
+
   navigation?.querySelectorAll("a").forEach((link) => {
     const linkPath = new URL(link.href, window.location.href).pathname;
     if (linkPath !== "/" && currentPath.startsWith(linkPath)) {
@@ -452,6 +570,11 @@
   const resourceEmpty = document.querySelector("[data-directory-resource-empty]");
   const loadMore = document.querySelector("[data-directory-load-more]");
   let profileLimit = 12;
+
+  const requestedCare = new URLSearchParams(window.location.search).get("care");
+  if (requestedCare && category && [...category.options].some((option) => option.value === requestedCare)) {
+    category.value = requestedCare;
+  }
 
   const itemMatches = (item, query, selectedCategory, selectedRegion) => {
     const searchable = (item.dataset.search || "").toLocaleLowerCase();

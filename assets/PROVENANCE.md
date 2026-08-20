@@ -110,3 +110,7 @@ Use these as documentary/editorial photographs only. Recheck the linked Unsplash
 - `problem-appetite-owner-offering-food.jpg` — byte-identical to `senior-care-platform/media/real/photo-02.jpg`; Roberto Nickson, Unsplash: https://unsplash.com/photos/woman-sitting-on-sofa-while-holding-food-for-dog-q9nZUFC1nTw · 1800×1200 · SHA-256 `e46abaac57048383f28a99eb725c9b8dc8e2ca3f996c2d0092c204493aa95261`.
 
 Use these as real editorial photography. Recheck the linked Unsplash source and license before production launch.
+
+## Founder-supplied story photography
+
+- `bobby.jpg` — user-supplied photograph of Bobby from the WoafyPet workspace, used only for Bobby and Robert's origin story. Treat as founder-owned project media; confirm the final publication release before production launch.

@@ -31,13 +31,36 @@
   });
 
   document.querySelectorAll("[data-preview-form]").forEach((form) => {
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const note = form.querySelector("[data-form-note]");
       if (!note) return;
       const stored = Object.fromEntries(new FormData(form).entries());
+      const endpoint = form.dataset.submitApi;
+      if (endpoint) {
+        const button = form.querySelector("button[type='submit']");
+        if (button) button.disabled = true;
+        note.textContent = "Sending…";
+        try {
+          await fetch(endpoint, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=UTF-8" },
+            body: JSON.stringify({ ...stored, pageContext: window.location.href }),
+          });
+          note.textContent = form.dataset.successMessage || "Thank you. Your request was sent.";
+          note.classList.add("is-confirmed");
+          form.reset();
+        } catch {
+          note.textContent = "We could not send this right now. Please try again.";
+          note.classList.remove("is-confirmed");
+        } finally {
+          if (button) button.disabled = false;
+        }
+        return;
+      }
       try {
-        localStorage.setItem(`woafypet-form-${form.id || form.dataset.formTitle || "request"}`, JSON.stringify(stored));
+        localStorage.setItem(`woafmeow-form-${form.id || form.dataset.formTitle || "request"}`, JSON.stringify(stored));
         note.textContent = "Saved in this browser.";
       } catch {
         note.textContent = "Your details are ready on this screen.";
@@ -57,65 +80,52 @@
   });
 
   document.querySelectorAll("[data-provider-inquiry-form]").forEach((form) => {
-    const recipient = form.dataset.providerEmail;
+    const endpoint = form.dataset.providerApi;
     const note = form.querySelector("[data-provider-inquiry-note]");
     const button = form.querySelector("button[type='submit']");
-    const coveragePreset = form.querySelector("[data-coverage-preset]");
-    const coverageOtherLabel = form.querySelector("[data-coverage-other]");
-    const coverageOther = coverageOtherLabel?.querySelector("input");
-    const coverage = form.querySelector("[name='coverage']");
 
-    const syncCoverage = () => {
-      const needsOther = coveragePreset?.value === "other";
-      if (coverageOtherLabel) coverageOtherLabel.hidden = !needsOther;
-      if (coverageOther) {
-        coverageOther.required = Boolean(needsOther);
-        if (!needsOther) coverageOther.value = "";
-      }
-      if (coverage) coverage.value = needsOther ? coverageOther?.value.trim() || "" : coveragePreset?.value || "";
-    };
-
-    coveragePreset?.addEventListener("change", syncCoverage);
-    coverageOther?.addEventListener("input", syncCoverage);
-    syncCoverage();
-
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      syncCoverage();
       if (!form.reportValidity()) return;
 
       const values = Object.fromEntries(new FormData(form).entries());
       if (values.companyWebsite) {
         form.reset();
-        syncCoverage();
         if (note) note.textContent = "Thank you. Your practice was submitted for review.";
         return;
       }
-
-      const subject = `WoafyPet practice listing — ${values.organization}`;
-      const body = [
-        "WoafyPet practice listing request",
-        "",
-        `Practice or service: ${values.organization}`,
-        `Contact: ${values.contactName}`,
-        `Work email: ${values.email}`,
-        `City and region: ${values.coverage}`,
-        `Service category: ${values.serviceType}`,
-        `Credential and official website: ${values.website}`,
-        "",
-        "How this practice helps pet owners:",
-        values.message,
-        "",
-        `Submitted from: ${window.location.href}`,
-      ].join("\n");
-      if (!recipient) {
-        if (note) note.textContent = "Email delivery is temporarily unavailable.";
+      if (!endpoint) {
+        if (note) note.textContent = "Submission is temporarily unavailable.";
         return;
       }
-      window.location.href = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      if (note) {
-        note.textContent = "Your email app is ready. Send the prepared message to complete your submission.";
-        note.classList.add("is-confirmed");
+
+      const payload = {
+        ...values,
+        coverage: [values.city, values.region].filter(Boolean).join(", "),
+        consent: values.consent === "on",
+        pageContext: window.location.href,
+      };
+      if (button) button.disabled = true;
+      if (note) note.textContent = "Submitting…";
+      try {
+        await fetch(endpoint, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=UTF-8" },
+          body: JSON.stringify(payload),
+        });
+        form.reset();
+        if (note) {
+          note.textContent = "Thank you. Your practice was submitted for review.";
+          note.classList.add("is-confirmed");
+        }
+      } catch {
+        if (note) {
+          note.textContent = "We could not submit the practice right now. Please try again.";
+          note.classList.remove("is-confirmed");
+        }
+      } finally {
+        if (button) button.disabled = false;
       }
     });
   });
@@ -324,14 +334,14 @@
     const wantsPersonalization = new URLSearchParams(window.location.search).get("personalize") === "1";
     let hasSeenPersonalizer = false;
     try {
-      hasSeenPersonalizer = localStorage.getItem("woafypet-lesson-personalizer-seen") === "1";
+      hasSeenPersonalizer = localStorage.getItem("woafmeow-lesson-personalizer-seen") === "1";
     } catch {
       hasSeenPersonalizer = false;
     }
     if (personalizer && wantsPersonalization && !hasSeenPersonalizer) {
       personalizer.hidden = false;
       try {
-        localStorage.setItem("woafypet-lesson-personalizer-seen", "1");
+        localStorage.setItem("woafmeow-lesson-personalizer-seen", "1");
       } catch {
         // The public course remains available even when storage is disabled.
       }
@@ -463,7 +473,7 @@
     const commentForm = interaction.querySelector("[data-local-comment-form]");
     const commentList = interaction.querySelector("[data-local-comment-list]");
     const commentCount = interaction.querySelector("[data-comment-count]");
-    const storageKey = `woafypet-community-${key}`;
+    const storageKey = `woafmeow-community-${key}`;
     let saved = { liked: false, comments: [] };
     try {
       saved = { ...saved, ...JSON.parse(localStorage.getItem(storageKey) || "{}") };
@@ -569,7 +579,8 @@
   const profileEmpty = document.querySelector("[data-directory-profile-empty]");
   const resourceEmpty = document.querySelector("[data-directory-resource-empty]");
   const loadMore = document.querySelector("[data-directory-load-more]");
-  let profileLimit = 12;
+  let profileLimit = 9;
+  let resourceLimit = 3;
 
   const requestedCare = new URLSearchParams(window.location.search).get("care");
   if (requestedCare && category && [...category.options].some((option) => option.value === requestedCare)) {
@@ -592,7 +603,7 @@
     const selectedCategory = category?.value || "all";
     const selectedRegion = region?.value || "all";
     let matchingProfiles = 0;
-    let visibleResources = 0;
+    let matchingResources = 0;
 
     items.forEach((item) => {
       const matches = itemMatches(item, query, selectedCategory, selectedRegion);
@@ -601,20 +612,22 @@
         matchingProfiles += 1;
         visible = matchingProfiles <= profileLimit;
       }
+      if (matches && item.hasAttribute("data-directory-resource")) {
+        matchingResources += 1;
+        visible = matchingResources <= resourceLimit;
+      }
       item.hidden = !visible;
-      if (!matches) return;
-      if (item.hasAttribute("data-directory-resource")) visibleResources += 1;
     });
 
     if (profileCount) profileCount.textContent = resultLabel(matchingProfiles, "profile", "profiles");
-    if (resourceCount) resourceCount.textContent = resultLabel(visibleResources, "resource", "resources");
-    if (totalCount) totalCount.textContent = resultLabel(matchingProfiles + visibleResources, "result", "results");
+    if (resourceCount) resourceCount.textContent = resultLabel(matchingResources, "resource", "resources");
+    if (totalCount) totalCount.textContent = resultLabel(matchingProfiles + matchingResources, "result", "results");
     if (profileEmpty) profileEmpty.hidden = matchingProfiles !== 0;
-    if (resourceEmpty) resourceEmpty.hidden = visibleResources !== 0;
+    if (resourceEmpty) resourceEmpty.hidden = matchingResources !== 0;
     if (loadMore) {
-      const remaining = Math.max(0, matchingProfiles - profileLimit);
+      const remaining = Math.max(0, matchingProfiles - profileLimit) + Math.max(0, matchingResources - resourceLimit);
       loadMore.hidden = remaining === 0;
-      loadMore.textContent = remaining > 12 ? `Show 12 more providers (${remaining} remaining) →` : `Show ${remaining} more providers →`;
+      loadMore.textContent = remaining > 12 ? `Show more options (${remaining} remaining) →` : `Show ${remaining} more options →`;
     }
 
     filterButtons.forEach((button) => {
@@ -624,11 +637,13 @@
 
   search?.addEventListener("input", updateDirectory);
   category?.addEventListener("change", () => {
-    profileLimit = 12;
+    profileLimit = 9;
+    resourceLimit = 3;
     updateDirectory();
   });
   region?.addEventListener("change", () => {
-    profileLimit = 12;
+    profileLimit = 9;
+    resourceLimit = 3;
     updateDirectory();
   });
   filterButtons.forEach((button) => {
@@ -637,12 +652,14 @@
       if (category && [...category.options].some((option) => option.value === nextCategory)) {
         category.value = nextCategory;
       }
-      profileLimit = 12;
+      profileLimit = 9;
+      resourceLimit = 3;
       updateDirectory();
     });
   });
   loadMore?.addEventListener("click", () => {
-    profileLimit += 12;
+    profileLimit += 9;
+    resourceLimit += 3;
     updateDirectory();
   });
 

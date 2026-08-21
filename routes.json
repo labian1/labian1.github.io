@@ -28,6 +28,30 @@
     "label": "Care Circle"
   },
   {
+    "route": "/care-circle/slower-after-rest/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/care-circle/restless-at-night/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/care-circle/changes-in-appetite/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/care-circle/drinking-more-water/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/care-circle/less-interest-in-life/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/care-circle/bathroom-accidents/",
+    "label": "Lesson"
+  },
+  {
     "route": "/learn/slower-after-rest/",
     "label": "Lesson"
   },
@@ -50,6 +74,10 @@
   {
     "route": "/learn/bathroom-accidents/",
     "label": "Lesson"
+  },
+  {
+    "route": "/account/",
+    "label": "Account"
   },
   {
     "route": "/find-care/",

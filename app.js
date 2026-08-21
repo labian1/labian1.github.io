@@ -556,6 +556,180 @@
     if (event.target === treeDialog) treeDialog.close();
   });
 
+  const accountStorageKey = "woafmeow-account-v1";
+  const publicQuestionStorageKey = "woafmeow-public-question-v1";
+  const readStoredJson = (key) => {
+    try {
+      return JSON.parse(localStorage.getItem(key) || "null");
+    } catch {
+      return null;
+    }
+  };
+  const writeStoredJson = (key, value) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  const getAccount = () => readStoredJson(accountStorageKey);
+  const getPublicQuestion = () => readStoredJson(publicQuestionStorageKey);
+  const selectLessonSlug = (question) => {
+    const value = question.toLocaleLowerCase();
+    if (/\b(stiff|rise|rising|limp|stairs?|mobility|slip|walk|walking|joint)\b/.test(value)) return "slower-after-rest";
+    if (/\b(night|sleep|pacing|wake|waking|restless|confus)\b/.test(value)) return "restless-at-night";
+    if (/\b(food|eat|eating|appetite|chew|nausea|meal|weight loss)\b/.test(value)) return "changes-in-appetite";
+    if (/\b(water|drink|drinking|thirst|urine|urinating|pee)\b/.test(value)) return "drinking-more-water";
+    if (/\b(accident|bathroom|toilet|stool|poop|strain)\b/.test(value)) return "bathroom-accidents";
+    return "less-interest-in-life";
+  };
+  const updateAccountLinks = () => {
+    const account = getAccount();
+    document.querySelectorAll("[data-account-link]").forEach((link) => {
+      link.textContent = account?.petName ? account.petName : "Log in";
+      link.setAttribute("aria-label", account?.petName ? `Open ${account.petName}'s profile` : "Log in or create a dog profile");
+    });
+  };
+
+  const accountForm = document.querySelector("[data-account-form]");
+  const accountCurrent = document.querySelector("[data-account-current]");
+  const accountSummary = document.querySelector("[data-account-profile-summary]");
+  const accountNote = document.querySelector("[data-account-note]");
+  const renderAccount = () => {
+    const account = getAccount();
+    updateAccountLinks();
+    if (!accountForm || !accountCurrent || !accountSummary) return;
+    accountCurrent.hidden = !account;
+    accountForm.hidden = Boolean(account);
+    accountSummary.replaceChildren();
+    if (!account) return;
+    [
+      ["Email", account.email],
+      ["Dog", `${account.petName} · ${account.petAge} · ${account.breed}`],
+      ["Owner-shared conditions", account.conditions],
+      ["Medicines or recent changes", account.medications || "None shared"],
+    ].forEach(([term, description]) => {
+      const row = document.createElement("div");
+      const dt = document.createElement("dt");
+      const dd = document.createElement("dd");
+      dt.textContent = term;
+      dd.textContent = description;
+      row.append(dt, dd);
+      accountSummary.append(row);
+    });
+  };
+  accountForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!accountForm.reportValidity()) return;
+    const values = Object.fromEntries(new FormData(accountForm).entries());
+    const account = {
+      email: String(values.email || "").trim().slice(0, 254),
+      petName: String(values.petName || "").trim().slice(0, 80),
+      petAge: String(values.petAge || "").trim().slice(0, 40),
+      breed: String(values.breed || "").trim().slice(0, 120),
+      conditions: String(values.conditions || "").trim().slice(0, 240),
+      medications: String(values.medications || "").trim().slice(0, 360),
+      publicProfileConsent: values.publicProfileConsent === "on",
+    };
+    if (!writeStoredJson(accountStorageKey, account)) {
+      if (accountNote) accountNote.textContent = "This browser blocked profile storage. Please allow site storage and try again.";
+      return;
+    }
+    renderAccount();
+    const params = new URLSearchParams(window.location.search);
+    const question = (params.get("q") || "").trim().slice(0, 500);
+    if (params.get("next") === "ask") {
+      const target = new URL("/care-circle/", window.location.origin);
+      target.searchParams.set("ask", "1");
+      if (question) target.searchParams.set("q", question);
+      target.hash = "ask";
+      window.location.assign(target.href);
+      return;
+    }
+    if (accountNote) accountNote.textContent = "Profile saved.";
+  });
+  document.querySelector("[data-account-signout]")?.addEventListener("click", () => {
+    try {
+      localStorage.removeItem(accountStorageKey);
+      localStorage.removeItem(publicQuestionStorageKey);
+    } catch {
+      // The current screen still resets even if storage access changes.
+    }
+    accountForm?.reset();
+    renderAccount();
+  });
+  renderAccount();
+
+  const accountGate = document.querySelector("[data-account-gate]");
+  const askForm = document.querySelector("[data-account-ask-form]");
+  if (accountGate && askForm) {
+    const account = getAccount();
+    const existingQuestion = getPublicQuestion();
+    const questionField = askForm.querySelector('[name="question"]');
+    const askNote = askForm.querySelector("[data-account-ask-note]");
+    const requestedQuestion = (new URLSearchParams(window.location.search).get("q") || "").trim().slice(0, 500);
+    if (questionField && requestedQuestion) questionField.value = requestedQuestion;
+    if (!account) {
+      accountGate.hidden = false;
+      askForm.hidden = true;
+    } else if (existingQuestion) {
+      accountGate.hidden = false;
+      askForm.hidden = true;
+      accountGate.replaceChildren();
+      const copy = document.createElement("div");
+      const heading = document.createElement("h2");
+      const paragraph = document.createElement("p");
+      const link = document.createElement("a");
+      heading.textContent = `${account.petName}'s public lesson is ready.`;
+      paragraph.textContent = existingQuestion.question;
+      link.className = "button primary";
+      link.href = `/care-circle/${existingQuestion.slug}/?mine=1`;
+      link.textContent = "Open the tailored lesson →";
+      copy.append(heading, paragraph);
+      accountGate.append(copy, link);
+    } else {
+      accountGate.hidden = true;
+      askForm.hidden = false;
+      const summary = askForm.querySelector("[data-active-pet-summary]");
+      if (summary) summary.textContent = `${account.petName} · ${account.petAge} · ${account.breed} · ${account.conditions}`;
+    }
+    askForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!askForm.reportValidity() || !account) return;
+      const values = Object.fromEntries(new FormData(askForm).entries());
+      const question = String(values.question || "").trim().slice(0, 500);
+      const slug = selectLessonSlug(question);
+      const publicQuestion = { ...account, question, slug, createdAt: new Date().toISOString() };
+      if (!writeStoredJson(publicQuestionStorageKey, publicQuestion)) {
+        if (askNote) askNote.textContent = "This browser could not save the question. Please allow site storage and try again.";
+        return;
+      }
+      window.location.assign(`/care-circle/${slug}/?mine=1`);
+    });
+  }
+
+  const personalQuestion = getPublicQuestion();
+  const lessonSlugMatch = currentPath.match(/^\/care-circle\/([^/]+)\/?$/);
+  if (personalQuestion && lessonSlugMatch?.[1] === personalQuestion.slug && new URLSearchParams(window.location.search).get("mine") === "1") {
+    const conditions = personalQuestion.conditions || "no known condition shared";
+    const medicines = personalQuestion.medications || "no medicine change shared";
+    document.querySelector("[data-public-dog]")?.replaceChildren(document.createTextNode(`${personalQuestion.petName} · ${personalQuestion.petAge} · ${personalQuestion.breed}`));
+    document.querySelector("[data-public-conditions]")?.replaceChildren(document.createTextNode(conditions));
+    document.querySelector("[data-public-change]")?.replaceChildren(document.createTextNode(personalQuestion.question));
+    document.querySelector("[data-focused-pet]")?.replaceChildren(document.createTextNode(personalQuestion.petName));
+    const focusedResult = document.querySelector("[data-focused-result]");
+    if (focusedResult) focusedResult.textContent = `This public answer focuses on ${personalQuestion.petName}'s ${personalQuestion.petAge.toLocaleLowerCase()} profile, ${conditions}, and the change you described: ${personalQuestion.question}`;
+    const tailored = [
+      `For ${personalQuestion.petName}, a ${personalQuestion.petAge.toLocaleLowerCase()} ${personalQuestion.breed} with ${conditions}, observe this exact change in one ordinary routine: “${personalQuestion.question}” Record what happens before it, how long it lasts, and how recovery looks.`,
+      `Choose one low-risk change for ${personalQuestion.petName}'s current profile and ${conditions}. Keep the familiar routine, improve access or traction where relevant, and change only one detail so you can tell whether it helped.`,
+      `Bring ${personalQuestion.petName}'s timeline, short natural videos, owner-reported conditions (${conditions}), medicine context (${medicines}), and the exact question you asked. Ask what should be examined now and which change would trigger a faster call.`,
+    ];
+    document.querySelectorAll("[data-tailored-chapter-summary]").forEach((summary, index) => {
+      if (tailored[index]) summary.textContent = tailored[index];
+    });
+  }
+
   navigation?.querySelectorAll("a").forEach((link) => {
     const linkPath = new URL(link.href, window.location.href).pathname;
     if (linkPath !== "/" && currentPath.startsWith(linkPath)) {

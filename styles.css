@@ -1088,3 +1088,295 @@ img { height: auto !important; object-fit: contain !important; object-position: 
   .memorial-story-grid .wm-wrap > div { grid-template-columns: 1fr; }
   .memorial-story-grid figure { height: 230px; }
 }
+
+/* 2026-08-21 v9 — locked homepage composition from the approved reference */
+.home-v6 .home-reference {
+  width: min(1270px, calc(100vw - 48px));
+  padding-bottom: 0;
+}
+.home-v6 .home-reference h1,
+.home-v6 .home-reference h2,
+.home-v6 .home-reference h3 { font-weight: 500; }
+.home-v6 .home-ref-section { padding: 30px 0; }
+.home-v6 .home-ref-section > header { margin-bottom: 17px; }
+.home-v6 .home-ref-section > header h2 { font-size: 1.82rem; }
+.home-v6 .home-ref-section > header p { font-size: .82rem; }
+
+.home-v6 .home-ref-hero {
+  min-height: 470px;
+  grid-template-columns: .82fr 1.18fr;
+}
+.home-v6 .home-ref-hero-copy { padding: 48px 42px; }
+.home-v6 .home-ref-hero-copy h1 {
+  max-width: 460px;
+  margin-bottom: 14px;
+  font-size: clamp(3rem, 4.05vw, 3.7rem);
+  line-height: .98;
+}
+.home-v6 .home-ref-hero-copy > p {
+  max-width: 430px;
+  margin-bottom: 20px;
+  font-size: .91rem;
+}
+.home-v6 .home-ref-actions { margin-bottom: 18px; gap: 12px; }
+.home-v6 .home-ref-actions .button {
+  min-width: 150px;
+  min-height: 46px;
+  padding: 10px 17px;
+  font-size: .8rem;
+}
+.home-v6 .home-ref-account {
+  max-width: 430px;
+  padding: 11px 13px;
+  font-size: .76rem;
+}
+.home-v6 .home-ref-hero > figure {
+  min-height: 470px;
+  align-self: stretch;
+}
+.home-v6 .home-ref-hero > figure img {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 470px;
+  object-fit: contain !important;
+}
+
+.home-v6 .home-ref-learn { padding-top: 29px; }
+.home-v6 .home-topic-grid { gap: 13px; }
+.home-v6 .home-topic-card figure {
+  height: 126px;
+  min-height: 126px;
+}
+.home-v6 .home-topic-card > div { min-height: 148px; padding: 12px 12px 13px; }
+.home-v6 .home-topic-card h3 { margin-bottom: 5px; font-size: 1.06rem; }
+.home-v6 .home-topic-card p {
+  min-height: 45px;
+  margin-bottom: 9px;
+  font-size: .76rem;
+  line-height: 1.42;
+}
+.home-v6 .home-topic-card span { font-size: .73rem; }
+
+.home-v6 .home-ref-lessons {
+  margin: 29px 0 0;
+  grid-template-columns: minmax(0, 1.48fr) minmax(320px, .82fr);
+  border-radius: 9px;
+}
+.home-v6 .home-ref-lessons-main { padding: 23px 24px 22px; }
+.home-v6 .home-ref-lessons-main > header { margin-bottom: 16px; }
+.home-v6 .home-ref-lessons-main > header h2 { font-size: 1.55rem; }
+.home-v6 .home-ref-lessons-main > header p,
+.home-v6 .home-ref-lessons-main > header a { font-size: .73rem; }
+.home-v6 .home-lesson-grid { gap: 12px; }
+.home-v6 .home-lesson-card { color: var(--ink); text-decoration: none; }
+.home-v6 .home-lesson-card figure {
+  position: relative;
+  height: 142px;
+  min-height: 142px;
+  overflow: hidden;
+  background: white;
+}
+.home-v6 .home-lesson-card figure img {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+.home-v6 .home-lesson-card > div { min-height: 146px; padding: 11px 12px 12px; }
+.home-v6 .home-lesson-card h3 { margin: 5px 0 6px; font-size: 1rem; line-height: 1.15; }
+.home-v6 .home-lesson-card p { margin-bottom: 7px; font-size: .72rem; line-height: 1.38; }
+.home-v6 .home-lesson-card small { font-size: .67rem; }
+
+.home-v6 .home-care-account {
+  min-width: 0;
+  margin: 0;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  border: 0;
+  border-left: 1px solid #d4ded2;
+  border-radius: 0;
+  background: #fbf7ef;
+}
+.home-v6 .home-care-account > div { padding: 27px 8px 22px 26px; }
+.home-v6 .home-care-account h2 { margin-bottom: 8px; font-size: 1.55rem; line-height: 1.08; }
+.home-v6 .home-care-account p { margin-bottom: 14px; font-size: .76rem; }
+.home-v6 .home-care-account .button { min-height: 42px; padding: 9px 15px; font-size: .75rem; }
+.home-v6 .home-care-account ol {
+  margin: 16px 0 0;
+  padding-left: 20px;
+  columns: 1;
+  font-size: .71rem;
+}
+.home-v6 .home-care-account li { margin: 7px 0; }
+.home-v6 .home-care-account figure {
+  min-height: 0;
+  height: 100%;
+  padding: 12px 10px 0 0;
+  align-self: end;
+}
+
+.home-v6 .home-ref-guide { padding-top: 3px; }
+.home-v6 .home-guide-grid { gap: 13px; }
+.home-v6 .home-guide-card figure {
+  height: 124px;
+  min-height: 124px;
+}
+.home-v6 .home-guide-card > div { min-height: 102px; padding: 11px 12px 12px; }
+.home-v6 .home-guide-card h3 { margin-bottom: 5px; font-size: 1.02rem; line-height: 1.12; }
+.home-v6 .home-guide-card p { font-size: .75rem; line-height: 1.38; }
+.home-v6 .home-guide-quiz {
+  margin-top: 15px;
+  padding: 10px 16px;
+  font-size: .77rem;
+}
+
+.home-v6 .home-vet-support {
+  margin: 0 0 25px;
+  padding: 13px 20px;
+  display: grid;
+  grid-template-columns: minmax(260px, .8fr) minmax(0, 1.2fr);
+  gap: 20px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f3e9;
+}
+.home-v6 .home-vet-support > header {
+  max-width: none;
+  margin: 0;
+  text-align: left;
+}
+.home-v6 .home-vet-support > header h2 { margin-bottom: 3px; font-size: 1.35rem; }
+.home-v6 .home-vet-support > header p { font-size: .73rem; }
+.home-v6 .home-vet-support > div { gap: 12px; }
+.home-v6 .home-vet-support article {
+  min-height: 68px;
+  padding: 7px;
+  grid-template-columns: 54px 1fr;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+}
+.home-v6 .home-vet-support figure { width: 54px; height: 54px; }
+.home-v6 .home-vet-support h3 { margin: 0 0 2px; font-size: .95rem; }
+.home-v6 .home-vet-support article p { font-size: .7rem; }
+
+.home-v6 .home-support-grid { gap: 18px; padding: 0 0 25px; }
+.home-v6 .home-support-card { grid-template-rows: auto 155px; }
+.home-v6 .home-support-card > div { padding: 15px 17px 12px; }
+.home-v6 .home-support-card h2 { font-size: 1.35rem; }
+.home-v6 .home-support-card p { margin-bottom: 7px; font-size: .74rem; }
+.home-v6 .home-support-card span { font-size: .73rem; }
+
+.home-v6 .home-ref-bed { margin: 0 0 20px; }
+.home-v6 .home-ref-bed > header { padding: 16px 21px 5px; }
+.home-v6 .home-ref-bed > header h2 { font-size: 1.55rem; }
+.home-v6 .home-ref-bed > header p { font-size: .72rem; }
+.home-v6 .home-bed-grid article {
+  min-height: 210px;
+  padding: 13px 20px 18px;
+  grid-template-columns: minmax(175px, .8fr) minmax(0, 1.2fr);
+  gap: 14px;
+}
+.home-v6 .home-bed-grid h3 { font-size: 1.14rem; }
+.home-v6 .home-bed-grid p { font-size: .74rem; }
+.home-v6 .home-bed-grid figure { height: 180px; }
+.home-v6 .home-bed-grid figure img {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none;
+  object-fit: contain !important;
+}
+.home-v6 .home-bed-grid .button { min-height: 38px; margin-top: 11px; padding: 8px 12px; font-size: .7rem; }
+
+.home-v6 .home-hard-grid { gap: 18px; padding: 0 0 20px; }
+.home-v6 .home-hard-card { min-height: 155px; }
+.home-v6 .home-hard-card > div { padding: 18px 20px; }
+.home-v6 .home-hard-card h2 { font-size: 1.38rem; }
+.home-v6 .home-hard-card p,
+.home-v6 .home-hard-card span { font-size: .73rem; }
+
+.home-v6 .home-newsletter {
+  margin: 0;
+  padding: 21px 25px;
+  grid-template-columns: minmax(0, .9fr) minmax(460px, 1.1fr);
+  gap: 28px;
+  border-radius: 7px 7px 0 0;
+}
+.home-v6 .home-newsletter h2 { font-size: 1.4rem; }
+.home-v6 .home-newsletter p { font-size: .73rem; }
+.home-v6 .home-newsletter input,
+.home-v6 .home-newsletter button { min-height: 40px; }
+.home-v6 .home-newsletter button { padding-inline: 20px; font-size: .75rem; }
+.home-v6 .home-reference p,
+.home-v6 .home-reference button,
+.home-v6 .home-reference label { font-size: 13px !important; }
+.home-v6 .home-bed-grid figure {
+  position: relative;
+  overflow: hidden;
+}
+.home-v6 .home-bed-grid figure img {
+  position: absolute;
+  inset: 0;
+}
+
+@media (max-width: 1120px) {
+  .home-v6 .home-ref-lessons { grid-template-columns: 1fr; }
+  .home-v6 .home-care-account {
+    min-height: 270px;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    border-top: 1px solid #d4ded2;
+    border-left: 0;
+  }
+  .home-v6 .home-vet-support { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 900px) {
+  .home-v6 .home-ref-hero { min-height: 0; grid-template-columns: 1fr; }
+  .home-v6 .home-ref-hero-copy { padding: 38px 24px 28px; }
+  .home-v6 .home-ref-hero > figure { min-height: 0; }
+  .home-v6 .home-ref-hero > figure img { height: auto !important; max-height: 470px; }
+  .home-v6 .home-topic-grid,
+  .home-v6 .home-guide-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .home-v6 .home-support-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .home-v6 .home-support-card { grid-template-columns: 1fr; grid-template-rows: auto 145px; }
+  .home-v6 .home-bed-grid article { grid-template-columns: minmax(170px, .8fr) minmax(0, 1.2fr); }
+  .home-v6 .home-newsletter { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .home-v6 .home-reference { width: 100%; }
+  .home-v6 .home-ref-section { padding: 26px 14px; }
+  .home-v6 .home-ref-hero-copy h1 { font-size: 2.5rem; }
+  .home-v6 .home-ref-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .home-v6 .home-ref-hero > figure { padding: 0 14px 18px; }
+  .home-v6 .home-topic-grid,
+  .home-v6 .home-guide-grid { gap: 9px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .home-v6 .home-topic-card figure,
+  .home-v6 .home-guide-card figure { height: 105px; min-height: 105px; }
+  .home-v6 .home-topic-card > div { min-height: 142px; }
+  .home-v6 .home-topic-card p { min-height: 45px; }
+  .home-v6 .home-ref-lessons { margin-top: 22px; }
+  .home-v6 .home-ref-lessons-main { padding: 20px 14px; }
+  .home-v6 .home-ref-lessons-main > header { align-items: flex-start; flex-direction: column; gap: 5px; }
+  .home-v6 .home-lesson-grid { grid-template-columns: 1fr; }
+  .home-v6 .home-lesson-card { display: grid; grid-template-columns: 42% 1fr; }
+  .home-v6 .home-lesson-card figure { height: 100%; min-height: 170px; }
+  .home-v6 .home-care-account { min-height: 0; grid-template-columns: 1fr 120px; }
+  .home-v6 .home-care-account > div { padding: 22px 6px 20px 18px; }
+  .home-v6 .home-care-account h2 { font-size: 1.35rem; }
+  .home-v6 .home-care-account figure { height: 100%; padding: 10px 6px 0 0; }
+  .home-v6 .home-vet-support { margin: 0 14px 22px; padding: 15px; }
+  .home-v6 .home-vet-support > div { grid-template-columns: 1fr 1fr; }
+  .home-v6 .home-vet-support article { display: grid; grid-template-columns: 46px 1fr; }
+  .home-v6 .home-vet-support figure { width: 46px; height: 46px; margin: 0; }
+  .home-v6 .home-support-grid { grid-template-columns: 1fr; gap: 10px; padding-inline: 14px; }
+  .home-v6 .home-support-card { grid-template-columns: 1fr 1fr; grid-template-rows: none; }
+  .home-v6 .home-support-card figure { min-height: 150px; }
+  .home-v6 .home-ref-bed { margin: 0 14px 18px; }
+  .home-v6 .home-bed-grid article { grid-template-columns: 1fr 1fr; padding: 14px; }
+  .home-v6 .home-bed-grid figure { height: 160px; }
+  .home-v6 .home-hard-grid { padding-inline: 14px; }
+  .home-v6 .home-hard-card { min-height: 145px; }
+  .home-v6 .home-newsletter { margin-inline: 14px; padding: 20px 16px; }
+}

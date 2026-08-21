@@ -960,3 +960,131 @@ img { height: auto !important; object-fit: contain !important; object-position: 
   .provider-card-v6 > div { min-height: 0; }
   .memorial-hero-v6, .memorial-meaning .wm-wrap { grid-template-columns: 1fr; }
 }
+
+/* 2026-08-21 v8 — dense, image-safe care flow */
+.home-ref-learn { padding-block: 42px 30px; }
+.home-ref-learn > header { align-items: center; }
+.home-topic-card figure,
+.home-guide-card figure,
+.home-support-card figure,
+.home-hard-card figure,
+.home-care-account figure,
+.home-vet-support figure {
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+}
+.home-topic-card figure img,
+.home-guide-card figure img,
+.home-support-card figure img,
+.home-hard-card figure img,
+.home-care-account figure img,
+.home-vet-support figure img {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  max-width: none;
+  height: 100% !important;
+  max-height: none;
+  object-fit: contain !important;
+}
+.home-topic-card p { min-height: 66px; }
+.home-care-account { margin-top: 24px; overflow: hidden; display: grid; grid-template-columns: minmax(300px, .8fr) minmax(0, 1.2fr); align-items: stretch; border: 1px solid #cbd9cd; border-radius: 12px; background: var(--sage); }
+.home-care-account figure { min-height: 300px; padding: 12px; display: grid; place-items: center; }
+.home-care-account > div { padding: 30px 34px; align-self: center; }
+.home-care-account h2 { margin-bottom: 8px; font-size: 2rem; }
+.home-care-account p { margin-bottom: 14px; }
+.home-care-account ol { margin: 0 0 20px; padding-left: 22px; color: var(--muted); columns: 3; column-gap: 26px; }
+.home-care-account li { break-inside: avoid; margin: 5px 0; }
+
+.home-vet-support { margin: 8px 0 34px; padding: 34px; border-radius: 12px; background: #f2ecdf; }
+.home-vet-support > header { max-width: 760px; margin: 0 auto 22px; text-align: center; }
+.home-vet-support > header h2 { margin-bottom: 7px; }
+.home-vet-support > header p { margin: 0; }
+.home-vet-support > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.home-vet-support article { min-width: 0; padding: 18px; display: grid; grid-template-columns: 145px 1fr; gap: 20px; align-items: center; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+.home-vet-support figure { width: 145px; height: 145px; }
+.home-vet-support figure img { border-radius: 50%; }
+.home-vet-support blockquote { margin-bottom: 12px; color: var(--ink); font-family: var(--serif); font-size: 1.05rem; line-height: 1.5; }
+.home-vet-support h3 { margin-bottom: 2px; font-size: 1.2rem; }
+.home-vet-support article p { margin: 0; font-size: .83rem; }
+
+.guide-hero-copy .email-capture h2,
+.guide-hero-copy .email-capture p,
+.guide-hero-copy .email-capture .form-note { color: white; }
+.guide-hero-copy .email-capture input { color: var(--ink); background: white; }
+.guide-hero-copy .email-capture { margin-top: 20px; }
+.guide-hero-copy .email-capture .button { min-height: 54px; }
+.guide-outcomes { padding-block: 34px; }
+.guide-topics-v6 { padding-block: 50px; }
+.guide-method, .guide-vet-note, .guide-lessons { padding-block: 54px; }
+.email-band { padding-block: 36px; }
+
+.account-v7 main { background: #f5efe4; }
+.account-scene-v8 { width: min(1180px, calc(100vw - 48px)); margin: 28px auto 56px; overflow: hidden; display: grid; grid-template-columns: minmax(330px, .82fr) minmax(0, 1.18fr); border: 1px solid var(--line); border-radius: 18px; background: var(--paper); box-shadow: 0 20px 55px rgba(54, 39, 28, .07); }
+.account-scene-media { position: relative; min-width: 0; padding: 28px; display: flex; flex-direction: column; justify-content: flex-end; color: white; background: var(--forest); }
+.account-scene-media figure { margin: 0 0 26px; height: 360px; display: grid; place-items: center; }
+.account-scene-media figure img { width: 100%; height: 100% !important; object-fit: contain !important; border-radius: 12px; }
+.account-scene-media h1 { margin-bottom: 12px; color: white; font-size: clamp(2.35rem, 3.4vw, 3.5rem); }
+.account-scene-media p { margin-bottom: 16px; color: rgba(255,255,255,.8); }
+.account-scene-media ol { margin: 0; padding-left: 22px; color: rgba(255,255,255,.88); }
+.account-scene-media li { margin: 6px 0; }
+.account-scene-panel { min-width: 0; padding: 34px; }
+.account-form-v8 header h2 { margin-bottom: 4px; font-size: 2rem; }
+.account-form-v8 header p { margin-bottom: 18px; }
+.account-form-v8 fieldset { margin: 0 0 17px; padding: 17px; border: 1px solid var(--line); border-radius: 10px; }
+.account-form-v8 fieldset legend { padding-inline: 6px; color: var(--clay-dark); font-size: .95rem; }
+.account-form-v8 textarea { min-height: 88px; }
+.account-form-v8 .consent-row { margin-block: 14px; }
+.account-form-v8 > .button { width: 100%; min-height: 56px; }
+.account-current-v7 { padding: 28px; }
+
+.memorial-hero-v6 { min-height: 0; }
+.memorial-hero-v6 > div { padding: 44px; }
+.memorial-meaning { padding-block: 52px; }
+.memorial-story-grid { padding: 52px 0; background: var(--paper); }
+.memorial-story-grid header { max-width: 760px; margin: 0 auto 28px; text-align: center; }
+.memorial-story-grid header h2 { margin-bottom: 9px; }
+.memorial-story-grid header p { margin: 0; font-size: 1.05rem; }
+.memorial-story-grid .wm-wrap > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.memorial-story-grid article { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--ivory); }
+.memorial-story-grid figure { position: relative; height: 270px; margin: 0; overflow: hidden; background: transparent; }
+.memorial-story-grid figure img { position: absolute; inset: 0; width: 100% !important; max-width: none; height: 100% !important; max-height: none; object-fit: contain !important; }
+.memorial-story-grid h3 { margin: 20px 20px 7px; color: var(--forest); }
+.memorial-story-grid article p { margin: 0; padding: 0 20px 24px; }
+.memorial-partner { padding-block: 52px; }
+.memorial-steps { padding-block: 50px; }
+.memorial-hero-v6 figure,
+.memorial-meaning figure { background: transparent; }
+.memorial-hero-v6 figure img,
+.memorial-meaning figure img { width: 100%; height: auto !important; object-fit: contain !important; }
+
+@media (max-width: 1020px) {
+  .home-care-account { grid-template-columns: 300px 1fr; }
+  .home-care-account ol { columns: 1; }
+  .home-vet-support article { grid-template-columns: 110px 1fr; }
+  .home-vet-support figure { width: 110px; height: 110px; }
+  .account-scene-v8 { grid-template-columns: 1fr; }
+  .account-scene-media { display: grid; grid-template-columns: 280px 1fr; gap: 28px; align-items: center; }
+  .account-scene-media figure { height: 280px; margin: 0; }
+}
+
+@media (max-width: 700px) {
+  .home-ref-learn { padding-inline: 16px; }
+  .home-care-account { grid-template-columns: 1fr; }
+  .home-care-account figure { min-height: 0; height: 230px; }
+  .home-care-account > div { padding: 24px 20px; }
+  .home-vet-support { margin-inline: 16px; padding: 24px 16px; }
+  .home-vet-support > div { grid-template-columns: 1fr; }
+  .home-vet-support article { display: block; }
+  .home-vet-support figure { width: 110px; height: 110px; margin: 0 auto 16px; }
+  .home-vet-support blockquote { text-align: left; }
+  .account-scene-v8 { width: calc(100vw - 24px); margin-top: 18px; }
+  .account-scene-media { padding: 20px; display: block; }
+  .account-scene-media figure { height: 240px; margin-bottom: 20px; }
+  .account-scene-panel { padding: 20px; }
+  .account-form-v8 .form-grid { grid-template-columns: 1fr; }
+  .account-form-v8 .field-wide { grid-column: auto; }
+  .memorial-story-grid .wm-wrap > div { grid-template-columns: 1fr; }
+  .memorial-story-grid figure { height: 230px; }
+}

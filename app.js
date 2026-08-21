@@ -53,21 +53,28 @@
       const stored = Object.fromEntries(new FormData(form).entries());
       const endpoint = form.dataset.submitApi;
       if (endpoint) {
+        const isGuideDelivery = form.hasAttribute("data-guide-delivery");
         const button = form.querySelector("button[type='submit']");
         if (button) button.disabled = true;
         note.textContent = "Sending…";
         try {
-          await fetch(endpoint, {
+          const response = await fetch(endpoint, {
             method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "text/plain;charset=UTF-8" },
-            body: JSON.stringify({ ...stored, pageContext: window.location.href }),
+            mode: isGuideDelivery ? "cors" : "no-cors",
+            headers: { "Content-Type": isGuideDelivery ? "application/json" : "text/plain;charset=UTF-8" },
+            body: JSON.stringify({ ...stored, consent: stored.consent === "true" || stored.consent === "on", pageContext: window.location.href }),
           });
+          if (isGuideDelivery && !response.ok) {
+            const payload = await response.json().catch(() => ({}));
+            throw new Error(payload.error || "Guide delivery failed.");
+          }
           note.textContent = form.dataset.successMessage || "Thank you. Your request was sent.";
           note.classList.add("is-confirmed");
           form.reset();
-        } catch {
-          note.textContent = "We could not send this right now. Please try again.";
+        } catch (error) {
+          note.textContent = isGuideDelivery
+            ? "We could not email the guide right now. Please check the address and try again."
+            : "We could not send this right now. Please try again.";
           note.classList.remove("is-confirmed");
         } finally {
           if (button) button.disabled = false;
@@ -620,6 +627,7 @@
     accountSummary.replaceChildren();
     if (!account) return;
     [
+      ["Owner", account.ownerName || "Not shared"],
       ["Email", account.email],
       ["Dog", `${account.petName} · ${account.petAge} · ${account.breed}`],
       ["Owner-shared conditions", account.conditions],
@@ -634,11 +642,12 @@
       accountSummary.append(row);
     });
   };
-  accountForm?.addEventListener("submit", (event) => {
+  accountForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!accountForm.reportValidity()) return;
     const values = Object.fromEntries(new FormData(accountForm).entries());
     const account = {
+      ownerName: String(values.ownerName || "").trim().slice(0, 100),
       email: String(values.email || "").trim().slice(0, 254),
       petName: String(values.petName || "").trim().slice(0, 80),
       petAge: String(values.petAge || "").trim().slice(0, 40),
@@ -650,6 +659,43 @@
     if (!writeStoredJson(accountStorageKey, account)) {
       if (accountNote) accountNote.textContent = "This browser blocked profile storage. Please allow site storage and try again.";
       return;
+    }
+    const ageYears = {
+      "Under 1 year": 0.5,
+      "1–3 years": 2,
+      "4–6 years": 5,
+      "7–9 years": 8,
+      "10–12 years": 11,
+      "13–15 years": 14,
+      "16+ years": 16,
+    }[account.petAge] || 1;
+    const accountEndpoint = accountForm.dataset.accountApi;
+    if (accountEndpoint) {
+      try {
+        await fetch(accountEndpoint, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=UTF-8" },
+          body: JSON.stringify({
+            ownerName: account.ownerName,
+            email: account.email,
+            city: "",
+            region: "",
+            dogName: account.petName,
+            species: "dog",
+            breed: account.breed,
+            ageYears,
+            focus: "not-sure",
+            healthConditions: account.conditions,
+            medications: account.medications,
+            routineNotes: "Created from the WoafMeow Care Circle profile.",
+            consent: account.publicProfileConsent,
+            pageContext: window.location.href,
+          }),
+        });
+      } catch {
+        if (accountNote) accountNote.textContent = "Your profile is saved in this browser, but we could not sync it right now.";
+      }
     }
     renderAccount();
     const params = new URLSearchParams(window.location.search);
@@ -724,6 +770,59 @@
     });
   }
 
+  const buildTailoredLesson = (profile, slug) => {
+    const pet = profile.petName;
+    const age = profile.petAge.toLocaleLowerCase();
+    const breed = profile.breed;
+    const conditions = profile.conditions || "no known condition shared";
+    const medicines = profile.medications || "no medicine change shared";
+    const question = profile.question;
+    const clinicalContext = (() => {
+      const value = `${conditions} ${medicines}`.toLocaleLowerCase();
+      if (/arthritis|joint|hip|spine|mobility/.test(value)) return `Because ${conditions} is already part of ${pet}'s history, compare effort, surfaces and recovery without assuming every new change has the same cause.`;
+      if (/kidney|renal/.test(value)) return `Because kidney disease is shared, keep water, urine, appetite and energy in the same record and contact the veterinary team about a sustained change.`;
+      if (/dental|tooth|teeth|mouth/.test(value)) return `Because a mouth or dental problem is shared, record chewing, dropping food, swallowing and interest in softer versus familiar textures.`;
+      if (/diabet|insulin/.test(value)) return `Because diabetes or insulin is shared, a change in eating, drinking, urine or energy deserves prompt advice from the prescribing team.`;
+      if (/steroid|prednisone|medicin|dose|drug/.test(value)) return `Because a medicine change is shared, record the dose timing beside the new pattern and contact the prescribing team before changing it.`;
+      if (/cognitive|confus|dementia/.test(value)) return `Because cognitive change is shared, record time of day, orientation, sleep, toileting and what helps ${pet} settle.`;
+      return `No known diagnosis explains this by itself. Describe the new pattern clearly and let the veterinary team decide what needs evaluation.`;
+    })();
+    const shared = {
+      mobility: [
+        [`For ${pet}, a ${age} ${breed}, start with the exact first rise you described: “${question}” ${clinicalContext}`, [`Watch one ordinary rise after a familiar rest—do not repeat it for a test.`, `Note the surface, pause before standing, first 10–15 steps and time to loosen.`, `Record whether a foot slips, a limb is protected or the usual route is avoided.`]],
+        [`Make ${pet}'s next route easier while keeping the observation useful.`, [`Add traction from the resting place to the first destination.`, `Shorten the route and block jumping or slippery turns.`, `Change one detail at a time and note whether effort or recovery changes.`]],
+        [`Prepare a mobility call around ${pet}'s real pattern, ${conditions}, and ${medicines}.`, [`Bring a short natural video and the dates the change occurred.`, `List the surface, pause, steps, recovery and anything that helped.`, `Ask what should be examined now and which change should trigger faster care.`]],
+      ],
+      night: [
+        [`For ${pet}, map the first nighttime event instead of treating every wake-up as the same problem. ${clinicalContext}`, [`Record bedtime and the first wake time.`, `Name what happens first: pacing, panting, vocalizing, drinking, toileting or repositioning.`, `Note breathing, orientation and what helps ${pet} settle again.`]],
+        [`Make tonight calmer for ${pet} without hiding the sequence you need to understand.`, [`Keep water and a short, non-slip bathroom route available.`, `Use gentle light on the familiar path and keep the sleep area comfortable.`, `Change one environmental detail, then record whether wake-ups or settling change.`]],
+        [`Bring the seven-night pattern, ${conditions}, and ${medicines} to ${pet}'s care team.`, [`List wake times and the first behavior at each wake.`, `Include breathing, urine, thirst, pain behavior and daytime sleep.`, `Ask which causes need examination and what should not wait.`]],
+      ],
+      appetite: [
+        [`For ${pet}, separate eating less from trouble chewing, nausea or a changed food preference. ${clinicalContext}`, [`Measure what was offered and what remained.`, `Watch approach, sniffing, chewing, dropping food, swallowing and walking away.`, `Pair the meal note with weight, vomiting, stool, water and energy.`]],
+        [`Protect ${pet}'s access to food while arranging the right next step.`, [`Keep familiar food unless the veterinary team has given another plan.`, `Use an easy-to-reach bowl and a calm feeding place.`, `Do not pressure-feed or make several diet changes at once.`]],
+        [`Prepare the appetite call with quantities, timing, ${conditions}, and ${medicines}.`, [`Bring a two- or three-day meal record.`, `Include mouth signs, nausea signs, weight change and water intake.`, `Ask what needs examination before supplements or a major diet change.`]],
+      ],
+      water: [
+        [`For ${pet}, measure drinking together with urine—not as an isolated bowl count. ${clinicalContext}`, [`Measure one ordinary 24-hour period if it is safe and practical.`, `Record refill amounts, shared bowls and unusual drinking locations.`, `Pair it with urine frequency, appetite, weight, energy and medicine timing.`]],
+        [`Keep fresh water available while making bathroom access easier for ${pet}.`, [`Do not restrict water to reduce accidents.`, `Add a closer bowl and a shorter, well-lit bathroom route.`, `Record whether thirst is new, sustained or tied to a medicine change.`]],
+        [`Bring the water-and-urine timeline, ${conditions}, and ${medicines} to the veterinary team.`, [`State the first day the pattern changed.`, `List estimated intake, urine frequency and accidents.`, `Ask how soon testing is needed and which signs require urgent care.`]],
+      ],
+      bathroom: [
+        [`For ${pet}, identify whether the first change is urgency, increased volume, pain, posture or route difficulty. ${clinicalContext}`, [`Record time, location, amount and posture.`, `Note straining, blood, vocalizing, confusion or trouble reaching the door.`, `Pair accidents with water, stool, medicines, mobility and sleep.`]],
+        [`Make the next bathroom trip easier and more dignified for ${pet}.`, [`Offer more frequent access on a short, non-slip route.`, `Use gentle lighting and keep the exit unobstructed.`, `Clean calmly and avoid punishment; the pattern is information.`]],
+        [`Prepare the bathroom call around frequency, output, ${conditions}, and ${medicines}.`, [`Bring dates and a simple urine or stool log.`, `Include straining, blood, pain, thirst and mobility changes.`, `Ask which tests are appropriate and what means ${pet} should be seen sooner.`]],
+      ],
+      daily: [
+        [`For ${pet}, name the exact routine that changed instead of calling it “slowing down.” ${clinicalContext}`, [`Choose one familiar routine: greeting, meal, walk, play or family time.`, `Record whether ${pet} starts, joins, finishes or avoids it.`, `Note pain behavior, confusion, hearing or vision clues and time of day.`]],
+        [`Offer ${pet} a lower-effort version of the routine and watch the choice.`, [`Shorten the activity and improve traction or access.`, `Keep the invitation familiar and allow ${pet} to opt out.`, `Record whether connection, comfort or recovery improves.`]],
+        [`Bring the whole daily-life pattern, ${conditions}, and ${medicines} to the care team.`, [`List which routines changed and when.`, `Include sleep, appetite, bathroom, pain and orientation changes.`, `Ask what may be treatable and what home support fits ${pet} now.`]],
+      ],
+    };
+    const key = slug === "slower-after-rest" ? "mobility" : slug === "restless-at-night" ? "night" : slug === "changes-in-appetite" ? "appetite" : slug === "drinking-more-water" ? "water" : slug === "bathroom-accidents" ? "bathroom" : "daily";
+    return shared[key];
+  };
+
   const personalQuestion = getPublicQuestion();
   const lessonSlugMatch = currentPath.match(/^\/care-circle\/([^/]+)\/?$/);
   if (personalQuestion && lessonSlugMatch?.[1] === personalQuestion.slug && new URLSearchParams(window.location.search).get("mine") === "1") {
@@ -735,13 +834,17 @@
     document.querySelector("[data-focused-pet]")?.replaceChildren(document.createTextNode(personalQuestion.petName));
     const focusedResult = document.querySelector("[data-focused-result]");
     if (focusedResult) focusedResult.textContent = `This public answer focuses on ${personalQuestion.petName}'s ${personalQuestion.petAge.toLocaleLowerCase()} profile, ${conditions}, and the change you described: ${personalQuestion.question}`;
-    const tailored = [
-      `For ${personalQuestion.petName}, a ${personalQuestion.petAge.toLocaleLowerCase()} ${personalQuestion.breed} with ${conditions}, observe this exact change in one ordinary routine: “${personalQuestion.question}” Record what happens before it, how long it lasts, and how recovery looks.`,
-      `Choose one low-risk change for ${personalQuestion.petName}'s current profile and ${conditions}. Keep the familiar routine, improve access or traction where relevant, and change only one detail so you can tell whether it helped.`,
-      `Bring ${personalQuestion.petName}'s timeline, short natural videos, owner-reported conditions (${conditions}), medicine context (${medicines}), and the exact question you asked. Ask what should be examined now and which change would trigger a faster call.`,
-    ];
+    const tailored = buildTailoredLesson(personalQuestion, lessonSlugMatch[1]);
     document.querySelectorAll("[data-tailored-chapter-summary]").forEach((summary, index) => {
-      if (tailored[index]) summary.textContent = tailored[index];
+      if (tailored[index]) summary.textContent = tailored[index][0];
+    });
+    document.querySelectorAll("[data-tailored-chapter-steps]").forEach((list, index) => {
+      const steps = tailored[index]?.[1] || [];
+      list.replaceChildren(...steps.map((step) => {
+        const item = document.createElement("li");
+        item.textContent = step;
+        return item;
+      }));
     });
   }
 

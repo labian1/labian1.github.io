@@ -698,6 +698,10 @@
       }
     }
     renderAccount();
+    if (accountForm.matches("[data-home-account-form]")) {
+      window.location.assign("/care-circle/?ask=1#ask");
+      return;
+    }
     const params = new URLSearchParams(window.location.search);
     const question = (params.get("q") || "").trim().slice(0, 500);
     if (params.get("next") === "ask") {

@@ -19,6 +19,21 @@
     if (event.target.closest("a")) setMenu(false);
   });
 
+  const navGroups = [...document.querySelectorAll(".nav-group")];
+  navGroups.forEach((group) => {
+    group.addEventListener("toggle", () => {
+      if (!group.open) return;
+      navGroups.forEach((other) => {
+        if (other !== group) other.open = false;
+      });
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (event.target.closest(".nav-group")) return;
+    navGroups.forEach((group) => { group.open = false; });
+  });
+
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       setMenu(false);

@@ -619,10 +619,13 @@
   const accountSummary = document.querySelector("[data-account-profile-summary]");
   const accountNote = document.querySelector("[data-account-note]");
   const accountFormTitle = document.querySelector("[data-account-form-title]");
+  const accountSubmit = document.querySelector("[data-account-submit]");
   const accountEditButton = document.querySelector("[data-account-edit]");
   const googleSigninButton = document.querySelector("[data-google-signin]");
   const googleSigninStatus = document.querySelector("[data-google-status]");
   let editingAccount = false;
+  const accountNext = new URLSearchParams(window.location.search).get("next");
+  if (accountSubmit && accountNext === "health") accountSubmit.textContent = "Save profile and open Health Timeline →";
   googleSigninButton?.addEventListener("click", () => {
     if (googleSigninStatus) {
       googleSigninStatus.textContent = "Secure Google sign-in is being connected. You can create your account now with the Gmail address above.";
@@ -740,6 +743,10 @@
       if (question) target.searchParams.set("q", question);
       target.hash = "ask";
       window.location.assign(target.href);
+      return;
+    }
+    if (params.get("next") === "health") {
+      window.location.assign("/health-timeline/");
       return;
     }
     if (accountNote) accountNote.textContent = "Profile saved.";
@@ -904,6 +911,297 @@
     if (linkPath !== "/" && currentPath.startsWith(linkPath)) {
       link.setAttribute("aria-current", "page");
     }
+  });
+})();
+
+(() => {
+  const root = document.querySelector("[data-health-root]");
+  if (!root) return;
+
+  const ACCOUNT_KEY = "woafmeow-account-v1";
+  const LOG_PREFIX = "woafmeow-health-logs-v1:";
+  const DATABASE_NAME = "woafmeow-health-v1";
+  const DATABASE_VERSION = 1;
+  const STORE_NAME = "records";
+  const MAX_FILE_SIZE = 15 * 1024 * 1024;
+  const TEXT_TYPES = new Set(["text/plain", "text/csv", "application/json"]);
+  const supportedExtensions = /\.(pdf|txt|csv|jpe?g|png)$/i;
+  const patternRules = [
+    ["Mobility", /\b(stiff|limp|mobility|walk|stairs?|rise|rising|slip|joint|arthritis|osteoarthritis)\b/i],
+    ["Sleep", /\b(sleep|night|restless|pacing|wake|waking)\b/i],
+    ["Eating", /\b(food|eat|eating|appetite|chew|nausea|meal)\b/i],
+    ["Drinking", /\b(water|drink|drinking|thirst|hydration)\b/i],
+    ["Bathroom", /\b(urine|urinating|stool|bathroom|accident|strain|diarrhea|constipation)\b/i],
+    ["Breathing", /\b(breath|breathing|cough|panting)\b/i],
+    ["Pain or comfort", /\b(pain|sore|comfort|crying|tender)\b/i],
+    ["Energy or connection", /\b(energy|tired|letharg|withdraw|interest|play)\b/i],
+    ["Medicine response", /\b(medicine|medication|dose|tablet|capsule|prescription|side effect)\b/i],
+    ["Weight", /\b(weight|weigh|pounds?|lbs?|kilograms?|kg)\b/i],
+  ];
+  const conditionRules = [
+    ["arthritis", /\b(arthritis|osteoarthritis)\b/i],
+    ["kidney disease", /\b(kidney disease|renal disease|renal failure)\b/i],
+    ["diabetes", /\b(diabetes|diabetic)\b/i],
+    ["heart disease", /\b(heart disease|cardiac disease|heart failure)\b/i],
+    ["dental disease", /\b(dental disease|periodontal disease)\b/i],
+    ["cognitive changes", /\b(cognitive dysfunction|dementia)\b/i],
+    ["cancer", /\b(cancer|carcinoma|lymphoma|sarcoma|tumou?r)\b/i],
+    ["allergy", /\b(allergy|allergic)\b/i],
+    ["pancreatitis", /\bpancreatitis\b/i],
+    ["hypothyroidism", /\bhypothyroidism\b/i],
+    ["seizure", /\bseizures?\b/i],
+  ];
+
+  const gate = root.querySelector("[data-health-account-gate]");
+  const workspace = root.querySelector("[data-health-workspace]");
+  const recordForm = root.querySelector("[data-health-record-form]");
+  const logForm = root.querySelector("[data-health-log-form]");
+  const recordNote = root.querySelector("[data-health-record-note]");
+  const logNote = root.querySelector("[data-health-log-note]");
+  const timeline = root.querySelector("[data-health-records]");
+  const empty = root.querySelector("[data-health-empty]");
+  const mentionSummary = root.querySelector("[data-health-record-mentions]");
+  const patternSummary = root.querySelector("[data-health-pattern-summary]");
+  const weightSummary = root.querySelector("[data-health-weight-summary]");
+  const account = (() => {
+    try { return JSON.parse(localStorage.getItem(ACCOUNT_KEY) || "null"); }
+    catch { return null; }
+  })();
+
+  gate.hidden = Boolean(account?.email && account?.petName);
+  workspace.hidden = !account?.email || !account?.petName;
+  if (!account?.email || !account?.petName) return;
+
+  const petKey = `${String(account.email).trim().toLocaleLowerCase()}::${String(account.petName).trim().toLocaleLowerCase()}`;
+  const logKey = `${LOG_PREFIX}${petKey}`;
+  root.querySelectorAll("[data-health-pet-name]").forEach((node) => { node.textContent = account.petName; });
+  root.querySelectorAll("[data-health-timeline-pet]").forEach((node) => { node.textContent = account.petName; });
+  const today = new Date().toISOString().slice(0, 10);
+  if (recordForm?.elements.recordDate) recordForm.elements.recordDate.value = today;
+  if (logForm?.elements.logDate) logForm.elements.logDate.value = today;
+
+  const readLogs = () => {
+    try {
+      const value = JSON.parse(localStorage.getItem(logKey) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  };
+  const writeLogs = (logs) => localStorage.setItem(logKey, JSON.stringify(logs));
+  const makeId = () => globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const formatDate = (value) => {
+    const date = new Date(`${value}T12:00:00`);
+    return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat("en", { year: "numeric", month: "short", day: "numeric" }).format(date);
+  };
+  const splitProfileList = (value) => String(value || "")
+    .split(/[,;\n]+/)
+    .map((item) => item.trim())
+    .filter((item) => item && !/^(none|none known|n\/a)$/i.test(item));
+
+  const openDatabase = () => new Promise((resolve, reject) => {
+    const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION);
+    request.onupgradeneeded = () => {
+      const database = request.result;
+      if (!database.objectStoreNames.contains(STORE_NAME)) {
+        const store = database.createObjectStore(STORE_NAME, { keyPath: "id" });
+        store.createIndex("petKey", "petKey", { unique: false });
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error("Health record storage could not be opened."));
+  });
+  const recordTransaction = async (mode, operation) => {
+    const database = await openDatabase();
+    return new Promise((resolve, reject) => {
+      const transaction = database.transaction(STORE_NAME, mode);
+      const store = transaction.objectStore(STORE_NAME);
+      const request = operation(store);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error || new Error("Health record storage failed."));
+      transaction.oncomplete = () => database.close();
+      transaction.onerror = () => reject(transaction.error || new Error("Health record storage failed."));
+    });
+  };
+  const getRecords = async () => {
+    const database = await openDatabase();
+    return new Promise((resolve, reject) => {
+      const transaction = database.transaction(STORE_NAME, "readonly");
+      const index = transaction.objectStore(STORE_NAME).index("petKey");
+      const request = index.getAll(petKey);
+      request.onsuccess = () => resolve(request.result || []);
+      request.onerror = () => reject(request.error || new Error("Health records could not be read."));
+      transaction.oncomplete = () => database.close();
+    });
+  };
+
+  const combinedText = (records, logs) => [
+    account.conditions,
+    account.medications,
+    ...records.flatMap((record) => [record.name, record.note, record.extractedText]),
+    ...logs.flatMap((log) => [log.category, log.observation, log.medicineChange]),
+  ].filter(Boolean).join(" ");
+
+  const createTimelineItem = (entry) => {
+    const article = document.createElement("article");
+    article.className = `health-timeline-item is-${entry.kind}`;
+    const marker = document.createElement("span");
+    marker.className = "health-timeline-marker";
+    marker.textContent = entry.kind === "record" ? "R" : "C";
+    marker.setAttribute("aria-hidden", "true");
+    const content = document.createElement("div");
+    const meta = document.createElement("p");
+    meta.className = "health-timeline-meta";
+    meta.textContent = `${formatDate(entry.date)} · ${entry.kind === "record" ? entry.type : `${entry.category} · ${entry.severity}`}`;
+    const title = document.createElement("h3");
+    title.textContent = entry.kind === "record" ? entry.name : entry.observation;
+    const details = document.createElement("p");
+    details.textContent = entry.kind === "record"
+      ? (entry.note || "Record saved with no additional note.")
+      : [entry.weight ? `Weight: ${entry.weight} ${entry.weightUnit || "lb"}.` : "", entry.medicineChange ? `Related change: ${entry.medicineChange}.` : ""].filter(Boolean).join(" ");
+    const actions = document.createElement("div");
+    actions.className = "health-timeline-actions";
+    if (entry.kind === "record" && entry.blob) {
+      const download = document.createElement("a");
+      const url = URL.createObjectURL(entry.blob);
+      download.href = url;
+      download.download = entry.name;
+      download.textContent = "Open record →";
+      download.addEventListener("click", () => setTimeout(() => URL.revokeObjectURL(url), 5000), { once: true });
+      actions.append(download);
+    }
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.textContent = "Remove";
+    remove.addEventListener("click", async () => {
+      if (!window.confirm("Remove this timeline entry from this browser?")) return;
+      if (entry.kind === "record") await recordTransaction("readwrite", (store) => store.delete(entry.id));
+      else writeLogs(readLogs().filter((item) => item.id !== entry.id));
+      await render();
+    });
+    actions.append(remove);
+    content.append(meta, title);
+    if (details.textContent) content.append(details);
+    content.append(actions);
+    article.append(marker, content);
+    return article;
+  };
+
+  const render = async () => {
+    const [records, logs] = await Promise.all([getRecords(), Promise.resolve(readLogs())]);
+    const conditions = splitProfileList(account.conditions);
+    const medicines = splitProfileList(account.medications);
+    root.querySelector("[data-health-condition-count]").textContent = String(conditions.length);
+    root.querySelector("[data-health-medicine-count]").textContent = String(medicines.length);
+    root.querySelector("[data-health-change-count]").textContent = String(logs.length);
+
+    const text = combinedText(records, logs);
+    const foundConditions = conditionRules.filter(([, rule]) => rule.test(text)).map(([label]) => label);
+    const conditionMentions = [...new Set([...conditions, ...foundConditions])];
+    mentionSummary.textContent = conditionMentions.length
+      ? conditionMentions.join(" · ")
+      : "No conditions or condition terms have been added yet.";
+
+    const patterns = patternRules.filter(([, rule]) => rule.test(text)).map(([label]) => label);
+    patternSummary.textContent = patterns.length
+      ? `${patterns.slice(0, 5).join(" · ")}. Review the dates below to see what changed together.`
+      : "Add a dated observation or text-based record to organize repeated care patterns.";
+
+    const weights = logs
+      .filter((log) => Number(log.weight) > 0)
+      .sort((left, right) => left.date.localeCompare(right.date));
+    if (weights.length >= 2) {
+      const first = weights[0];
+      const last = weights.at(-1);
+      const difference = Number(last.weight) - Number(first.weight);
+      const direction = Math.abs(difference) < 0.05 ? "steady" : difference > 0 ? "up" : "down";
+      weightSummary.textContent = `${first.weight} ${first.weightUnit || "lb"} on ${formatDate(first.date)} → ${last.weight} ${last.weightUnit || "lb"} on ${formatDate(last.date)} (${direction} ${Math.abs(difference).toFixed(1)}).`;
+    } else if (weights.length === 1) {
+      weightSummary.textContent = `${weights[0].weight} ${weights[0].weightUnit || "lb"} logged on ${formatDate(weights[0].date)}. Add another dated weight to see a direction.`;
+    } else {
+      weightSummary.textContent = "Add two dated weights to see a direction.";
+    }
+
+    const entries = [
+      ...records.map((record) => ({ ...record, kind: "record" })),
+      ...logs.map((log) => ({ ...log, kind: "log" })),
+    ].sort((left, right) => right.date.localeCompare(left.date) || String(right.createdAt).localeCompare(String(left.createdAt)));
+    timeline.replaceChildren(...entries.map(createTimelineItem));
+    empty.hidden = entries.length !== 0;
+  };
+
+  recordForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!recordForm.reportValidity()) return;
+    const values = new FormData(recordForm);
+    const file = values.get("recordFile");
+    if (!(file instanceof File) || !file.name) return;
+    if (file.size > MAX_FILE_SIZE) {
+      recordNote.textContent = "Choose a file smaller than 15 MB.";
+      return;
+    }
+    if (!supportedExtensions.test(file.name)) {
+      recordNote.textContent = "Choose a PDF, TXT, CSV, JPG or PNG file.";
+      return;
+    }
+    recordNote.textContent = "Saving record…";
+    try {
+      const extractedText = TEXT_TYPES.has(file.type) || /\.(txt|csv)$/i.test(file.name)
+        ? (await file.text()).slice(0, 50000)
+        : "";
+      await recordTransaction("readwrite", (store) => store.put({
+        id: makeId(),
+        petKey,
+        date: String(values.get("recordDate") || today),
+        type: String(values.get("recordType") || "Other"),
+        name: file.name.slice(0, 180),
+        mime: file.type || "application/octet-stream",
+        size: file.size,
+        note: String(values.get("recordNote") || "").trim().slice(0, 700),
+        extractedText,
+        blob: file,
+        createdAt: new Date().toISOString(),
+      }));
+      recordForm.reset();
+      recordForm.elements.recordDate.value = today;
+      recordNote.textContent = "Record saved to this browser and added to the timeline.";
+      await render();
+    } catch {
+      recordNote.textContent = "This record could not be saved. Check browser storage and try again.";
+    }
+  });
+
+  logForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!logForm.reportValidity()) return;
+    const values = new FormData(logForm);
+    const logs = readLogs();
+    logs.push({
+      id: makeId(),
+      petKey,
+      date: String(values.get("logDate") || today),
+      category: String(values.get("category") || "Other"),
+      severity: String(values.get("severity") || "Mild"),
+      observation: String(values.get("observation") || "").trim().slice(0, 700),
+      weight: String(values.get("weight") || "").trim(),
+      weightUnit: String(values.get("weightUnit") || "lb"),
+      medicineChange: String(values.get("medicineChange") || "").trim().slice(0, 240),
+      createdAt: new Date().toISOString(),
+    });
+    try {
+      writeLogs(logs);
+      logForm.reset();
+      logForm.elements.logDate.value = today;
+      logNote.textContent = "Change added to the timeline.";
+      await render();
+    } catch {
+      logNote.textContent = "This browser could not save the change. Check browser storage and try again.";
+    }
+  });
+
+  root.querySelector("[data-health-print]")?.addEventListener("click", () => window.print());
+  render().catch(() => {
+    if (recordNote) recordNote.textContent = "Health Timeline storage is unavailable in this browser.";
   });
 })();
 

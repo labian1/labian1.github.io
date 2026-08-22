@@ -80,6 +80,10 @@
     "label": "Account"
   },
   {
+    "route": "/health-timeline/",
+    "label": "Health Timeline"
+  },
+  {
     "route": "/find-care/",
     "label": "Find Care"
   },

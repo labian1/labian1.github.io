@@ -126,3 +126,14 @@ Use these as real editorial photography. Recheck the linked Unsplash source and 
 - `vet-annika-bremhorst.png` — Dr. Annika Bremhorst, copied from `senior-care-platform/media/profiles/annika-bremhorst.png`; source: Dogs & Science, `https://dogsandscience.com/wp-content/uploads/2024/06/Annika-Bremhorst-2.png` (accessed 2026-08-14). SHA-256 `4af72aa3e44675f7e1abaa84529ea42ee296fc22d2eb93610407f4e9f05ad9bf`.
 
 These portraits and attributed statements require final source, permission, and quotation review before production launch.
+
+## Friends of Usambara partner media
+
+Accessed 2026-08-22 from Friends of Usambara’s official website. These images document the partner’s published planting and nursery work; they are used only on the private review preview and should be rechecked for final publishing permission.
+
+- `usambara-community-planting.jpg` — 689×915 — https://usambaratravels.com/wp-content/uploads/2024/01/Tree-planting-fou-forest.jpg
+- `usambara-mangrove-planting.jpg` — 741×334 — https://usambaratravels.com/wp-content/uploads/2024/01/tree-planting-fou-mangrove-forest.jpg
+- `usambara-sapling-planting.jpg` — 1055×818 — https://usambaratravels.com/wp-content/uploads/2024/01/tree-planting-fou.jpg
+- `usambara-school-nursery.jpg` — 640×427 — https://usambaratravels.com/wp-content/uploads/2024/01/where-we-plant.jpeg
+
+Partner facts used in the preview were checked against https://usambaratravels.com/where-we-plant/ and https://usambaratravels.com/tree-nurseries-project-2/: current planting is centered in the West Usambara Mountains; the organization reports more than 20 million trees planted, four mega nurseries and 20 school nurseries, and publishes an expansion goal across other Eastern Arc ranges and East Africa.

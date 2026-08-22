@@ -618,8 +618,11 @@
   const accountCurrent = document.querySelector("[data-account-current]");
   const accountSummary = document.querySelector("[data-account-profile-summary]");
   const accountNote = document.querySelector("[data-account-note]");
+  const accountFormTitle = document.querySelector("[data-account-form-title]");
+  const accountEditButton = document.querySelector("[data-account-edit]");
   const googleSigninButton = document.querySelector("[data-google-signin]");
   const googleSigninStatus = document.querySelector("[data-google-status]");
+  let editingAccount = false;
   googleSigninButton?.addEventListener("click", () => {
     if (googleSigninStatus) {
       googleSigninStatus.textContent = "Secure Google sign-in is being connected. You can create your account now with the Gmail address above.";
@@ -630,8 +633,9 @@
     const account = getAccount();
     updateAccountLinks();
     if (!accountForm || !accountCurrent || !accountSummary) return;
-    accountCurrent.hidden = !account;
-    accountForm.hidden = Boolean(account);
+    accountCurrent.hidden = !account || editingAccount;
+    accountForm.hidden = Boolean(account) && !editingAccount;
+    if (accountFormTitle) accountFormTitle.textContent = editingAccount ? "Edit your care profile" : "Create your care profile";
     accountSummary.replaceChildren();
     if (!account) return;
     [
@@ -650,6 +654,23 @@
       accountSummary.append(row);
     });
   };
+  const populateAccountForm = (account) => {
+    if (!accountForm || !account) return;
+    ["ownerName", "email", "petName", "petAge", "breed", "conditions", "medications"].forEach((name) => {
+      const field = accountForm.elements.namedItem(name);
+      if (field) field.value = account[name] || "";
+    });
+    const publicConsent = accountForm.elements.namedItem("publicProfileConsent");
+    if (publicConsent) publicConsent.checked = Boolean(account.publicProfileConsent);
+  };
+  accountEditButton?.addEventListener("click", () => {
+    const account = getAccount();
+    if (!account) return;
+    editingAccount = true;
+    populateAccountForm(account);
+    renderAccount();
+    accountForm?.querySelector('[name="ownerName"]')?.focus();
+  });
   accountForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!accountForm.reportValidity()) return;
@@ -705,6 +726,7 @@
         if (accountNote) accountNote.textContent = "Your profile is saved in this browser, but we could not sync it right now.";
       }
     }
+    editingAccount = false;
     renderAccount();
     if (accountForm.matches("[data-home-account-form]")) {
       window.location.assign("/care-circle/?ask=1#ask");
@@ -730,9 +752,26 @@
       // The current screen still resets even if storage access changes.
     }
     accountForm?.reset();
+    editingAccount = false;
     renderAccount();
   });
   renderAccount();
+
+  document.querySelector("[data-home-question-form]")?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (!form.reportValidity()) return;
+    const question = String(new FormData(form).get("question") || "").trim().slice(0, 500);
+    const target = new URL(getAccount() ? "/care-circle/" : "/account/", window.location.origin);
+    target.searchParams.set("q", question);
+    if (getAccount()) {
+      target.searchParams.set("ask", "1");
+      target.hash = "ask";
+    } else {
+      target.searchParams.set("next", "ask");
+    }
+    window.location.assign(target.href);
+  });
 
   const accountGate = document.querySelector("[data-account-gate]");
   const askForm = document.querySelector("[data-account-ask-form]");

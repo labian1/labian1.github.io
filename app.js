@@ -618,6 +618,14 @@
   const accountCurrent = document.querySelector("[data-account-current]");
   const accountSummary = document.querySelector("[data-account-profile-summary]");
   const accountNote = document.querySelector("[data-account-note]");
+  const googleSigninButton = document.querySelector("[data-google-signin]");
+  const googleSigninStatus = document.querySelector("[data-google-status]");
+  googleSigninButton?.addEventListener("click", () => {
+    if (googleSigninStatus) {
+      googleSigninStatus.textContent = "Secure Google sign-in is being connected. You can create your account now with the Gmail address above.";
+    }
+    accountForm?.querySelector('[name="email"]')?.focus();
+  });
   const renderAccount = () => {
     const account = getAccount();
     updateAccountLinks();

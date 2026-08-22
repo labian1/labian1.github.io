@@ -2167,3 +2167,315 @@ img { height: auto !important; object-fit: contain !important; object-position: 
   .home-v10 .home-memorial-grid figure { grid-row: 1 / span 2; height: 170px; border-bottom: 0; border-right: 1px solid var(--line); }
   .home-v10 .home-memorial-grid h3 { align-self: end; }
 }
+
+/* 2026-08-22 v12 — exact approved-homepage geometry, coral WoafMeow palette */
+.home-v11 .wm-header-inner,
+.home-v11 .home-reference {
+  width: min(1320px, calc(100vw - 64px));
+}
+
+.home-v11 .wm-wordmark[data-logo-link] {
+  width: 220px;
+}
+
+.home-v11 .home-ref-hero {
+  min-height: 438px;
+  grid-template-columns: .43fr .57fr;
+}
+
+.home-v11 .home-ref-hero-copy {
+  padding: 38px 46px 30px 14px;
+}
+
+.home-v11 .home-ref-hero-copy h1 {
+  max-width: 430px;
+  font-size: clamp(3.25rem, 4vw, 4rem);
+}
+
+.home-v11 .home-ref-hero > figure {
+  min-height: 438px;
+  background: transparent;
+}
+
+.home-v11 .home-ref-hero > figure img {
+  width: 100% !important;
+  height: 438px !important;
+  max-height: 438px;
+  object-fit: contain !important;
+}
+
+.home-v11 .home-ref-section {
+  padding: 29px 0 30px;
+}
+
+.home-v11 .home-topic-card > div {
+  min-height: 168px;
+}
+
+.home-v11 .home-care-account {
+  min-height: 400px;
+  margin-bottom: 22px;
+}
+
+.home-v11 .home-account-panel {
+  padding: 26px 30px 22px;
+}
+
+.home-v11 .home-account-panel h2 {
+  font-size: 2.05rem;
+}
+
+.home-v11 .home-account-panel > p {
+  margin-bottom: 14px;
+}
+
+.home-v11 .home-account-fields {
+  gap: 20px;
+}
+
+.home-v11 .home-account-or {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 9px;
+  align-items: center;
+  color: rgba(255,255,255,.75);
+  font-size: .72rem;
+}
+
+.home-v11 .home-account-or::before,
+.home-v11 .home-account-or::after {
+  content: "";
+  height: 1px;
+  background: rgba(255,255,255,.28);
+}
+
+.home-v11 .home-google-button {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  color: var(--ink);
+  border: 1px solid rgba(255,255,255,.6);
+  border-radius: 5px;
+  background: white;
+  font-size: .875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.home-v11 .home-google-button:hover {
+  background: var(--ivory);
+}
+
+.home-v11 .google-g {
+  color: #4285f4;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.home-v11 .google-status {
+  min-height: 0;
+  margin: 3px 0 0;
+  color: rgba(255,255,255,.82);
+  font-size: .74rem;
+  line-height: 1.35;
+}
+
+.home-v11 .google-status:empty {
+  display: none;
+}
+
+.home-v11 .home-care-account > figure {
+  min-height: 400px;
+  padding: 0;
+  background: transparent;
+}
+
+.home-v11 .home-care-account > figure img {
+  position: static !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: 400px !important;
+  max-height: 400px;
+  object-fit: contain !important;
+}
+
+.home-v11 .home-care-account figcaption {
+  background: rgba(91,48,42,.86);
+}
+
+.home-v11 .home-ref-guide {
+  min-height: 174px;
+  margin-bottom: 20px;
+  padding: 24px 224px 24px 30px;
+  grid-template-columns: .9fr 1.1fr;
+}
+
+.home-v11 .home-guide-book {
+  right: 34px;
+  bottom: -5px;
+  width: 154px;
+  height: 170px;
+}
+
+.home-v11 .home-guide-book img {
+  height: 86px !important;
+}
+
+.home-v11 .home-vet-support {
+  min-height: 104px;
+  margin-bottom: 20px;
+}
+
+.home-v11 .home-vet-support figure {
+  height: 90px;
+}
+
+.home-v11 .home-ref-bed {
+  margin-bottom: 22px;
+  gap: 10px;
+}
+
+.home-v11 .home-bed-panel {
+  min-height: 254px;
+  padding: 20px 22px;
+  gap: 16px;
+}
+
+.home-v11 .home-bed-comfort {
+  grid-template-columns: .72fr 1.28fr;
+}
+
+.home-v11 .home-bed-tracking {
+  grid-template-columns: .92fr 1.08fr;
+}
+
+.home-v11 .home-bed-panel h3 {
+  margin-top: 14px;
+}
+
+.home-v11 .home-bed-panel ul {
+  margin-top: 11px;
+}
+
+.home-v11 .home-bed-panel figure {
+  height: 190px;
+}
+
+.home-v11 .home-memorial {
+  padding-top: 2px;
+  gap: 26px;
+}
+
+.home-v11 .home-memorial-grid figure {
+  background: transparent;
+}
+
+@media (max-width: 1080px) {
+  .home-v11 .wm-header-inner,
+  .home-v11 .home-reference {
+    width: min(100% - 40px, 960px);
+  }
+
+  .home-v11 .home-ref-hero {
+    grid-template-columns: .46fr .54fr;
+  }
+
+  .home-v11 .home-account-panel {
+    padding-inline: 24px;
+  }
+
+  .home-v11 .home-ref-bed {
+    grid-template-columns: 1fr;
+  }
+
+  .home-v11 .home-bed-panel,
+  .home-v11 .home-bed-comfort,
+  .home-v11 .home-bed-tracking {
+    grid-template-columns: .86fr 1.14fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .home-v11 .wm-header-inner,
+  .home-v11 .home-reference {
+    width: min(100% - 30px, 720px);
+  }
+
+  .home-v11 .home-ref-hero {
+    min-height: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .home-v11 .home-ref-hero > figure,
+  .home-v11 .home-care-account > figure {
+    min-height: 0;
+  }
+
+  .home-v11 .home-care-account > figure {
+    height: auto;
+  }
+
+  .home-v11 .home-ref-hero > figure img {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 430px;
+  }
+
+  .home-v11 .home-care-account > figure img {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 430px;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-v11 .wm-header-inner {
+    width: calc(100vw - 24px);
+  }
+
+  .home-v11 .home-reference {
+    width: 100%;
+  }
+
+  .home-v11 .home-ref-hero-copy h1 {
+    font-size: 2.8rem;
+  }
+
+  .home-v11 .home-account-panel {
+    padding: 24px 18px 20px;
+  }
+
+  .home-v11 .home-ref-guide {
+    min-height: 0;
+    padding: 24px 18px 166px;
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .home-v11 .home-ref-guide form {
+    width: 100%;
+  }
+
+  .home-v11 .home-guide-book {
+    right: 18px;
+    bottom: -4px;
+    width: 130px;
+    height: 150px;
+    transform: none;
+  }
+
+  .home-v11 .home-guide-book img {
+    height: 68px !important;
+  }
+
+  .home-v11 .home-bed-panel,
+  .home-v11 .home-bed-comfort,
+  .home-v11 .home-bed-tracking {
+    grid-template-columns: 1fr;
+  }
+}

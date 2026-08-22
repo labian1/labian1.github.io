@@ -80,6 +80,7 @@ These are supplied campaign photographs of the existing gray WoafyPet bed protot
 | Preview asset | Dimensions | Source file | Permitted representation |
 | --- | ---: | --- | --- |
 | `product-prototype-golden.webp` | 1083×1452 | `outputs/woafypet-kickstarter-conversion-v24-2026-07-14/assets/youjin.webp` | Real physical prototype shown with a golden retriever |
+| `product-hero-official.png` | 1600×686 | `outputs/woafypet-kickstarter-conversion-v24-2026-07-14/assets/site/Hero_pic-C2T5HLxC.png` | Official WoafyPet campaign visualization used for the compact homepage product panel; product visualization, not documentary photography |
 | `product-prototype-akita.webp` | 1084×1451 | `outputs/woafypet-kickstarter-conversion-v24-2026-07-14/assets/anzhu.webp` | Real physical prototype shown with a second dog |
 
 ## Product visualizations
@@ -114,6 +115,10 @@ Use these as real editorial photography. Recheck the linked Unsplash source and 
 ## Founder-supplied story photography
 
 - `bobby.jpg` — user-supplied photograph of Bobby from the WoafyPet workspace, used only for Bobby and Robert's origin story. Treat as founder-owned project media; confirm the final publication release before production launch.
+
+## WoafMeow brand mark
+
+- `woafmeow-logo-coral.png` — the clean 512×64 WoafMeow master mark from `outputs/woafmeow-hostinger-live/public_html/assets/logo.png`, recolored to the user-supplied logo's exact dominant coral `#E1795A`. The wordmark geometry and transparency are unchanged. SHA-256 `92f386e1aa2ee24a9c51f10f9063d97f4ae8934f0d0228393becaa9eb516bc94`.
 
 ## Veterinary support portraits
 

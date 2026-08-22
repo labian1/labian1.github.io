@@ -52,6 +52,18 @@
     "label": "Lesson"
   },
   {
+    "route": "/care-circle/new-cough-or-breathing-change/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/care-circle/unexpected-weight-change/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/care-circle/after-a-medicine-change/",
+    "label": "Lesson"
+  },
+  {
     "route": "/learn/slower-after-rest/",
     "label": "Lesson"
   },
@@ -73,6 +85,18 @@
   },
   {
     "route": "/learn/bathroom-accidents/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/learn/new-cough-or-breathing-change/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/learn/unexpected-weight-change/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/learn/after-a-medicine-change/",
     "label": "Lesson"
   },
   {

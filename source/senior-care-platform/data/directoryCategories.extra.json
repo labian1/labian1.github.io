@@ -1,0 +1,74 @@
+[
+  {
+    "slug": "veterinary-social-workers",
+    "title": "Veterinary Social Workers",
+    "group": "Emotional support",
+    "icon": "heart",
+    "copy": "Support for treatment decisions, caregiver strain, family conversations, grief, and communication with the veterinary team.",
+    "questions": ["Who is eligible for support?", "Is help limited to hospital clients?", "Can you help with family or child conversations?"],
+    "redFlags": ["Care decisions feel impossible", "Family communication has broken down", "Caregiver strain is affecting daily life", "Grief support is needed now"]
+  },
+  {
+    "slug": "animal-chaplains-doulas",
+    "title": "Animal Chaplains & Doulas",
+    "group": "Emotional support",
+    "icon": "leaf",
+    "copy": "Non-medical emotional, spiritual, ritual, and planning support before, during, or after a pet's death.",
+    "questions": ["What training and scope do you have?", "How do you work with the veterinarian?", "What support do you provide on the day of goodbye?"],
+    "redFlags": ["Medical advice is offered without a veterinary license", "Credentials or scope are unclear", "A provider pressures a family", "The veterinarian is excluded from medical decisions"]
+  },
+  {
+    "slug": "financial-assistance",
+    "title": "Financial Assistance",
+    "group": "Practical logistics",
+    "icon": "scale",
+    "copy": "Nonprofit grants, urgent-care funds, and planning resources that may help with eligible veterinary bills.",
+    "questions": ["What expenses are eligible?", "Must the veterinarian apply?", "How quickly is a decision made?"],
+    "redFlags": ["Payment is requested to apply for a grant", "Approval is promised", "Personal financial details are requested outside a secure form", "Urgent care is delayed while waiting for funding"]
+  },
+  {
+    "slug": "oncology-specialists",
+    "title": "Oncology & Internal Medicine",
+    "group": "Medical care",
+    "icon": "shield",
+    "copy": "Board-certified specialty care for cancer, complex chronic disease, cardiology, neurology, and internal-medicine questions.",
+    "questions": ["What specialty is board certified?", "What records and tests are needed before the visit?", "How will this team coordinate with our primary veterinarian?"],
+    "redFlags": ["Rapid decline", "Breathing difficulty", "Uncontrolled pain", "A complex diagnosis without a coordinated plan"]
+  },
+  {
+    "slug": "home-care-pet-sitters",
+    "title": "In-Home Care & Pet Sitters",
+    "group": "Daily care",
+    "icon": "home",
+    "copy": "Insured in-home help for medication routines, mobility support, bathroom breaks, and caregiver respite.",
+    "questions": ["Are you insured and background checked?", "Can you follow written medication instructions?", "What happens if my dog becomes distressed or cannot stand?"],
+    "redFlags": ["No emergency plan", "Medication scope is unclear", "Mobility handling is unsafe", "References or insurance cannot be confirmed"]
+  },
+  {
+    "slug": "clinical-trials",
+    "title": "Clinical Trials",
+    "group": "Medical care",
+    "icon": "notes",
+    "copy": "University and specialty-hospital studies for eligible dogs with cancer, arthritis, cognitive change, and other conditions.",
+    "questions": ["What is experimental versus standard care?", "What costs or visits are required?", "Can we withdraw without losing normal care?"],
+    "redFlags": ["Risks are not explained", "Consent documents are missing", "Standard care must be stopped without a clear reason", "Payment or outcomes are guaranteed"]
+  },
+  {
+    "slug": "poison-control",
+    "title": "Poison Control",
+    "group": "Urgent care",
+    "icon": "shield",
+    "copy": "Veterinary toxicology hotlines for suspected medication, food, plant, chemical, or household-product exposure.",
+    "questions": ["What product and amount may have been swallowed?", "When did exposure happen?", "Should we go directly to an emergency hospital?"],
+    "redFlags": ["Collapse or seizure", "Trouble breathing", "Known toxic medication exposure", "Do not induce vomiting unless a veterinary professional tells you to"]
+  },
+  {
+    "slug": "specialty-hospitals",
+    "title": "Specialty Hospitals",
+    "group": "Medical care",
+    "icon": "home",
+    "copy": "Referral hospitals with services such as surgery, neurology, cardiology, oncology, critical care, and advanced imaging.",
+    "questions": ["Which specialty should review the case first?", "Is a referral required?", "Are emergency and specialty teams in the same hospital?"],
+    "redFlags": ["A complex case is worsening", "Multiple body systems are involved", "Advanced imaging or surgery may be needed", "Care is fragmented across clinics"]
+  }
+]

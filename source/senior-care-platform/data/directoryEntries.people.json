@@ -1,0 +1,77 @@
+[
+  {
+    "id": "deborah-silverstein",
+    "title": "Deborah C. Silverstein, DVM, DACVECC",
+    "organization": "University of Pennsylvania School of Veterinary Medicine",
+    "categories": ["emergency-vets", "specialty-hospitals"],
+    "coverage": "Philadelphia, Pennsylvania",
+    "coverageKey": "united-states",
+    "mode": "Hospital-based emergency and critical care",
+    "summary": "Professor of Emergency & Critical Care, Interim Hospital Director, and Chief of the Emergency & Critical Care section at Ryan Veterinary Hospital.",
+    "useWhen": "Use this public professional profile to understand the clinical leadership at Ryan Veterinary Hospital when considering an emergency or specialty referral in Philadelphia. Contact the hospital, not the individual profile, for current patient access.",
+    "address": "3900 Spruce Street, Philadelphia, PA 19104",
+    "team": "Penn publishes Dr. Silverstein's titles as Professor of Emergency & Critical Care, Interim Hospital Director, and Chief of the Emergency & Critical Care section at Ryan Veterinary Hospital.",
+    "details": [
+      "Her published clinical focus is emergency and critical care.",
+      "Ryan Veterinary Hospital publishes a 24/7 emergency service; call ahead because triage and capacity can change.",
+      "This page is a source-labeled professional profile, not a direct booking profile."
+    ],
+    "url": "https://www.vet.upenn.edu/directory/deborahsilverstein/",
+    "phone": "215-746-8911",
+    "sourceType": "University-published professional profile",
+    "profileType": "Public professional profile",
+    "image": "profiles/deborah-silverstein.jpg",
+    "imageSource": "https://www.vet.upenn.edu/directory/deborahsilverstein/",
+    "checked": "2026-07-13"
+  },
+  {
+    "id": "melissa-goldberg",
+    "title": "Melissa Goldberg, DVM",
+    "organization": "CodaPet",
+    "categories": ["in-home-euthanasia", "quality-of-life-consults"],
+    "coverage": "Glenside, Pennsylvania",
+    "address": "Glenside, PA",
+    "coverageKey": "united-states",
+    "mode": "In-home euthanasia; appointment availability shown by provider",
+    "summary": "A CodaPet veterinarian with a public local profile for at-home euthanasia in Glenside, Pennsylvania.",
+    "useWhen": "Use this when a family in the Glenside area is considering an at-home euthanasia appointment and wants to review the veterinarian's published profile, care approach, availability, and aftercare options directly with the provider.",
+    "team": "CodaPet publishes Dr. Goldberg's local profile and describes its network as licensed veterinarians providing in-home euthanasia services.",
+    "details": [
+      "The source profile includes an appointment pathway and provider-specific information.",
+      "Confirm current service radius, appointment availability, species served, pricing, and aftercare options directly before scheduling.",
+      "The photo on this profile is reproduced from the public provider profile and remains attributed to CodaPet."
+    ],
+    "url": "https://www.codapet.com/veterinarians/dr-melissa-goldberg",
+    "phone": "833-263-2738",
+    "sourceType": "Provider-published professional profile",
+    "profileType": "Public professional profile",
+    "image": "profiles/melissa-goldberg.jpg",
+    "imageSource": "https://www.codapet.com/veterinarians/dr-melissa-goldberg",
+    "checked": "2026-07-13"
+  },
+  {
+    "id": "katherine-todd",
+    "title": "Katherine Todd, DVM",
+    "organization": "CodaPet",
+    "categories": ["in-home-euthanasia", "quality-of-life-consults"],
+    "coverage": "Louisville, Kentucky",
+    "address": "Louisville, KY",
+    "coverageKey": "united-states",
+    "mode": "In-home euthanasia; appointment availability shown by provider",
+    "summary": "A CodaPet veterinarian with a public local profile for at-home euthanasia in Louisville, Kentucky.",
+    "useWhen": "Use this when a family in the Louisville area is looking for a provider-specific starting point to ask about an at-home euthanasia appointment, timing, care steps, and aftercare options.",
+    "team": "CodaPet publishes Dr. Todd's local professional profile and a direct scheduling pathway for her service area.",
+    "details": [
+      "The source profile describes in-home euthanasia and lists provider-specific information.",
+      "Confirm the current service radius, timing, pricing, medical eligibility, and aftercare choices directly with CodaPet before booking.",
+      "The photo on this profile is reproduced from the public provider profile and remains attributed to CodaPet."
+    ],
+    "url": "https://www.codapet.com/veterinarians/dr-katherine-todd",
+    "phone": "833-263-2738",
+    "sourceType": "Provider-published professional profile",
+    "profileType": "Public professional profile",
+    "image": "profiles/katherine-todd.jpg",
+    "imageSource": "https://www.codapet.com/veterinarians/dr-katherine-todd",
+    "checked": "2026-07-13"
+  }
+]

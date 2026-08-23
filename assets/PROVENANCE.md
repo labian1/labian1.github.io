@@ -124,6 +124,7 @@ Use these as real editorial photography. Recheck the linked Unsplash source and 
 
 - `vet-silvan-urfer.jpg` — Dr. Silvan Urfer with a dog, copied from `senior-care-platform/media/profiles/silvan-urfer.jpg`; the source ledger identifies the WoafyPet portrait asset `https://woafy.pet/assets/vet-S38Uegsi.svg` (accessed 2026-08-14). SHA-256 `3dad5fe34bc7c799fb78b17e9d2c59fe335d62ec1324616f590bc8cec7706536`.
 - `vet-annika-bremhorst.png` — Dr. Annika Bremhorst, copied from `senior-care-platform/media/profiles/annika-bremhorst.png`; source: Dogs & Science, `https://dogsandscience.com/wp-content/uploads/2024/06/Annika-Bremhorst-2.png` (accessed 2026-08-14). SHA-256 `4af72aa3e44675f7e1abaa84529ea42ee296fc22d2eb93610407f4e9f05ad9bf`.
+- `vet-annika-bremhorst-official.jpg` — 800×533 official University of Giessen portrait of Dr. Annika Bremhorst, downloaded from the university profile image’s `@@images/image/large` rendition on 2026-08-24. Profile source: `https://www.uni-giessen.de/en/faculties/f10/departments/clinic/animal-welfare-and-3r-centre/acad/tiergestuetztedienstleistungen/dateien/drannikabremhorst/view`. SHA-256 `6a93adf8d5fd8da4ddc814471f88f24632d2c721929e139bb3688c5281d1fd46`.
 
 These portraits and attributed statements require final source, permission, and quotation review before production launch.
 

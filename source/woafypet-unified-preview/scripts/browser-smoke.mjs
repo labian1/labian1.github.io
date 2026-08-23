@@ -364,7 +364,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
     ".home-ref-hero",
     ".home-ref-learn",
     ".home-care-circle",
-    ".home-care-account",
+    ".profile-gate-dialog",
     ".home-ref-guide",
     ".home-vet-testimonials",
     ".home-ref-bed",
@@ -384,7 +384,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
     () => document.documentElement.scrollHeight,
   );
   const maxHeight =
-    viewport.width <= 768 ? 9400 : viewport.width <= 1100 ? 6600 : 4400;
+    viewport.width <= 768 ? 11000 : viewport.width <= 1100 ? 9000 : 6200;
   if (totalHeight > maxHeight)
     failures.push(
       `/: ${viewport.name} homepage too tall (${Math.round(totalHeight)}px)`,
@@ -393,7 +393,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
     (await page.locator("[data-home-account-form]").count()) !== 1 ||
     (await page
       .locator(
-        "[data-home-account-form] input, [data-home-account-form] select",
+        "[data-home-account-form] input, [data-home-account-form] select, [data-home-account-form] textarea",
       )
       .count()) < 7
   )
@@ -426,14 +426,14 @@ async function checkHome(page, viewport, baseUrl, failures) {
     await questionForm
       .locator('[name="question"]')
       .fill("Why is my dog stiff after getting up?");
-    await Promise.all([
-      page.waitForURL(
-        (url) =>
-          url.pathname === "/account/" &&
-          url.searchParams.get("next") === "ask",
-      ),
-      questionForm.evaluate((node) => node.requestSubmit()),
-    ]);
+    await questionForm.evaluate((node) => node.requestSubmit());
+    const registrationDialog = page.locator("[data-first-action-dialog]");
+    await registrationDialog.waitFor({ state: "visible" });
+    if (!(await registrationDialog.evaluate((node) => node.open)))
+      failures.push("/: first personalized action did not open registration");
+    if ((await registrationDialog.locator('[name="ownerName"]').count()) !== 1)
+      failures.push("/: first-action registration is missing owner details");
+    await registrationDialog.locator("[data-first-action-close]").click();
   }
 }
 

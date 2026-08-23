@@ -758,6 +758,8 @@
   const accountEditButton = document.querySelector("[data-account-edit]");
   const googleSigninButton = document.querySelector("[data-google-signin]");
   const googleSigninStatus = document.querySelector("[data-google-status]");
+  const firstActionDialog = document.querySelector("[data-first-action-dialog]");
+  const firstActionClose = document.querySelector("[data-first-action-close]");
   let editingAccount = false;
   const accountNext = new URLSearchParams(window.location.search).get("next");
   if (accountSubmit && accountNext === "health")
@@ -768,6 +770,10 @@
         "Secure Google sign-in is being connected. You can create your account now with the Gmail address above.";
     }
     accountForm?.querySelector('[name="email"]')?.focus();
+  });
+  firstActionClose?.addEventListener("click", () => firstActionDialog?.close());
+  firstActionDialog?.addEventListener("click", (event) => {
+    if (event.target === firstActionDialog) firstActionDialog.close();
   });
   const renderAccount = () => {
     const account = getAccount();
@@ -902,7 +908,14 @@
     editingAccount = false;
     renderAccount();
     if (accountForm.matches("[data-home-account-form]")) {
-      window.location.assign("/care-circle/?ask=1#ask");
+      const target = new URL("/care-circle/", window.location.origin);
+      const pendingQuestion = String(accountForm.dataset.pendingQuestion || "")
+        .trim()
+        .slice(0, 500);
+      target.searchParams.set("ask", "1");
+      if (pendingQuestion) target.searchParams.set("q", pendingQuestion);
+      target.hash = "ask";
+      window.location.assign(target.href);
       return;
     }
     const params = new URLSearchParams(window.location.search);
@@ -945,17 +958,26 @@
       const question = String(new FormData(form).get("question") || "")
         .trim()
         .slice(0, 500);
-      const target = new URL(
-        getAccount() ? "/care-circle/" : "/account/",
-        window.location.origin,
-      );
-      target.searchParams.set("q", question);
       if (getAccount()) {
+        const target = new URL("/care-circle/", window.location.origin);
+        target.searchParams.set("q", question);
         target.searchParams.set("ask", "1");
         target.hash = "ask";
-      } else {
-        target.searchParams.set("next", "ask");
+        window.location.assign(target.href);
+        return;
       }
+      if (firstActionDialog?.showModal && accountForm) {
+        accountForm.dataset.pendingQuestion = question;
+        firstActionDialog.showModal();
+        window.setTimeout(
+          () => accountForm.querySelector('[name="ownerName"]')?.focus(),
+          0,
+        );
+        return;
+      }
+      const target = new URL("/account/", window.location.origin);
+      target.searchParams.set("q", question);
+      target.searchParams.set("next", "ask");
       window.location.assign(target.href);
     }));
 

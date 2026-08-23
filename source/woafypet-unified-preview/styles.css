@@ -12031,3 +12031,778 @@ body.home-v13 .wm-footer-bottom { padding: 12px 0 16px; }
   body.home-v13 .home-circle-card { grid-template-columns: 90px minmax(0, 1fr); }
   body.home-v13 .home-circle-card figure { width: 90px; }
 }
+
+/* 2026-08-24.3 — larger home typography, equal veterinarian media, and full-scale Smart Bed storytelling. */
+body.home-v14 .home-reference {
+  gap: 24px;
+}
+
+body.home-v14 .home-ref-hero-copy > p,
+body.home-v14 .home-ref-section > header p,
+body.home-v14 .home-circle-lessons > header p,
+body.home-v14 .home-circle-ask > p,
+body.home-v14 .home-ref-guide p,
+body.home-v14 .home-vet-testimonials > header p,
+body.home-v14 .home-support-paths p {
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+body.home-v14 .home-ref-section > header h2,
+body.home-v14 .home-circle-lessons > header h2,
+body.home-v14 .home-circle-ask h2,
+body.home-v14 .home-ref-guide h2,
+body.home-v14 .home-vet-testimonials h2,
+body.home-v14 .home-support-paths h2 {
+  text-wrap: balance;
+}
+
+body.home-v14 .home-ref-section > header h2,
+body.home-v14 .home-circle-lessons > header h2 {
+  font-size: clamp(2rem, 2.6vw, 2.8rem);
+  line-height: 1.05;
+}
+
+body.home-v14 .home-topic-card h3 {
+  font-size: 1.22rem;
+  line-height: 1.1;
+}
+
+body.home-v14 .home-topic-card p {
+  font-size: 0.96rem;
+  line-height: 1.48;
+}
+
+body.home-v14 .home-topic-card span,
+body.home-v14 .home-circle-card span,
+body.home-v14 .home-circle-lessons > header a {
+  font-size: 0.94rem;
+}
+
+body.home-v14 .home-topic-card > div {
+  min-height: 188px;
+  padding: 18px 16px;
+}
+
+body.home-v14 .home-care-circle {
+  grid-template-columns: minmax(0, 1.3fr) minmax(360px, 0.7fr);
+}
+
+body.home-v14 .home-circle-card {
+  grid-template-columns: 124px minmax(0, 1fr);
+  min-height: 154px;
+}
+
+body.home-v14 .home-circle-card figure {
+  width: 124px;
+}
+
+body.home-v14 .home-circle-card h3 {
+  font-size: 1.08rem;
+  line-height: 1.16;
+}
+
+body.home-v14 .home-circle-card p {
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+body.home-v14 .home-circle-ask h2 {
+  font-size: clamp(2rem, 2.5vw, 2.6rem);
+}
+
+body.home-v14 .home-circle-ask textarea,
+body.home-v14 .home-circle-ask .button,
+body.home-v14 .home-question-box input,
+body.home-v14 .home-question-box button {
+  font-size: 1rem;
+}
+
+body.home-v14 .home-circle-ask .button,
+body.home-v14 .home-question-box button,
+body.home-v14 .home-ref-guide .button,
+body.home-v14 .home-vet-testimonials .button,
+body.home-v14 .home-ref-bed .button {
+  min-height: 50px;
+  padding-inline: 22px;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+body.home-v14 .home-ref-guide {
+  min-height: 190px;
+  padding: 28px 210px 28px 30px;
+}
+
+body.home-v14 .home-ref-guide h2 {
+  font-size: clamp(2rem, 2.9vw, 3rem);
+  line-height: 1.02;
+}
+
+body.home-v14 .home-ref-guide input {
+  min-height: 52px;
+  font-size: 1rem;
+}
+
+body.home-v14 .home-vet-testimonials {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  padding: 30px;
+}
+
+body.home-v14 .home-vet-testimonials > header {
+  max-width: 780px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+body.home-v14 .home-vet-testimonials > header h2 {
+  font-size: clamp(2.1rem, 3vw, 3rem);
+  line-height: 1.04;
+}
+
+body.home-v14 .home-vet-testimonials > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+body.home-v14 .home-vet-testimonials article {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  align-items: center;
+  min-height: 210px;
+  padding: 20px;
+}
+
+body.home-v14 .home-vet-testimonials article figure {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 190px;
+  height: 150px;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #f3eee8;
+}
+
+body.home-v14 .home-vet-testimonials article figure img,
+body.guide-v7 .guide-vet-trust article figure img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+body.home-v14 .home-vet-testimonials blockquote {
+  font-size: 1.04rem;
+  line-height: 1.55;
+}
+
+body.home-v14 .home-vet-testimonials article p strong {
+  font-size: 1.08rem;
+}
+
+body.home-v14 .home-vet-testimonials article p span {
+  font-size: 0.92rem;
+}
+
+body.home-v14 .home-vet-testimonials > aside {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  min-height: 92px;
+  padding: 18px 22px;
+  text-align: left;
+}
+
+body.home-v14 .home-vet-testimonials > aside h3,
+body.home-v14 .home-vet-testimonials > aside p {
+  margin: 0;
+}
+
+body.home-v14 .home-ref-bed {
+  padding-top: 28px;
+}
+
+body.home-v14 .home-ref-bed > header {
+  max-width: 970px;
+  margin-bottom: 28px;
+}
+
+body.home-v14 .home-ref-bed > header > span {
+  font-size: 0.88rem;
+}
+
+body.home-v14 .home-ref-bed > header h2 {
+  max-width: 900px;
+  margin-block: 10px;
+  font-size: clamp(2.45rem, 3.55vw, 3.2rem);
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+body.home-v14 .home-ref-bed > header p {
+  max-width: 760px;
+  font-size: 1.16rem;
+  line-height: 1.55;
+}
+
+body.home-v14 .home-bed-grid {
+  gap: 20px;
+}
+
+body.home-v14 .home-bed-story {
+  display: grid;
+  grid-template-columns: minmax(390px, 0.86fr) minmax(0, 1.14fr);
+  align-items: stretch;
+  min-height: 490px;
+  overflow: hidden;
+  border: 1px solid rgba(80, 51, 38, 0.15);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(64, 42, 31, 0.12);
+}
+
+body.home-v14 .home-bed-copy {
+  align-self: center;
+  padding: 44px;
+}
+
+body.home-v14 .home-bed-copy > span {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--wm-coral, #e1795a);
+  font-size: 0.88rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+body.home-v14 .home-bed-story h3 {
+  max-width: 650px;
+  margin: 0 0 16px;
+  font-size: clamp(2.45rem, 3.7vw, 4rem);
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+body.home-v14 .home-bed-story p {
+  max-width: 680px;
+  margin-bottom: 22px;
+  font-size: 1.08rem;
+  line-height: 1.58;
+}
+
+body.home-v14 .home-bed-story figure {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 100%;
+  margin: 0;
+  padding: 24px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+body.home-v14 .home-bed-story figure img {
+  display: block;
+  width: 100%;
+  height: auto !important;
+  max-width: 100%;
+  max-height: none !important;
+  object-fit: contain !important;
+}
+
+body.home-v14 .home-bed-comfort-story {
+  position: relative;
+  grid-template-columns: 1fr;
+  aspect-ratio: 1600 / 686;
+  min-height: 0;
+  color: #fff9f4;
+  background: #17110e;
+}
+
+body.home-v14 .home-bed-comfort-story .home-bed-copy,
+body.home-v14 .home-bed-comfort-story figure {
+  grid-area: 1 / 1;
+}
+
+body.home-v14 .home-bed-comfort-story .home-bed-copy {
+  position: relative;
+  z-index: 1;
+  width: 48%;
+  padding: 34px 44px;
+}
+
+body.home-v14 .home-bed-comfort-story figure {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+}
+
+body.home-v14 .home-ref-bed .home-bed-comfort-story > figure > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+}
+
+body.home-v14 .home-bed-comfort-story h3 {
+  font-size: clamp(2.15rem, 3.25vw, 3.55rem);
+}
+
+body.home-v14 .home-bed-comfort-story h3,
+body.home-v14 .home-bed-comfort-story p,
+body.home-v14 .home-bed-comfort-story strong,
+body.home-v14 .home-bed-comfort-story li span {
+  color: inherit;
+}
+
+body.home-v14 .home-bed-feature-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+body.home-v14 .home-bed-feature-list li {
+  display: grid;
+  gap: 3px;
+  min-height: 70px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+body.home-v14 .home-bed-feature-list strong {
+  font-size: 0.98rem;
+}
+
+body.home-v14 .home-bed-feature-list span {
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+body.home-v14 .home-bed-layer-story {
+  grid-template-columns: minmax(0, 1.1fr) minmax(390px, 0.9fr);
+  background: linear-gradient(135deg, #f5f0e9, #fffaf6);
+}
+
+body.home-v14 .home-bed-layer-story figure {
+  background: #eee9e1;
+}
+
+body.home-v14 .home-bed-layer-list {
+  display: grid;
+  gap: 0;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+body.home-v14 .home-bed-layer-list li {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  align-items: start;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid #d9cbc0;
+}
+
+body.home-v14 .home-bed-layer-list li > b {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--wm-coral-dark, #b64c30);
+}
+
+body.home-v14 .home-bed-layer-list li > span,
+body.home-v14 .home-bed-layer-list strong {
+  display: block;
+}
+
+body.home-v14 .home-bed-layer-list li > span {
+  color: #706259;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+body.home-v14 .home-bed-layer-list strong {
+  color: var(--wm-espresso, #422b24);
+  font-size: 0.98rem;
+}
+
+body.home-v14 .home-bed-tracking-story {
+  color: #17382d;
+  background: linear-gradient(135deg, #e2eadf, #f3efe6);
+}
+
+body.home-v14 .home-bed-metrics {
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+body.home-v14 .home-bed-metrics span {
+  min-height: 88px;
+  padding: 14px;
+  border: 1px solid rgba(37, 75, 61, 0.15);
+  border-radius: 11px;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  background: rgba(255, 255, 255, 0.76);
+}
+
+body.home-v14 .home-bed-metrics b {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+body.home-v14 .home-support-paths h2 {
+  font-size: 1.5rem;
+}
+
+body.home-v14 .home-support-paths p {
+  font-size: 0.94rem;
+}
+
+.profile-gate-dialog {
+  width: min(960px, calc(100vw - 32px));
+  max-height: min(92vh, 900px);
+  padding: 0;
+  overflow: auto;
+  border: 0;
+  border-radius: 20px;
+  color: var(--wm-espresso, #422b24);
+  background: #fffaf6;
+  box-shadow: 0 34px 90px rgba(43, 28, 23, 0.32);
+}
+
+.profile-gate-dialog::backdrop {
+  background: rgba(35, 24, 20, 0.62);
+  backdrop-filter: blur(5px);
+}
+
+.profile-gate-shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+}
+
+.profile-gate-close {
+  position: absolute;
+  z-index: 2;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid rgba(66, 43, 36, 0.18);
+  border-radius: 50%;
+  color: var(--wm-espresso, #422b24);
+  background: rgba(255, 250, 246, 0.92);
+  font-size: 1.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.profile-gate-shell > header {
+  padding: 54px 36px;
+  color: #fff9f4;
+  background: linear-gradient(150deg, #17382d, #274e40);
+}
+
+.profile-gate-shell > header > span {
+  color: #f0a28b;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.profile-gate-shell > header h2 {
+  margin: 12px 0 16px;
+  color: #fff9f4 !important;
+  font-size: clamp(2.4rem, 4vw, 3.8rem);
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.profile-gate-shell > header p,
+.profile-gate-shell > header li {
+  color: rgba(255, 249, 244, 0.9) !important;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.profile-gate-shell > header ul {
+  display: grid;
+  gap: 10px;
+  margin: 24px 0 0;
+  padding-left: 20px;
+}
+
+.profile-gate-shell > form {
+  padding: 52px 38px 34px;
+}
+
+.profile-gate-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.profile-gate-grid label,
+.profile-gate-consent {
+  display: grid;
+  gap: 7px;
+}
+
+.profile-gate-grid label > span {
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.profile-gate-grid input,
+.profile-gate-grid select,
+.profile-gate-grid textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 11px 12px;
+  border: 1px solid #d7c5b8;
+  border-radius: 9px;
+  color: var(--wm-espresso, #422b24);
+  background: #fff;
+  font: inherit;
+}
+
+.profile-gate-grid textarea {
+  min-height: 78px;
+  resize: vertical;
+}
+
+.profile-gate-wide {
+  grid-column: 1 / -1;
+}
+
+.profile-gate-consent {
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  margin: 16px 0;
+  color: #706259;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.profile-gate-consent input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+}
+
+.profile-gate-shell > form > .button,
+.profile-gate-shell > form > .home-google-button {
+  width: 100%;
+  min-height: 50px;
+  font-size: 1rem;
+}
+
+.profile-gate-or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+  color: #88786f;
+  font-size: 0.82rem;
+}
+
+.profile-gate-or::before,
+.profile-gate-or::after {
+  flex: 1;
+  height: 1px;
+  content: "";
+  background: #ded1c7;
+}
+
+body.guide-v7 .guide-vet-trust article figure {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 132px;
+  height: 132px;
+  overflow: hidden;
+}
+
+body.guide-v7 .guide-vet-trust article {
+  grid-template-columns: 132px minmax(0, 1fr);
+}
+
+@media (max-width: 1120px) {
+  body.home-v14 .home-vet-testimonials article {
+    grid-template-columns: 160px minmax(0, 1fr);
+  }
+
+  body.home-v14 .home-vet-testimonials article figure {
+    width: 160px;
+    height: 132px;
+  }
+
+  body.home-v14 .home-bed-story,
+  body.home-v14 .home-bed-layer-story {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-bed-story {
+    min-height: 0;
+  }
+
+  body.home-v14 .home-bed-comfort-story {
+    aspect-ratio: auto;
+  }
+
+  body.home-v14 .home-bed-comfort-story .home-bed-copy,
+  body.home-v14 .home-bed-comfort-story figure {
+    grid-area: auto;
+  }
+
+  body.home-v14 .home-bed-comfort-story .home-bed-copy {
+    width: auto;
+  }
+
+  body.home-v14 .home-ref-bed .home-bed-comfort-story > figure > img {
+    position: static;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  body.home-v14 .home-bed-story figure {
+    min-height: 320px;
+  }
+
+  body.home-v14 .home-bed-layer-story figure {
+    order: 2;
+  }
+}
+
+@media (max-width: 860px) {
+  body.home-v14 .home-care-circle,
+  body.home-v14 .home-vet-testimonials > div,
+  .profile-gate-shell {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-ref-guide {
+    padding: 24px 150px 24px 24px;
+  }
+
+  body.home-v14 .home-bed-copy {
+    padding: 32px 26px;
+  }
+
+  body.home-v14 .home-bed-story figure {
+    min-height: 260px;
+    padding: 18px;
+  }
+
+  .profile-gate-shell > header,
+  .profile-gate-shell > form {
+    padding: 34px 26px;
+  }
+
+  .profile-gate-shell > header ul {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  body.home-v14 .home-ref-hero-copy > p,
+  body.home-v14 .home-ref-section > header p,
+  body.home-v14 .home-circle-lessons > header p,
+  body.home-v14 .home-circle-ask > p,
+  body.home-v14 .home-ref-guide p,
+  body.home-v14 .home-vet-testimonials > header p {
+    font-size: 0.98rem;
+  }
+
+  body.home-v14 .home-circle-card {
+    grid-template-columns: 104px minmax(0, 1fr);
+  }
+
+  body.home-v14 .home-circle-card figure {
+    width: 104px;
+  }
+
+  body.home-v14 .home-ref-guide {
+    padding: 22px 18px;
+  }
+
+  body.home-v14 .home-vet-testimonials {
+    padding: 22px 16px;
+  }
+
+  body.home-v14 .home-vet-testimonials article {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  body.home-v14 .home-vet-testimonials article figure {
+    width: 100%;
+    height: 190px;
+  }
+
+  body.home-v14 .home-vet-testimonials > aside {
+    align-items: stretch;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  body.home-v14 .home-ref-bed > header h2 {
+    font-size: clamp(2.2rem, 10vw, 2.45rem);
+  }
+
+  body.home-v14 .home-bed-story h3 {
+    font-size: clamp(2.15rem, 10vw, 3.2rem);
+  }
+
+  body.home-v14 .home-bed-feature-list,
+  body.home-v14 .home-bed-metrics,
+  .profile-gate-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-bed-story figure {
+    min-height: 220px;
+    padding: 12px;
+  }
+
+  .profile-gate-dialog {
+    width: calc(100vw - 18px);
+  }
+
+  .profile-gate-shell > header,
+  .profile-gate-shell > form {
+    padding: 30px 18px;
+  }
+
+  .profile-gate-wide {
+    grid-column: auto;
+  }
+}

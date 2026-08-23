@@ -226,7 +226,7 @@ if (count(home, /class="home-ref-guide"/g) !== 1)
 for (const marker of [
   "home-ref-learn",
   "home-care-circle",
-  "home-care-account",
+  "profile-gate-dialog",
   "home-ref-guide",
   "home-vet-testimonials",
   "home-ref-bed",
@@ -238,9 +238,11 @@ if (count(home, /<section class="home-ref-section home-ref-learn"/g) !== 1)
 if (
   !home.includes("Veterinarian support you can trust.") ||
   !home.includes("vet-silvan-urfer.jpg") ||
-  !home.includes("vet-annika-bremhorst.png")
+  !home.includes("vet-annika-bremhorst-official.jpg")
 )
   fail("home: veterinarian testimonial section is incomplete");
+if (home.includes('<section class="home-care-account"'))
+  fail("home: permanent registration section should not be visible");
 if (
   !home.includes("data-home-question-form") ||
   !home.includes('name="question"')
@@ -259,10 +261,13 @@ for (const asset of [
     fail(`memorial: missing partner image ${asset}`);
 if (
   !home.includes("data-home-account-form") ||
+  !home.includes("data-first-action-dialog") ||
   !home.includes('name="breed"') ||
   !home.includes('name="petAge"')
 )
   fail("home: personalized account and dog profile form is incomplete");
+if (count(home, /class="home-bed-story /g) !== 3)
+  fail("home: Smart Bed story must include comfort, layers and tracking");
 if (
   !home.includes("data-guide-delivery") ||
   !home.includes('data-submit-api="https://www.woafmeow.com/api/newsletter"')

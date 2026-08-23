@@ -23,6 +23,9 @@ const routes = [
   "/care-circle/new-cough-or-breathing-change/",
   "/care-circle/unexpected-weight-change/",
   "/care-circle/after-a-medicine-change/",
+  "/care-circle/new-lump-or-skin-change/",
+  "/care-circle/vision-or-hearing-change/",
+  "/care-circle/mouth-or-dental-pain/",
   "/learn/slower-after-rest/",
   "/learn/restless-at-night/",
   "/learn/changes-in-appetite/",
@@ -32,6 +35,9 @@ const routes = [
   "/learn/new-cough-or-breathing-change/",
   "/learn/unexpected-weight-change/",
   "/learn/after-a-medicine-change/",
+  "/learn/new-lump-or-skin-change/",
+  "/learn/vision-or-hearing-change/",
+  "/learn/mouth-or-dental-pain/",
   "/account/",
   "/health-timeline/",
   "/find-care/",
@@ -277,11 +283,11 @@ if (/data-base-count="[1-9]/.test(home) || />\s*\d+\s+comments?</i.test(home))
   fail("home: contains invented engagement counts");
 
 const careCircle = routeHtml.get("/care-circle/") || "";
-if (count(careCircle, /data-care-post\b/g) !== 9)
-  fail("care circle: expected nine public posts");
-if (count(careCircle, /class="circle-public-card"/g) !== 9)
-  fail("care circle: expected nine image-led public lesson cards");
-if (count(careCircle, /Owner-shared conditions/g) < 9)
+if (count(careCircle, /data-care-post\b/g) !== 12)
+  fail("care circle: expected twelve public posts");
+if (count(careCircle, /class="circle-public-card"/g) !== 12)
+  fail("care circle: expected twelve image-led public lesson cards");
+if (count(careCircle, /Owner-shared conditions/g) < 12)
   fail("care circle: public pet conditions are missing");
 if (
   !careCircle.includes("data-account-gate") ||
@@ -381,9 +387,9 @@ if (
   fail("health timeline: privacy or non-diagnostic boundary is unclear");
 
 const directory = routeHtml.get("/find-care/") || "";
-if (count(directory, /<article\b[^>]*\bdata-directory-profile\b/g) !== 104)
+if (count(directory, /<article\b[^>]*\bdata-directory-profile\b/g) < 300)
   fail(
-    `find care: expected 104 profiles, found ${count(directory, /<article\b[^>]*\bdata-directory-profile\b/g)}`,
+    `find care: expected at least 300 official profiles, found ${count(directory, /<article\b[^>]*\bdata-directory-profile\b/g)}`,
   );
 if (count(directory, /data-directory-resource\b/g) < 32)
   fail("find care: expected at least 32 official resources");
@@ -406,10 +412,10 @@ if (
   count(
     guide,
     /data-submit-api="https:\/\/www\.woafmeow\.com\/api\/newsletter"/g,
-  ) < 2 ||
-  count(guide, /data-guide-delivery/g) < 2
+  ) !== 1 ||
+  count(guide, /data-guide-delivery/g) !== 1
 )
-  fail("guide: active email-delivery forms are missing");
+  fail("guide: expected one active email-delivery form");
 if (
   count(guide, /class="guide-topics-v6"/g) !== 1 ||
   count(guide, /<section class="guide-/g) < 5
@@ -428,7 +434,7 @@ if (
 )
   fail("memorial: partner or request endpoint missing");
 if (
-  !/20 million\+?/.test(memorial) ||
+  !/15 million\+?/.test(memorial) ||
   !memorial.includes("usambaratravels.com/where-we-plant/")
 )
   fail("memorial: partner impact source is missing");
@@ -475,5 +481,5 @@ if (failures.length) {
 }
 
 console.log(
-  `Static verification passed: ${routes.length} routes, ${lessonRoutes.length} public lessons, 104 profiles, ${count(directory, /data-directory-resource\b/g)} official resources.`,
+  `Static verification passed: ${routes.length} routes, ${lessonRoutes.length} public lessons, ${count(directory, /<article\b[^>]*\bdata-directory-profile\b/g)} official profiles, ${count(directory, /data-directory-resource\b/g)} official resources.`,
 );

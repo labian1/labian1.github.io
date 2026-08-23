@@ -64,6 +64,18 @@
     "label": "Lesson"
   },
   {
+    "route": "/care-circle/new-lump-or-skin-change/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/care-circle/vision-or-hearing-change/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/care-circle/mouth-or-dental-pain/",
+    "label": "Lesson"
+  },
+  {
     "route": "/learn/slower-after-rest/",
     "label": "Lesson"
   },
@@ -97,6 +109,18 @@
   },
   {
     "route": "/learn/after-a-medicine-change/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/learn/new-lump-or-skin-change/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/learn/vision-or-hearing-change/",
+    "label": "Lesson"
+  },
+  {
+    "route": "/learn/mouth-or-dental-pain/",
     "label": "Lesson"
   },
   {

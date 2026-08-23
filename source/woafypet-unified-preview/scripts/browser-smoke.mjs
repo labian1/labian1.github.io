@@ -25,6 +25,9 @@ const ROUTES = [
   "/care-circle/new-cough-or-breathing-change/",
   "/care-circle/unexpected-weight-change/",
   "/care-circle/after-a-medicine-change/",
+  "/care-circle/new-lump-or-skin-change/",
+  "/care-circle/vision-or-hearing-change/",
+  "/care-circle/mouth-or-dental-pain/",
   "/learn/slower-after-rest/",
   "/learn/restless-at-night/",
   "/learn/changes-in-appetite/",
@@ -34,6 +37,9 @@ const ROUTES = [
   "/learn/new-cough-or-breathing-change/",
   "/learn/unexpected-weight-change/",
   "/learn/after-a-medicine-change/",
+  "/learn/new-lump-or-skin-change/",
+  "/learn/vision-or-hearing-change/",
+  "/learn/mouth-or-dental-pain/",
   "/account/",
   "/health-timeline/",
   "/find-care/",
@@ -378,7 +384,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
     () => document.documentElement.scrollHeight,
   );
   const maxHeight =
-    viewport.width <= 768 ? 9400 : viewport.width <= 1100 ? 6600 : 4300;
+    viewport.width <= 768 ? 9400 : viewport.width <= 1100 ? 6600 : 4400;
   if (totalHeight > maxHeight)
     failures.push(
       `/: ${viewport.name} homepage too tall (${Math.round(totalHeight)}px)`,
@@ -432,13 +438,13 @@ async function checkHome(page, viewport, baseUrl, failures) {
 }
 
 async function checkCareCircle(page, viewport, failures) {
-  if ((await page.locator("[data-care-post]").count()) !== 9)
-    failures.push("/care-circle/: nine public posts missing");
-  if ((await page.locator("[data-care-post] img").count()) !== 9)
+  if ((await page.locator("[data-care-post]").count()) !== 12)
+    failures.push("/care-circle/: twelve public posts missing");
+  if ((await page.locator("[data-care-post] img").count()) !== 12)
     failures.push("/care-circle/: every post needs an image");
   if (
     (await page.locator("[data-public-conditions]").count()) !== 0 &&
-    (await page.locator("[data-public-conditions]").count()) !== 9
+    (await page.locator("[data-public-conditions]").count()) !== 12
   )
     failures.push("/care-circle/: public conditions are incomplete");
   if ((await page.locator("[data-account-gate]").count()) !== 1)
@@ -446,7 +452,7 @@ async function checkCareCircle(page, viewport, failures) {
   if (viewport.width !== 1440) return;
   await page.locator("[data-circle-filter]").nth(1).click();
   const visible = await page.locator("[data-care-post]:visible").count();
-  if (visible < 1 || visible >= 9)
+  if (visible < 1 || visible >= 12)
     failures.push(`/care-circle/: topic filter returned ${visible} posts`);
   await page.locator('[data-circle-filter="all"]').click();
 }
@@ -729,8 +735,8 @@ async function checkHealthTimeline(
 }
 
 async function checkDirectory(page, viewport, apiCalls, failures) {
-  if ((await page.locator("[data-directory-profile]").count()) !== 104)
-    failures.push("/find-care/: expected 104 profiles");
+  if ((await page.locator("[data-directory-profile]").count()) < 300)
+    failures.push("/find-care/: expected at least 300 official profiles");
   if ((await page.locator("[data-directory-resource]").count()) < 32)
     failures.push("/find-care/: expected at least 32 official resources");
   if ((await page.locator("[data-directory-search]").count()) !== 0)

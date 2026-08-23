@@ -11,7 +11,9 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, "dist");
-const ASSET_VERSION = "20260823.3";
+const ASSET_VERSION = "20260824.2";
+const REFINEMENT_MARKER =
+  "/* 2026-08-24 reference-contract refinement: natural images, compact rhythm, premium product storytelling */";
 
 const imageMeta = {
   "woafmeow-logo-coral.png": [512, 64],
@@ -123,9 +125,18 @@ const expandedDirectoryProfiles = loadJson(
   address: entry.coverage,
   asset: "",
 }));
+const vcaDirectoryProfiles = loadJson(
+  join(ROOT, "data", "find-care-profiles.vca.json"),
+).map((entry) => ({
+  ...entry,
+  address: entry.coverage,
+  asset: "",
+  verified: true,
+}));
 const directoryProfiles = [
   ...originalDirectoryProfiles,
   ...expandedDirectoryProfiles,
+  ...vcaDirectoryProfiles,
 ];
 const directoryResources = loadJson(
   join(seniorCareData, "directoryEntries.json"),
@@ -1344,6 +1355,120 @@ const lessons = [
       ],
     },
   },
+  {
+    slug: "new-lump-or-skin-change",
+    topic: "Skin",
+    title: "A new lump or skin change",
+    eyebrow: "Skin · 3 practical chapters",
+    intro:
+      "Map what changed, protect irritated skin, and bring a measurable record to the veterinary visit.",
+    image: "senior-dog-home.webp",
+    imageAlt: "Older dog resting at home while a skin change is monitored",
+    conditionLabel: "Which change is closest?",
+    conditionOptions: ["New lump", "Existing lump changed", "Sore or irritated skin", "Bleeding, painful, or rapidly growing area"],
+    impactOptions: ["Not affecting daily life", "Licking or scratching", "Painful or limiting movement", "Rapid or severe change"],
+    chapters: [
+      {
+        title: "Create a useful skin map",
+        result: "You will know the exact place, size, surface, and first reliable date.",
+        copy: "A photo beside a ruler and a simple body map are more useful than memory alone.",
+        steps: ["Photograph the area in the same light with a ruler beside it.", "Record location, length, width, texture, color, warmth, and whether it moves under the skin.", "Note licking, scratching, limping, appetite, energy, and any other new lumps."],
+        quiz: { question: "Which record is easiest to compare?", options: [["measure", "A dated photo with a ruler, body location, and written measurement."], ["memory", "I think it looks bigger than last month."], ["squeeze", "I squeezed it to see what came out."]], answer: "measure", correct: "Correct. A dated measurement makes change visible.", retry: "Choose the option that records the area without irritating it." },
+      },
+      {
+        title: "Protect the area today",
+        result: "You will reduce rubbing and licking without hiding the change.",
+        copy: "Keep the surface clean and dry, and stop repeated trauma while you arrange advice.",
+        steps: ["Prevent licking or chewing with a well-fitted barrier recommended for your dog.", "Keep collars, harnesses, bedding, and rough surfaces from rubbing the area.", "Do not cut, squeeze, drain, or apply human creams unless a veterinarian directs you."],
+        quiz: { question: "What is the safest home step?", options: [["protect", "Prevent licking and keep the area clean and dry."], ["drain", "Puncture the lump so it can drain."], ["cream", "Apply a human pain cream."]], answer: "protect", correct: "Yes. Protection preserves the area for assessment.", retry: "Choose the low-risk step that avoids squeezing or medication." },
+      },
+      {
+        title: "Prepare the skin-change appointment",
+        result: "You will give the care team a concise change timeline and recognize signs that should not wait.",
+        copy: "Bring the first photo, newest measurement, growth speed, medicines, and every whole-body change.",
+        steps: ["State when it first appeared and how quickly it changed.", "Bring the photo series and list of medicines, flea products, and recent procedures.", "Seek prompt care for rapid growth, persistent bleeding, severe pain, dark tissue, fever, weakness, or trouble breathing."],
+        quiz: { question: "Which change deserves a faster call?", options: [["rapid", "The area doubled quickly and now bleeds."], ["stable", "A tiny mark looks unchanged in two dated photos."], ["unknown", "The coat color looks different in sunlight."]], answer: "rapid", correct: "Correct. Rapid growth with bleeding should be assessed promptly.", retry: "Choose the rapidly changing or painful finding." },
+      },
+    ],
+    urgent: "Rapid growth, persistent bleeding, severe pain, facial swelling, dark or dying tissue, fever, collapse, or breathing difficulty needs prompt veterinary help.",
+    community: { question: "I found a new lump while brushing my dog. What should I record before the appointment?", excerpt: "Use a dated photo, ruler, exact body location, texture, growth speed, and whole-body changes.", helpful: 0, replies: [] },
+  },
+  {
+    slug: "vision-or-hearing-change",
+    topic: "Senses",
+    title: "A change in vision or hearing",
+    eyebrow: "Senses · 3 practical chapters",
+    intro:
+      "Separate a gradual sensory change from sudden confusion, make familiar routes safer, and document what still works.",
+    image: "sleep-dog-home.webp",
+    imageAlt: "Older dog resting in a familiar home environment",
+    conditionLabel: "What are you noticing?",
+    conditionOptions: ["Startles when approached", "Misses cues or sounds", "Bumps into things", "Sudden disorientation or eye pain"],
+    impactOptions: ["Occasional", "Daily but manageable", "Limits normal routines", "Sudden or severe"],
+    chapters: [
+      {
+        title: "Test ordinary moments safely",
+        result: "You will identify whether the pattern involves sound, sight, attention, movement, or several systems together.",
+        copy: "Observe familiar cues without frightening your dog or forcing a response.",
+        steps: ["Record response to their name, a familiar hand signal, food preparation, and a normal doorway.", "Note lighting, distance, which side you approached, and whether your dog was awake.", "Film one natural example and record head tilt, circling, eye redness, cloudiness, or imbalance."],
+        quiz: { question: "Which observation is most useful?", options: [["context", "In daylight she follows a hand cue, but at dusk she misses the last stair."], ["frighten", "I clapped behind her repeatedly until she jumped."], ["label", "She is just getting old."]], answer: "context", correct: "Correct. Context shows what still works and when difficulty appears.", retry: "Choose the calm, repeatable observation with lighting and function." },
+      },
+      {
+        title: "Make familiar routes predictable",
+        result: "You will reduce surprises without removing independence.",
+        copy: "Consistency, traction, lighting, and a gentle approach can protect confidence.",
+        steps: ["Keep furniture, bowls, beds, and bathroom routes in consistent places.", "Add even lighting and traction at stairs, thresholds, and dark hallways.", "Approach where your dog can see or smell you, then use a gentle touch cue before handling."],
+        quiz: { question: "Which change supports confidence?", options: [["predictable", "Keep routes consistent and add lighting and traction."], ["move", "Move all furniture to test adaptation."], ["startle", "Wake the dog with a sudden touch."]], answer: "predictable", correct: "Yes. Predictability lowers surprise and preserves familiar choices.", retry: "Choose the stable, well-lit environment." },
+      },
+      {
+        title: "Know when a sensory change is urgent",
+        result: "You will distinguish a gradual adjustment from pain or sudden neurologic change.",
+        copy: "Sudden blindness, a painful red eye, collapse, severe imbalance, seizures, or acute confusion should not wait.",
+        steps: ["Record whether onset was sudden or gradual and whether one side seems different.", "Share eye appearance, balance, appetite, medicines, sleep, and recent injury or illness.", "Protect your dog from stairs and hazards while seeking prompt veterinary advice for sudden changes."],
+        quiz: { question: "Which situation needs prompt care?", options: [["sudden", "Sudden bumping into walls with a red painful eye."], ["gradual", "A gradual need for brighter hallway lighting."], ["routine", "Sleeping through a quiet conversation."]], answer: "sudden", correct: "Correct. Sudden vision loss with eye pain needs prompt assessment.", retry: "Choose the sudden, painful, or neurologic change." },
+      },
+    ],
+    urgent: "Sudden blindness, a painful red or enlarged eye, collapse, seizure, severe imbalance, head tilt with distress, or acute confusion needs prompt veterinary care.",
+    community: { question: "My dog startles when I touch him and misses me at the doorway. Is it hearing, vision, or both?", excerpt: "Compare calm, familiar cues in consistent light and record side, distance, alertness, balance, and eye changes.", helpful: 0, replies: [] },
+  },
+  {
+    slug: "mouth-or-dental-pain",
+    topic: "Mouth",
+    title: "Possible mouth or dental pain",
+    eyebrow: "Mouth · 3 practical chapters",
+    intro:
+      "Spot eating mechanics that suggest oral discomfort, protect nutrition, and prepare a safer dental conversation.",
+    image: "owner-dog-couch.webp",
+    imageAlt: "Dog owner gently observing a dog during a quiet home moment",
+    conditionLabel: "What changed first?",
+    conditionOptions: ["Drops food", "Chews on one side", "Bad breath or drooling", "Facial swelling or cannot eat"],
+    impactOptions: ["Still finishes meals", "Eats more slowly", "Leaves food or avoids chewing", "Cannot eat, drink, or settle"],
+    chapters: [
+      {
+        title: "Watch how the meal changes",
+        result: "You will capture chewing mechanics rather than only the amount eaten.",
+        copy: "The way food is picked up, chewed, dropped, and swallowed can reveal a useful pattern.",
+        steps: ["Film the first minute of an ordinary meal without opening the mouth by force.", "Record side preference, dropped food, pawing, drooling, odor, swallowing, and time to finish.", "Measure food and water offered and consumed, plus any weight change."],
+        quiz: { question: "Which detail best describes mouth function?", options: [["mechanics", "She picks up kibble, drops it, and chews only on the left."], ["amount", "She ate less."], ["force", "I forced her mouth open to look."]], answer: "mechanics", correct: "Correct. Specific eating mechanics help localize the problem.", retry: "Choose the specific, naturally observed chewing behavior." },
+      },
+      {
+        title: "Protect food and comfort",
+        result: "You will support intake without giving unsafe medication or masking a worsening problem.",
+        copy: "Ask the veterinary team about an appropriate temporary texture and keep a close intake record.",
+        steps: ["Offer the normal diet in the safest texture your veterinary team recommends.", "Keep water easy to reach and record actual intake and vomiting.", "Avoid hard chews, mouth handling, human pain medicine, and leftover antibiotics."],
+        quiz: { question: "What is the safest next step?", options: [["call", "Call the veterinary team about food texture and pain assessment."], ["human", "Give human pain medicine."], ["hard", "Offer a hard chew to clean the teeth."]], answer: "call", correct: "Yes. Oral pain and diet changes deserve professional guidance.", retry: "Choose the step that gets safe diet and pain advice." },
+      },
+      {
+        title: "Recognize signs that should not wait",
+        result: "You will know when reduced eating has become an urgent pain, airway, or hydration problem.",
+        copy: "Facial swelling, uncontrolled bleeding, trauma, inability to swallow, breathing trouble, or complete refusal of food and water needs faster help.",
+        steps: ["Photograph visible facial swelling without pressing it.", "Bring the meal video, intake totals, medicines, and timing of the first change.", "Seek urgent care for breathing trouble, inability to swallow, major trauma, severe bleeding, or collapse."],
+        quiz: { question: "Which sign should not wait?", options: [["airway", "Facial swelling with difficulty swallowing or breathing."], ["slow", "Taking a little longer to finish one meal."], ["odor", "Mild odor noticed during brushing."]], answer: "airway", correct: "Correct. Swelling that affects swallowing or breathing is urgent.", retry: "Choose the airway, severe bleeding, or collapse sign." },
+      },
+    ],
+    urgent: "Facial swelling, breathing or swallowing difficulty, uncontrolled oral bleeding, major trauma, collapse, severe pain, or inability to eat or drink needs prompt veterinary care.",
+    community: { question: "My dog drops kibble and chews on one side. What details will help the vet?", excerpt: "Record the first minute of eating, side preference, dropped food, drooling, odor, meal duration, intake, and weight trend.", helpful: 0, replies: [] },
+  },
 ];
 
 const routeLabels = {
@@ -1406,6 +1531,7 @@ function legacyPage({ route, title, description, body, bodyClass = "" }) {
   <link rel="canonical" href="${canonical}">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/styles.css?v=${ASSET_VERSION}">
+  <link rel="stylesheet" href="/refinement.css?v=${ASSET_VERSION}">
   <title>${escapeHtml(title)} · WoafyPet</title>
 </head>
 <body class="${escapeHtml(bodyClass)}">
@@ -2354,11 +2480,10 @@ function header() {
       <a class="wm-wordmark" data-logo-link href="/" aria-label="WoafMeow home">${image("woafmeow-logo-coral.png", "WoafMeow", { eager: true })}</a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation" data-menu-toggle><span></span><span></span><span></span><span class="sr-only">Open navigation</span></button>
       <nav class="wm-nav" id="site-navigation" aria-label="Primary navigation" data-site-nav>
-        <a href="/care-circle/">Topics</a>
-        <a href="/account/?next=ask">Ask a question</a>
-        <a href="/find-care/?care=senior-veterinarians">Vet support</a>
-        <a href="/memorial-tree/">Memorial trees</a>
-        <a href="/guide/">Resources</a>
+        <details class="nav-group"><summary>Learn</summary><div class="nav-menu"><a href="/care-circle/"><strong>Care Circle</strong><span>Public questions and complete lessons</span></a><a href="/guide/"><strong>Senior Dog Care Guide</strong><span>Know what to watch and do next</span></a></div></details>
+        <details class="nav-group"><summary>Ask &amp; track</summary><div class="nav-menu"><a href="/account/?next=ask"><strong>Ask Care Circle</strong><span>Guidance shaped around your dog</span></a><a href="/health-timeline/"><strong>Health Timeline</strong><span>Upload records and track change</span></a></div></details>
+        <details class="nav-group"><summary>Find care</summary><div class="nav-menu"><a href="/find-care/?care=senior-veterinarians"><strong>Veterinarians</strong><span>Verified official care profiles</span></a><a href="/find-care/?care=pain-mobility-rehab"><strong>Mobility &amp; rehabilitation</strong><span>Support for movement and pain</span></a><a href="/find-care/#list-your-practice"><strong>List your practice</strong><span>Join the care directory</span></a></div></details>
+        <details class="nav-group"><summary>Connect &amp; support</summary><div class="nav-menu"><a href="/wednesday-introductions/"><strong>Wednesday introductions</strong><span>Meet an owner who understands</span></a><a href="/pet-loss-support/"><strong>Pet loss support</strong><span>Specific help before and after goodbye</span></a><a href="/memorial-tree/"><strong>Memorial trees</strong><span>A living tribute in their name</span></a></div></details>
         <a class="wm-login-link" href="/account/" data-account-link>Log in</a>
       </nav>
       <a class="wm-product-link" href="/account/?next=ask">Create account</a>
@@ -2382,7 +2507,7 @@ function footer() {
 
 function page({ route, title, description, body, bodyClass = "" }) {
   const canonical = `https://www.woafmeow.com${route}`;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="description" content="${escapeHtml(description)}"><meta name="theme-color" content="#fffaf6"><link rel="canonical" href="${canonical}"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css?v=${ASSET_VERSION}"><title>${escapeHtml(title)} · WoafMeow</title></head><body class="${escapeHtml(bodyClass)}"><a class="skip-link" href="#main-content">Skip to content</a>${header()}<main id="main-content">${body}</main>${footer()}<script src="/app.js?v=${ASSET_VERSION}" defer></script></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="description" content="${escapeHtml(description)}"><meta name="theme-color" content="#fffaf6"><link rel="canonical" href="${canonical}"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css?v=${ASSET_VERSION}"><link rel="stylesheet" href="/refinement.css?v=${ASSET_VERSION}"><title>${escapeHtml(title)} · WoafMeow</title></head><body class="${escapeHtml(bodyClass)}"><a class="skip-link" href="#main-content">Skip to content</a>${header()}<main id="main-content">${body}</main>${footer()}<script src="/app.js?v=${ASSET_VERSION}" defer></script></body></html>`;
 }
 
 function editorialHeading(title, copy = "", action = "") {
@@ -2549,7 +2674,7 @@ function wmHomePage() {
     title: "Know what your aging dog needs next",
     description:
       "Ask about a change in your dog and get practical Care Circle guidance, veterinarian-supported lessons, trusted care options, and supportive WoafyPet rest.",
-    bodyClass: "home-v12 home-v13",
+    bodyClass: "home-v12 home-v13 home-v14",
     body: `
     <div class="home-reference">
       <section class="home-ref-hero"><div class="home-ref-hero-copy"><h1>Know what your aging dog needs next.</h1><p>Ask about the change you see. Get practical next steps, veterinarian-supported lessons and trusted care shaped around your dog.</p><form class="home-question-box" data-home-question-form><label for="home-care-question">What changed with your dog?</label><div><input id="home-care-question" name="question" type="search" maxlength="500" placeholder="e.g., She is stiff after getting up" required><button type="submit" aria-label="Ask Care Circle">Ask <span aria-hidden="true">→</span></button></div></form><div class="home-hero-proof" aria-label="Why pet owners trust WoafMeow"><strong>Trusted by 10,000+ pet owners</strong><span>Veterinarian-supported</span><span>Built for dog parents</span></div></div><figure>${image("problem-mobility-senior-lab.jpg", "Senior Labrador resting comfortably at home", { eager: true })}</figure></section>
@@ -2564,7 +2689,7 @@ function wmHomePage() {
 
       <section class="home-vet-testimonials"><header><h2>Veterinarian support you can trust.</h2><p>Careful observation helps owners ask clearer questions and seek the right help sooner.</p></header><div><article><figure>${image("vet-silvan-urfer.jpg", "Veterinarian and dog-aging researcher Dr. Silvan Urfer")}</figure><div><blockquote>“Dogs often compensate until changes become obvious. Long-term tracking can give owners and veterinarians more context.”</blockquote><p><strong>Dr. Silvan Urfer</strong><span>Veterinarian &amp; dog-aging researcher</span></p></div></article><article><figure>${image("vet-annika-bremhorst.png", "Veterinarian and canine-pain researcher Dr. Annika Bremhorst")}</figure><div><blockquote>“Pain can be difficult to detect, especially when it is prolonged. Long-term monitoring can help reveal subtle changes.”</blockquote><p><strong>Dr. Annika Bremhorst</strong><span>Veterinarian &amp; canine-pain researcher</span></p></div></article></div><aside><h3>Need more help?</h3><p>Find a veterinarian, rehabilitation service or other senior-dog care professional.</p><a class="button secondary" href="/find-care/?care=senior-veterinarians">Find veterinary care →</a></aside></section>
 
-      <section class="home-ref-bed" aria-labelledby="home-bed-heading"><h2 class="sr-only" id="home-bed-heading">WoafyPet Smart Bed comfort and passive wellness insights</h2><div class="home-bed-grid"><article class="home-bed-panel home-bed-comfort"><div><span>WoafyPet Smart Bed</span><h3>Help them rest more comfortably.</h3><p>For dogs who pause before lying down, shift through the night or wake up stiff.</p><ul><li>Low front entry</li><li>Supportive orthopedic foam</li><li>Steady bolsters</li><li>Removable, easy-clean cover</li></ul><a class="button primary" href="https://www.woafy.pet/">Explore WoafyPet Smart Bed →</a></div><figure>${image("product-prototype-golden.webp", "Golden retriever resting in the real gray WoafyPet Smart Bed prototype")}</figure></article><article class="home-bed-panel home-bed-tracking"><div><span>Smart Base insights</span><h3>Notice when familiar rest patterns change.</h3><p>Passive summaries help you see changes that are easy to miss between check-ins.</p><div class="home-bed-metrics"><span><b>Rest duration</b>Night-to-night change</span><span><b>Night movement</b>Settling and repositioning</span><span><b>Bed use</b>Visits to a familiar place</span><span><b>Weight trends</b>Longer-term context</span></div><a class="button secondary" href="https://www.woafy.pet/">See how it works →</a></div><figure>${image("product-visualization-smart-base.png", "WoafyPet Smart Base product visualization shown fully")}</figure></article></div></section>
+      <section class="home-ref-bed" aria-labelledby="home-bed-heading"><header><span>WoafyPet Smart Bed</span><h2 id="home-bed-heading">Comfort they feel. Changes you can see.</h2><p>Premium orthopedic rest and passive wellness tracking—designed around the daily realities of aging dogs.</p></header><div class="home-bed-grid"><article class="home-bed-panel home-bed-comfort"><div><span>Premium orthopedic comfort</span><h3>Easier to enter, settle and rest.</h3><p>A low front entry, supportive bolsters and layered foam help older dogs find a steady, comfortable position.</p><ul><li><strong>Elegant at home</strong> — furniture-grade neutral design</li><li><strong>Easy maintenance</strong> — removable, washable cover</li><li><strong>Layered support</strong> — comfort, orthopedic and stable base foams</li></ul><a class="button primary" href="https://www.woafy.pet/">Explore WoafyPet Smart Bed →</a></div><figure class="bed-product-scene">${image("product-hero-official.png", "Complete WoafyPet Smart Bed shown in a premium home setting")}</figure><figure class="bed-layer-scene">${image("bed-layers.png", "Complete WoafyPet Smart Bed foam and Smart Base layer system")}</figure></article><article class="home-bed-panel home-bed-tracking"><div><span>Smart Base wellness insights</span><h3>See the changes that are easy to miss.</h3><p>Quiet, passive summaries turn ordinary rest into useful context for you and your care team.</p><div class="home-bed-metrics"><span><b>Rest duration</b>See whether total rest is shifting</span><span><b>Night movement</b>Notice wake-ups and repositioning</span><span><b>Bed use</b>Spot avoidance of a familiar rest place</span><span><b>Weight trends</b>Add longer-term context without a wearable</span></div><a class="button secondary" href="https://www.woafy.pet/">Discover Smart Base →</a></div><figure>${image("product-visualization-smart-base.png", "Complete WoafyPet Smart Base and wellness insight system")}</figure></article></div></section>
 
       <section class="home-support-paths" aria-label="More ways WoafMeow can help">${supportPaths.map(([title, copy, asset, href, action]) => `<a href="${href}"><figure>${image(asset, title)}</figure><div><h2>${title}</h2><p>${copy}</p><span>${action} →</span></div></a>`).join("")}</section>
     </div>`,
@@ -2633,15 +2758,15 @@ function wmGuidePage() {
     title: "The complete Senior Dog Care Guide",
     description:
       "A detailed, visual guide to the most common changes in senior dogs, what to notice, what to do today, and when to call a veterinarian.",
-    bodyClass: "guide-v6",
+    bodyClass: "guide-v6 guide-v7",
     body: `
     <section class="guide-hero-v6"><div class="guide-hero-photo">${image("guide-recognize-older-golden.jpg", "Older golden retriever receiving a calm daily check-in", { eager: true })}</div><div class="guide-hero-copy"><h1>The complete Senior Dog Care Guide</h1><p>Understand the changes aging dogs face. Know what to check, what to make easier today, and what deserves a faster call.</p>${emailCapture("guide-download", "Send the guide to my inbox")}</div></section>
     <section class="guide-outcomes"><div class="wm-wrap"><article><span>1</span><h2>Recognize the exact change.</h2><p>Replace vague worry with a specific behavior, time and routine.</p></article><article><span>2</span><h2>Make today easier.</h2><p>Use low-risk changes that protect access, traction, rest and dignity.</p></article><article><span>3</span><h2>Know when to call.</h2><p>Separate useful tracking from signs that should not wait.</p></article></div></section>
     <section class="guide-topics-v6"><div class="wm-wrap">${editorialHeading("Six changes. Three decisions for each.", "What to watch, what to do today and when to call sooner.")}<div>${topics.map(([title, notice, today, sooner, asset]) => `<article><figure>${image(asset, `${title} section of the Senior Dog Care Guide`)}</figure><div><h3>${title}</h3><dl><div><dt>Watch</dt><dd>${notice}</dd></div><div><dt>Do today</dt><dd>${today}</dd></div><div><dt>Call sooner</dt><dd>${sooner}</dd></div></dl></div></article>`).join("")}</div></div></section>
     <section class="guide-method"><div class="wm-wrap image-text"><figure>${image("guide-observe-beagle-owner.jpg", "Owner observing a dog's ordinary home routine")}</figure><div><h2>Your seven-day change record</h2><ol><li><strong>Day 1 — Set the baseline.</strong> Film or note one ordinary routine without prompting.</li><li><strong>Days 2–3 — Repeat at the same time.</strong> Look for frequency, effort and recovery.</li><li><strong>Days 4–5 — Change one safe detail.</strong> Add traction, access or a shorter route; record the result.</li><li><strong>Day 6 — Connect the systems.</strong> Add sleep, appetite, water, bathroom and medicines.</li><li><strong>Day 7 — Write the summary.</strong> State what changed, how often, what helped and what is harder now.</li></ol><button class="button secondary" type="button" data-print-guide>Print this plan →</button></div></div></section>
     <section class="guide-vet-note"><div class="wm-wrap"><div><h2>Bring a better first sentence to the appointment.</h2><blockquote>“For ten days, she pauses after naps, has slipped twice in the hallway, and now avoids the two kitchen steps. A runner helps, but the change is still happening daily.”</blockquote><ul><li>Bring the timeline and short natural videos.</li><li>List medicines, supplements and recent changes.</li><li>Ask which causes need evaluation and what to monitor next.</li></ul></div><figure>${image("real-senior-care-at-home.jpg", "Senior dog receiving attentive care at home")}</figure></div></section>
-    <section class="guide-lessons"><div class="wm-wrap">${editorialHeading("Apply the guide to your dog", "Create a profile, ask your question and publish only the pet details you choose.")}<div class="guide-apply-card"><div><h2>Profile first. Then a focused Care Circle answer.</h2><p>Age, breed, known conditions, medicines and the exact change shape the lesson you receive.</p></div>${button("Create my dog's profile", "/account/?next=ask")}</div></div></section>
-    <section class="email-band"><div class="wm-wrap">${emailCapture("guide-bottom", "Keep the complete guide close")}</div></section>`,
+    <section class="guide-vet-trust"><div class="wm-wrap"><header><h2>Built with veterinarian-supported observation principles.</h2><p>Notice the pattern, make the day safer and bring a clearer story to the professional who knows your dog.</p></header><article><figure>${image("vet-silvan-urfer.jpg", "Dr. Silvan Urfer, veterinarian and dog-aging researcher")}</figure><div><blockquote>“Dogs often compensate until changes become obvious. Long-term tracking can give owners and veterinarians more context.”</blockquote><strong>Dr. Silvan Urfer</strong><span>Veterinarian &amp; dog-aging researcher</span></div></article><article><figure>${image("vet-annika-bremhorst.png", "Dr. Annika Bremhorst, veterinarian and canine-pain researcher")}</figure><div><blockquote>“Pain can be difficult to detect, especially when it is prolonged. Long-term monitoring can help reveal subtle changes.”</blockquote><strong>Dr. Annika Bremhorst</strong><span>Veterinarian &amp; canine-pain researcher</span></div></article></div></section>
+    <section class="guide-lessons"><div class="wm-wrap">${editorialHeading("Turn the guide into a plan for your dog", "Create a profile once, then ask a focused question using the health history you choose to share.")}<div class="guide-apply-card"><div><h2>Age, breed, conditions and medicines make the next step more relevant.</h2><p>Upload records, track changes over time and keep the complete story ready for the next veterinary conversation.</p></div>${button("Create my dog's care profile", "/account/?next=ask")}</div></div></section>`,
   });
 }
 
@@ -2713,17 +2838,35 @@ function wmCareCirclePage() {
       "German Shepherd mix",
       "new anti-inflammatory medicine; sleepier after each dose",
     ],
+    [
+      "Poppy",
+      "9 years",
+      "Cavalier King Charles Spaniel",
+      "new shoulder lump; licking the area after walks",
+    ],
+    [
+      "Theo",
+      "12 years",
+      "Miniature Poodle",
+      "misses hand cues at dusk; startles when approached from the left",
+    ],
+    [
+      "Mabel",
+      "10 years",
+      "Labrador Retriever",
+      "periodontal disease; drops kibble and chews on one side",
+    ],
   ];
   return page({
     route: "/care-circle/",
     title: "Care Circle",
     description:
       "Public questions, pet conditions and complete care lessons in one place.",
-    bodyClass: "circle-v7",
+    bodyClass: "circle-v7 circle-v8",
     body: `
     <span id="ask" class="anchor-target" aria-hidden="true"></span>
-    <section class="circle-hero-v7"><div><h1>Real questions from dog owners like you.</h1><p>See the pet's age, breed, known conditions and daily change. Then open the complete public answer.</p><div class="circle-hero-actions"><a class="button primary" href="#public-lessons">Browse public lessons →</a><a class="button secondary" href="/account/?next=ask">Ask about my dog →</a></div></div><figure>${image("real-care-circle-owner-dog.jpg", "Dog owner sharing a quiet moment with a dog at home", { eager: true })}</figure></section>
-    <section class="circle-ask-v7"><div class="wm-wrap"><div class="circle-account-gate" data-account-gate><div><h2>Your dog's profile shapes the answer.</h2><p>Sign in, choose your dog and decide which pet details appear with the public question.</p></div><a class="button primary" href="/account/?next=ask">Sign in or create an account →</a></div><form class="circle-question-form" data-account-ask-form hidden><div><h2>Ask Care Circle</h2><p data-active-pet-summary></p></div><label><span>What changed with your dog?</span><textarea name="question" maxlength="500" required placeholder="Describe what you noticed, when it started and what daily routine is harder."></textarea></label><label class="consent-row"><input type="checkbox" name="publicPetDetails" required><span>Show this pet's age, breed and owner-shared conditions with the public question.</span></label><button class="button primary" type="submit">Build and publish my care lesson →</button><p class="form-note" data-account-ask-note role="status" aria-live="polite"></p></form></div></section>
+    <section class="circle-hero-v7"><div><h1>Real questions. Complete answers shaped around real dogs.</h1><p>Every public lesson shows the dog's age, breed, owner-shared conditions and exact change—so you can see why the guidance is different.</p><form class="circle-hero-question" data-home-question-form><label for="circle-hero-question">What changed with your dog?</label><div><input id="circle-hero-question" name="question" maxlength="500" placeholder="e.g., My dog wakes and paces after midnight" required><button type="submit">Ask Care Circle →</button></div><small>New here? Create your care profile first so the answer can reflect your dog.</small></form><div class="circle-hero-actions"><a class="button secondary" href="#public-lessons">Browse public lessons →</a><a class="text-link" href="/account/?next=ask">Create my dog's profile →</a></div></div><figure>${image("real-care-circle-owner-dog.jpg", "Real dog owner sharing a close moment with her dog", { eager: true })}</figure></section>
+    <section class="circle-ask-v7"><div class="wm-wrap"><div class="circle-account-gate" data-account-gate><div><h2>Ask once your dog's care profile is ready.</h2><p>Age, breed, conditions, medicines and health records help focus the answer. You choose which pet details become public.</p></div><a class="button primary" href="/account/?next=ask">Create or edit my care profile →</a></div><form class="circle-question-form" data-account-ask-form hidden><div><h2>Ask Care Circle</h2><p data-active-pet-summary></p></div><label><span>What changed with your dog?</span><textarea name="question" maxlength="500" required placeholder="Describe what you noticed, when it started and what daily routine is harder."></textarea></label><label class="consent-row"><input type="checkbox" name="publicPetDetails" required><span>Show this pet's age, breed and owner-shared conditions with the public question.</span></label><button class="button primary" type="submit">Build and publish my care lesson →</button><p class="form-note" data-account-ask-note role="status" aria-live="polite"></p></form></div></section>
     <section class="circle-feed-v7" id="public-lessons"><div class="wm-wrap"><div class="circle-filter-bar"><h2>Public questions and complete lessons</h2><div role="group" aria-label="Filter Care Circle questions">${topics.map((topic, index) => `<button type="button" data-circle-filter="${escapeHtml(topic.toLowerCase())}" aria-pressed="${index === 0 ? "true" : "false"}">${escapeHtml(topic)}</button>`).join("")}</div></div><div class="circle-public-grid" data-circle-public-grid>${lessons
       .map((lesson, index) => {
         const profile = publicProfiles[index];
@@ -2778,6 +2921,21 @@ function wmLessonPage(lesson) {
     "after-a-medicine-change": [
       "real-holding-dog.jpg",
       "problem-restless-night-senior-black-lab.jpg",
+      "guide-vet-care-brown-dog.jpg",
+    ],
+    "new-lump-or-skin-change": [
+      "real-companion-moment.jpg",
+      "guide-observe-beagle-owner.jpg",
+      "guide-vet-care-brown-dog.jpg",
+    ],
+    "vision-or-hearing-change": [
+      "real-holding-dog.jpg",
+      "real-comfort-hug.jpg",
+      "real-senior-care-at-home.jpg",
+    ],
+    "mouth-or-dental-pain": [
+      "problem-appetite-owner-and-dogs.jpg",
+      "problem-appetite-owner-offering-food.jpg",
       "guide-vet-care-brown-dog.jpg",
     ],
   };
@@ -2845,6 +3003,27 @@ function wmLessonPage(lesson) {
       "arthritis",
       "sleepier and less interested in food since a medicine change",
     ],
+    "new-lump-or-skin-change": [
+      "Poppy",
+      "9 years",
+      "Cavalier King Charles Spaniel",
+      "no diagnosis shared yet",
+      "a new shoulder lump and licking after walks",
+    ],
+    "vision-or-hearing-change": [
+      "Theo",
+      "12 years",
+      "Miniature Poodle",
+      "early cataracts",
+      "misses hand cues at dusk and startles from the left",
+    ],
+    "mouth-or-dental-pain": [
+      "Mabel",
+      "10 years",
+      "Labrador Retriever",
+      "periodontal disease",
+      "drops kibble, chews on one side, and takes longer to finish",
+    ],
   };
   const imgs = chapterImageSets[lesson.slug];
   const profile = publicProfileMap[lesson.slug];
@@ -2852,11 +3031,11 @@ function wmLessonPage(lesson) {
     route: `/care-circle/${lesson.slug}/`,
     title: lesson.title,
     description: lesson.intro,
-    bodyClass: "lesson-v7",
+    bodyClass: "lesson-v7 lesson-v8",
     body: `
     <article><header class="lesson-hero-v7"><div><a class="back-link" href="/care-circle/">← All Care Circle lessons</a><h1>${escapeHtml(lesson.title)}</h1><p>${escapeHtml(lesson.intro)}</p><dl class="public-pet-profile" data-public-pet-profile><div><dt>Dog</dt><dd data-public-dog>${escapeHtml(profile[0])} · ${escapeHtml(profile[1])} · ${escapeHtml(profile[2])}</dd></div><div><dt>Owner-shared conditions</dt><dd data-public-conditions>${escapeHtml(profile[3])}</dd></div><div><dt>What changed</dt><dd data-public-change>${escapeHtml(profile[4])}</dd></div></dl></div><figure>${image(lesson.image, lesson.imageAlt, { eager: true })}</figure></header>
     <section class="lesson-result-v7"><div class="wm-wrap"><h2>A focused answer for <span data-focused-pet>${escapeHtml(profile[0])}</span></h2><p data-focused-result>${escapeHtml(lesson.chapters[0].result)}</p></div></section>
-    <div class="lesson-chapters-v7">${lesson.chapters.map((chapter, index) => `<section id="chapter-${index + 1}" data-lesson-chapter="${index + 1}"><div class="wm-wrap lesson-chapter-layout"><figure>${image(imgs[index], `${chapter.title} for ${lesson.title}`)}</figure><div><h2>${escapeHtml(chapter.title)}</h2><p class="chapter-result" data-tailored-chapter-summary="${index + 1}">${escapeHtml(chapter.result)}</p><p>${escapeHtml(chapter.copy)}</p><ol data-tailored-chapter-steps="${index + 1}">${chapter.steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol><fieldset class="chapter-quiz" data-chapter-quiz data-answer="${escapeHtml(chapter.quiz.answer)}" data-correct-message="${escapeHtml(chapter.quiz.correct)}" data-retry-message="${escapeHtml(chapter.quiz.retry)}"><legend>${escapeHtml(chapter.quiz.question)}</legend>${chapter.quiz.options.map(([value, label]) => `<label><input type="radio" name="${lesson.slug}-quiz-${index + 1}" value="${escapeHtml(value)}"><span>${escapeHtml(label)}</span></label>`).join("")}<button type="button" data-check-quiz>Check answer</button><p role="status" aria-live="polite" data-quiz-feedback></p></fieldset></div></div></section>`).join("")}</div><section class="call-sooner-v7"><div class="wm-wrap"><h2>Call sooner when you see this</h2><p>${escapeHtml(lesson.urgent)}</p>${button("Find care now", "/find-care/")}</div></section>
+    <div class="lesson-chapters-v7">${lesson.chapters.map((chapter, index) => `<section id="chapter-${index + 1}" data-lesson-chapter="${index + 1}"><div class="wm-wrap lesson-chapter-layout"><figure>${image(imgs[index], `${chapter.title} for ${lesson.title}`)}</figure><div><h2>${escapeHtml(chapter.title)}</h2><aside class="tailored-context"><strong>Why this matters for ${escapeHtml(profile[0])}</strong><p>${escapeHtml(profile[0])} is ${escapeHtml(profile[1])}, with ${escapeHtml(profile[3])}; the owner reports ${escapeHtml(profile[4])}. This chapter prioritizes the safest observation and next step for that exact pattern.</p></aside><p class="chapter-result" data-tailored-chapter-summary="${index + 1}">${escapeHtml(chapter.result)}</p><p>${escapeHtml(chapter.copy)}</p><ol data-tailored-chapter-steps="${index + 1}">${chapter.steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol><fieldset class="chapter-quiz" data-chapter-quiz data-answer="${escapeHtml(chapter.quiz.answer)}" data-correct-message="${escapeHtml(chapter.quiz.correct)}" data-retry-message="${escapeHtml(chapter.quiz.retry)}"><legend>${escapeHtml(chapter.quiz.question)}</legend>${chapter.quiz.options.map(([value, label]) => `<label><input type="radio" name="${lesson.slug}-quiz-${index + 1}" value="${escapeHtml(value)}"><span>${escapeHtml(label)}</span></label>`).join("")}<button type="button" data-check-quiz>Check answer</button><p role="status" aria-live="polite" data-quiz-feedback></p></fieldset></div></div></section>`).join("")}</div><section class="call-sooner-v7"><div class="wm-wrap"><h2>Call sooner when you see this</h2><p>${escapeHtml(lesson.urgent)}</p>${button("Find care now", "/find-care/")}</div></section>
     <section class="lesson-conversation-v7"><div class="wm-wrap"><div><h2>Was this lesson useful?</h2><p>Share what helped or add your experience for another dog owner.</p></div>${communityControls(`${lesson.slug}-lesson`, 0, [])}</div></section></article>`,
   });
 }
@@ -2994,9 +3173,9 @@ function wmDirectoryCard(entry, index = 0, resource = false) {
     .join(" ");
   const visual =
     !resource && entry.asset
-      ? `<figure>${image(entry.asset, `${entry.title} published profile image`)}</figure>`
-      : `<div class="provider-monogram" aria-hidden="true"><span>${escapeHtml((entry.organization || entry.title || "Care").charAt(0))}</span><small>${resource ? "Official directory" : escapeHtml(region)}</small></div>`;
-  return `<article class="provider-card-v6${resource ? " official-resource" : ""}${entry.asset && !resource ? " has-photo" : " has-monogram"}" data-directory-item ${resource ? "data-directory-resource" : "data-directory-profile"} data-search="${escapeHtml(searchText)}" data-categories="${escapeHtml(categories.join("|"))}" data-region="${escapeHtml(region)}">${visual}<div><h3>${escapeHtml(entry.title)}</h3>${entry.organization && entry.organization !== entry.title ? `<p class="organization">${escapeHtml(entry.organization)}</p>` : ""}<p class="location">${escapeHtml(directoryDisplayLocation(entry))}</p><p>${escapeHtml(entry.useWhen || entry.summary || "")}</p><a href="${escapeHtml(entry.url)}" target="_blank" rel="noreferrer">${resource ? "Open official directory" : "View official profile"} →</a></div></article>`;
+      ? `<figure>${image(entry.asset, `${entry.title} published professional or clinic image`)}</figure>`
+      : `<header class="provider-monogram provider-source-mark"><span>${resource ? "Official search directory" : "Verified official clinic profile"}</span><small>${escapeHtml(entry.organization || region)}</small></header>`;
+  return `<article class="provider-card-v6${resource ? " official-resource" : ""}${entry.asset && !resource ? " has-photo" : " verified-source-card"}" data-directory-item ${resource ? "data-directory-resource" : "data-directory-profile"} data-search="${escapeHtml(searchText)}" data-categories="${escapeHtml(categories.join("|"))}" data-region="${escapeHtml(region)}">${visual}<div><h3>${escapeHtml(entry.title)}</h3>${entry.organization && entry.organization !== entry.title ? `<p class="organization">${escapeHtml(entry.organization)}</p>` : ""}<p class="location">${escapeHtml(directoryDisplayLocation(entry))}</p>${entry.mode ? `<p class="provider-contact">${escapeHtml(entry.mode)}</p>` : ""}<p>${escapeHtml(entry.useWhen || entry.summary || "")}</p><a href="${escapeHtml(entry.url)}" target="_blank" rel="noreferrer">${resource ? "Open official directory" : "View verified official profile"} →</a></div></article>`;
 }
 
 function wmFindCarePage() {
@@ -3024,10 +3203,10 @@ function wmFindCarePage() {
     route: "/find-care/",
     title: "Find dog care",
     description:
-      "Explore more than 100 real provider profiles and official care directories by care type and region.",
-    bodyClass: "find-care-v6",
+      "Explore more than 360 source-linked veterinary profiles and official care directories by care type and region.",
+    bodyClass: "find-care-v6 find-care-v7",
     body: `
-    <section class="directory-hero-v6"><div><h1>Choose the care your dog needs—and see who to call.</h1><p>Select a care type and region. Every result opens its current official source.</p><div class="directory-selectors" data-directory-controls><label><span>Care type</span><select data-directory-category>${careTypes.map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}</select></label><label><span>State or region</span><select data-directory-region><option value="all">All states and regions</option>${regions.map((region) => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`).join("")}</select></label></div></div><figure>${image("guide-vet-care-brown-dog.jpg", "Dog receiving attentive veterinary care", { eager: true })}</figure></section>
+    <section class="directory-hero-v6"><div><h1>Find a real care team—and know the next call to make.</h1><p>Choose the kind of help and your region. Each listing opens a provider-published profile or official professional directory.</p><div class="directory-credibility"><strong>${directoryProfiles.length}+ source-linked profiles</strong><span>Provider-published details</span><span>Official source on every card</span></div><div class="directory-selectors" data-directory-controls><label><span>Care type</span><select data-directory-category>${careTypes.map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}</select></label><label><span>State or region</span><select data-directory-region><option value="all">All states and regions</option>${regions.map((region) => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`).join("")}</select></label></div></div><figure>${image("guide-vet-care-brown-dog.jpg", "Real dog receiving attentive veterinary care", { eager: true })}</figure></section>
     <section class="emergency-strip-v6"><div class="wm-wrap"><div>${icon("care")}<p><strong>Trouble breathing, collapse, repeated unproductive retching, seizure, severe bleeding, inability to urinate or sudden inability to stand needs immediate veterinary care.</strong></p></div><button type="button" data-directory-filter="emergency-vets">Show emergency care</button></div></section>
     <section class="directory-results-v6"><div class="wm-wrap">${editorialHeading("Care matched to your choices.", "Open a profile or directory to confirm services, hours and the best first step.")}<p class="directory-live-summary sr-only" aria-live="polite"><strong data-directory-profile-count></strong><strong data-directory-resource-count></strong></p><div class="provider-grid-v6">${directoryProfiles.map((entry, index) => wmDirectoryCard(entry, index)).join("")}${directoryResources.map((entry, index) => wmDirectoryCard(entry, index, true)).join("")}</div><p class="care-directory-empty" data-directory-profile-empty hidden>No option matches both selections. Try another region or care type.</p><button class="button secondary care-directory-more" type="button" data-directory-load-more>Show more care options →</button></div></section>
     <section class="directory-note-v6"><div class="wm-wrap"><p>Confirm current credentials, hours, prices, referral requirements and availability on the official source before relying on a listing.</p></div></section>
@@ -3067,12 +3246,13 @@ function wmPetLossPage() {
     title: "Pet loss support",
     description:
       "Compassionate, specific guidance for comfort planning, goodbye decisions, aftercare, and the first days of grief.",
-    bodyClass: "loss-v6",
+    bodyClass: "loss-v6 loss-v7",
     body: `
     <section class="loss-hero-v6"><div><h1>You do not have to carry every next step at once.</h1><p>Start with the moment you are in. Make today more comfortable, prepare the questions that matter, and take the next decision one step at a time.</p><a class="button primary" href="#choose">Show me where to start →</a></div><figure>${image("real-pet-loss-support.jpg", "Caregiver holding a beloved dog close", { eager: true })}</figure></section>
     <section class="loss-choose" id="choose"><div class="wm-wrap">${editorialHeading("What are you facing today?", "Choose the closest moment. You can move between these paths at any time.")}<div><a href="#comfort"><strong>Comfort is changing</strong><span>Prepare today's plan →</span></a><a href="#goodbye"><strong>A goodbye may be near</strong><span>Know what to ask →</span></a><a href="#after"><strong>The loss has happened</strong><span>Get through the first days →</span></a></div></div></section>
     <section class="loss-journey"><div class="wm-wrap">${editorialHeading("Six steps, taken at your pace", "Use only the step that helps right now.")}<div>${steps.map(([title, copy], index) => `<article${index === 0 ? ' id="comfort"' : index === 3 ? ' id="goodbye"' : index === 5 ? ' id="after"' : ""}><span>0${index + 1}</span><div><h2>${escapeHtml(title)}</h2><p>${escapeHtml(copy)}</p></div></article>`).join("")}</div></div></section>
     <section class="loss-goodbye-detail" aria-labelledby="goodbye-detail-title"><div class="wm-wrap"><header><h2 id="goodbye-detail-title">Prepare for the goodbye without losing the moment.</h2><p>You can ask for clarity, choose what feels right for your family and change your mind about small details.</p></header><div><article><h3>Before</h3><ul><li>Ask what your dog may feel and how comfort is maintained.</li><li>Choose who will be present and where everyone can sit.</li><li>Bring a blanket, favorite treat or a short letter if that feels right.</li></ul></article><article><h3>During</h3><ul><li>Ask the care team to explain each step before it happens.</li><li>Take the time you need to say their name, touch them and be close.</li><li>Let the team know if you need a pause or more privacy.</li></ul></article><article><h3>After</h3><ul><li>Confirm identity handling, timing and who will contact you.</li><li>Request a paw print, fur clipping or other keepsake before leaving.</li><li>Choose one person to handle messages and practical follow-up.</li></ul></article></div><figure>${image("real-home-owner-dog.jpg", "A caregiver sharing a quiet moment at home with a beloved dog")}</figure></div></section>
+    <section class="loss-first-days"><div class="wm-wrap"><header><h2>What helps in the first days after loss.</h2><p>Grief changes by the hour. Use the part that helps; leave the rest for later.</p></header><div><article><figure>${image("grief-support.webp", "A quiet space for grieving a beloved dog")}</figure><h3>Protect the first 24 hours</h3><p>Choose one person for calls and messages. Eat something simple, drink water, and postpone decisions that do not need an answer today.</p></article><article><figure>${image("owner-comfort.webp", "A caregiver remembering the comfort shared with a dog")}</figure><h3>Help children and other pets</h3><p>Use clear words, keep familiar routines where possible, and allow every family member—including other animals—to respond differently.</p></article><article><figure>${image("memorial-tree.webp", "A personal keepsake honoring a beloved dog")}</figure><h3>Keep what feels like them</h3><p>Save the collar, a paw print, one photograph, a voice note or the story everyone tells. There is no deadline for deciding what stays.</p></article></div></div></section>
     <section class="loss-words"><div class="wm-wrap image-text"><figure>${image("real-comfort-hug.jpg", "Caregiver holding a dog close while seeking support")}</figure><div><h2>When the words are hard, start here.</h2><blockquote>“My dog's comfort has changed. I need help understanding what is urgent, what can be made easier today, and what choices we may need to prepare for.”</blockquote><a class="text-link" href="/find-care/?care=hospice-palliative-care">Find hospice and comfort care →</a></div></div></section>
     <section class="loss-support-v6"><div class="wm-wrap"><article><h2>Professional grief support</h2><p>Find counselors, social workers and support programs with pet-loss experience.</p><a href="/find-care/?care=grief-counselors">Find grief support →</a></article><article><h2>Aftercare</h2><p>Compare cremation, burial, keepsakes and memorial options without rushing the choice.</p><a href="/find-care/?care=memorial-aftercare">Find aftercare →</a></article><article><h2>A living tribute</h2><p>When the time feels right, plant a memorial tree in your dog's name.</p><a href="/memorial-tree/">Memorial tree →</a></article></div></section>`,
   });
@@ -3084,12 +3264,13 @@ function wmMemorialPage() {
     title: "Memorial tree",
     description:
       "Plant a living memorial tree in your dog's name and carry their story forward.",
-    bodyClass: "memorial-v6",
+    bodyClass: "memorial-v6 memorial-v7",
     body: `
     <section class="memorial-hero-v6"><figure>${image("real-memorial-tree-planting.jpg", "Hands planting a young memorial tree", { eager: true })}</figure><div><h1>Let the love they gave you take root.</h1><p>A tree planted in your dog's name becomes a living act of remembrance—something growing in the world because they were here.</p><button class="button primary" type="button" data-tree-purchase-open>Plant a tree in their name →</button></div></section>
     <section class="memorial-meaning"><div class="wm-wrap"><div><h2>Their name. Your memory. A life carried forward.</h2><p>Tell us the name you still say, the moment you never want to lose and the message this tree should carry. That story becomes part of the planting record you keep.</p><blockquote>“You changed our home, our routines and the way we understood love. Let something beautiful keep growing in your name.”</blockquote></div><figure>${image("real-companion-moment.jpg", "A quiet moment between a caregiver and a beloved dog")}</figure></div></section>
     <section class="memorial-story-grid"><div class="wm-wrap"><header><h2>For the dog who changed the shape of your days.</h2><p>The bowl may be gone. The familiar route may feel too quiet. Planting a tree gives that love a living place to continue.</p></header><div><article><figure>${image("bobby.jpg", "Bobby, a beloved dog remembered by WoafMeow")}</figure><h3>Carry their name</h3><p>The planting is requested in your dog's name, so the tribute begins with who they were to you.</p></article><article><figure>${image("real-holding-dog.jpg", "A dog owner holding a beloved companion close")}</figure><h3>Keep one memory close</h3><p>Write the moment, habit or feeling you never want to lose. That message stays with your memorial record.</p></article><article><figure>${image("real-golden-outdoors.jpg", "A dog outdoors in a place filled with life")}</figure><h3>Help something living grow</h3><p>Your tribute supports a community-grown tree in the West Usambara Mountains.</p></article></div></div></section>
-    <section class="memorial-partner"><div class="wm-wrap"><header><h2>Rooted in the Usambaras. Growing toward East Africa.</h2><p>Friends of Usambara grows and plants trees with local nurseries, schools, farmers and communities. Its current planting work is centered in the West Usambara Mountains, with a published goal to expand across other Eastern Arc ranges and East Africa.</p></header><div class="memorial-partner-gallery"><figure>${image("usambara-community-planting.jpg", "Friends of Usambara community members planting trees")}</figure><figure>${image("usambara-sapling-planting.jpg", "Hands planting a young tree with Friends of Usambara")}</figure><figure>${image("usambara-school-nursery.jpg", "Students participating in a Friends of Usambara tree nursery")}</figure></div><div class="partner-proof-grid"><article><strong>20 million+</strong><span>Trees planted, reported by the partner</span></article><article><strong>4 mega nurseries</strong><span>Locally grown seedlings for restoration</span></article><article><strong>20 school nurseries</strong><span>Young people helping trees take root</span></article></div><a class="text-link" href="https://usambaratravels.com/where-we-plant/" target="_blank" rel="noreferrer">See Friends of Usambara’s planting work →</a></div></section>
+    <section class="memorial-memory-prompts"><div class="wm-wrap"><header><h2>Begin with the moment that still feels like them.</h2><p>A memorial becomes personal when it carries a detail only your family would know.</p></header><div><blockquote>“The way you waited at the window before every walk.”</blockquote><blockquote>“The warm spot beside the sofa that will always feel like yours.”</blockquote><blockquote>“How one look from you made an ordinary day feel complete.”</blockquote></div></div></section>
+    <section class="memorial-partner"><div class="wm-wrap"><header><h2>Community-grown trees with visible work behind them.</h2><p>Friends of Usambara works with local nurseries, schools, farmers and communities in the West Usambara Mountains, while publishing a broader goal to support other Eastern Arc landscapes and East Africa.</p></header><div class="memorial-partner-gallery"><figure>${image("usambara-community-planting.jpg", "Friends of Usambara community members planting trees")}</figure><figure>${image("usambara-sapling-planting.jpg", "Hands planting a young tree with Friends of Usambara")}</figure><figure>${image("usambara-school-nursery.jpg", "Students participating in a Friends of Usambara tree nursery")}</figure><figure>${image("usambara-mangrove-planting.jpg", "Community planting work supported by Friends of Usambara")}</figure></div><div class="partner-proof-grid"><article><strong>15 million+</strong><span>Seedlings stocked across four mega nurseries, reported by the partner</span></article><article><strong>4 mega nurseries</strong><span>Locally grown seedlings for restoration</span></article><article><strong>20 school nurseries</strong><span>Young people helping trees take root</span></article></div><a class="text-link" href="https://usambaratravels.com/where-we-plant/" target="_blank" rel="noreferrer">See Friends of Usambara’s planting work →</a></div></section>
     <section class="memorial-steps"><div class="wm-wrap"><div class="memorial-tribute-card"><span>In loving memory of</span><h2>Bailey</h2><p>“You made every ordinary walk feel like the best part of the day.”</p><div>${image("real-golden-forest.jpg", "Golden retriever remembered with a living tree tribute")}</div></div><div class="memorial-steps-copy"><h2>Their name. Your memory. A tree that keeps growing.</h2><p>Share the words you never want to lose. We connect that memory to a community-grown tree and send a memorial confirmation you can keep or share with family.</p><ol><li><span>1</span><div><strong>Tell us their name</strong><p>Add one story, habit or sentence that still feels like them.</p></div></li><li><span>2</span><div><strong>Help a tree take root</strong><p>Your tribute supports Friends of Usambara’s community planting work.</p></div></li><li><span>3</span><div><strong>Keep the tribute close</strong><p>Receive a memorial record carrying their name and your message.</p></div></li></ol><button class="button primary" type="button" data-tree-purchase-open>Plant their memorial tree →</button></div></div></section>
     <dialog class="tree-purchase-dialog" data-tree-purchase><button type="button" class="tree-dialog-close" data-tree-purchase-close aria-label="Close">×</button><div><h2>Plant their memorial tree</h2><p class="tree-price">$10 per tree</p><form class="preview-form" data-preview-form data-submit-api="https://www.woafmeow.com/api/memorial-interest" data-success-message="Thank you. We received your memorial-tree request." data-form-title="Memorial tree request"><div class="form-grid"><label><span>Your name</span><input name="name" autocomplete="name" required></label><label><span>Email</span><input name="email" type="email" autocomplete="email" required></label><label><span>Your dog's name</span><input name="petName" required></label><label class="field-wide"><span>One memory to carry forward</span><textarea name="meaning" required maxlength="600"></textarea></label></div><button class="button primary" type="submit">Continue with this memorial — $10 →</button><p class="form-note" data-form-note role="status" aria-live="polite"></p></form></div></dialog>`,
   });
@@ -3127,10 +3308,11 @@ function wmSmartBedPage() {
     title: "WoafyPet Smart Bed",
     description:
       "Supportive comfort for senior dogs with quiet insights into rest, night movement, bed use and weight trend.",
-    bodyClass: "bed-v6",
+    bodyClass: "bed-v6 bed-v7",
     body: `
-    <section class="bed-hero-v6"><div><span>WoafyPet Smart Bed</span><h1>Comfort for slower bodies. Context for the quiet changes.</h1><p>Supportive rest comes first. The Smart Base underneath helps you see when familiar rest routines begin to change.</p>${button("Explore the bed", "https://www.woafy.pet/")}</div><figure>${image("product-prototype-golden.webp", "Golden retriever resting in the WoafyPet prototype bed", { eager: true })}<figcaption>Prototype shown</figcaption></figure></section>
-    <section class="bed-comfort-v6"><div class="wm-wrap"><figure>${image("product-prototype-akita.webp", "Akita resting comfortably in the WoafyPet prototype bed")}</figure><div><h2>Made to make rest easier.</h2><div class="bed-benefits"><article><strong>Low entrance</strong><p>Less effort stepping in and out.</p></article><article><strong>Bolstered support</strong><p>A steady edge for settling and leaning.</p></article><article><strong>Supportive sleep surface</strong><p>Comfort from edge to center.</p></article><article><strong>Removable cover</strong><p>Easier everyday care and cleaning.</p></article></div></div></div></section>
+    <section class="bed-hero-v6"><div><span>WoafyPet Smart Bed</span><h1>Support their body. See when rest begins to change.</h1><p>A premium orthopedic bed with a low entry, elegant washable cover and quiet Smart Base insights for the patterns aging can make easy to miss.</p>${button("Explore the WoafyPet Smart Bed", "https://www.woafy.pet/")}</div><figure>${image("product-hero-official.png", "Complete WoafyPet Smart Bed shown in a premium home", { eager: true })}</figure></section>
+    <section class="bed-comfort-v6"><div class="wm-wrap"><figure>${image("product-prototype-akita.webp", "Complete WoafyPet prototype bed with a dog resting comfortably")}</figure><div><h2>Premium comfort that still belongs in your home.</h2><div class="bed-benefits"><article><strong>Low front entry</strong><p>Less effort stepping in and out.</p></article><article><strong>Supportive bolsters</strong><p>A steady edge for settling and leaning.</p></article><article><strong>Layered orthopedic foam</strong><p>Comfort and support from edge to center.</p></article><article><strong>Washable, elegant cover</strong><p>Easy everyday care without a clinical look.</p></article></div></div></div></section>
+    <section class="bed-layers-v7"><div class="wm-wrap"><div><h2>Every layer has a clear job.</h2><ol><li><strong>Soft durable cover</strong><span>Comfortable, removable and machine washable.</span></li><li><strong>Supportive comfort layer</strong><span>Helps cushion pressure while the dog settles.</span></li><li><strong>Orthopedic foam core</strong><span>Stable support for aging joints and larger bodies.</span></li><li><strong>Smart Base sensing layer</strong><span>Follows rest, movement, bed use and weight trends.</span></li><li><strong>Non-slip base</strong><span>Keeps the bed steadier during entry and exit.</span></li></ol></div><figure>${image("bed-layers.png", "Full exploded view of the WoafyPet Smart Bed foam and sensing layers")}</figure></div></section>
     <section class="bed-insights-v6"><div class="wm-wrap"><div><h2>Know when a familiar routine changes.</h2><p>The Smart Base summarizes passive patterns without a collar or camera.</p><div class="metric-grid"><article><span>Rest duration</span><strong>Is total rest shifting?</strong></article><article><span>Night movement</span><strong>Are wake-ups or repositioning changing?</strong></article><article><span>Bed use</span><strong>Is the usual rest place being avoided?</strong></article><article><span>Weight trend</span><strong>Is the longer-term pattern moving?</strong></article></div>${button("See how Smart Base works", "/smart-base/")}</div><figure>${image("product-visualization-smart-base.png", "WoafyPet Smart Base product visualization")}</figure></div></section>
     <section class="bed-boundary-v6"><div class="wm-wrap"><h2>Designed for awareness—not diagnosis.</h2><p>Insights help families notice a pattern and prepare a clearer conversation. They do not identify a disease or replace veterinary care.</p></div></section>`,
   });
@@ -3313,6 +3495,19 @@ cpSync(
 );
 cpSync(join(ROOT, "styles.css"), join(DIST, "styles.css"));
 cpSync(join(ROOT, "app.js"), join(DIST, "app.js"));
+const sourceCss = readFileSync(join(ROOT, "styles.css"), "utf8");
+const refinementStart = sourceCss.indexOf(REFINEMENT_MARKER);
+const refinementEnd = sourceCss.indexOf(
+  "/* Keep guide signup copy legible",
+  refinementStart,
+);
+if (refinementStart < 0 || refinementEnd < 0) {
+  throw new Error("Missing the reference-contract CSS refinement block");
+}
+writeFileSync(
+  join(DIST, "refinement.css"),
+  `${sourceCss.slice(refinementStart, refinementEnd)}\n.guide-v7 .guide-hero-copy .email-capture h2 { color: var(--wm-forest); }\n.guide-v7 .guide-hero-copy .email-capture p, .guide-v7 .guide-hero-copy .email-capture .form-note { color: #665c55; }\n`,
+);
 cpSync(join(ROOT, "favicon.svg"), join(DIST, "favicon.svg"));
 
 for (const { route, html } of pages) {

@@ -937,8 +937,8 @@
   renderAccount();
 
   document
-    .querySelector("[data-home-question-form]")
-    ?.addEventListener("submit", (event) => {
+    .querySelectorAll("[data-home-question-form]")
+    .forEach((questionForm) => questionForm.addEventListener("submit", (event) => {
       event.preventDefault();
       const form = event.currentTarget;
       if (!form.reportValidity()) return;
@@ -957,7 +957,7 @@
         target.searchParams.set("next", "ask");
       }
       window.location.assign(target.href);
-    });
+    }));
 
   const accountGate = document.querySelector("[data-account-gate]");
   const askForm = document.querySelector("[data-account-ask-form]");

@@ -11569,3 +11569,165 @@ img {
     border-bottom: 0;
   }
 }
+
+/* Homepage v13 final cascade — locked to the approved compact reference. */
+body.home-v13 .wm-header-inner { min-height: 64px; }
+body.home-v13 .wm-wordmark img { width: 164px; }
+body.home-v13 .home-reference { gap: 10px; margin: 10px auto 18px; }
+body.home-v13 .home-ref-hero {
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  border-radius: 10px;
+}
+body.home-v13 .home-ref-hero-copy { padding: 28px 36px; }
+body.home-v13 .home-ref-hero h1 {
+  max-width: 470px;
+  margin-bottom: 10px;
+  font-size: clamp(3rem, 4.2vw, 3.65rem);
+}
+body.home-v13 .home-ref-hero-copy > p {
+  margin-bottom: 12px;
+  font-size: 0.93rem;
+  line-height: 1.45;
+}
+body.home-v13 .home-ref-hero > figure { background: transparent; }
+body.home-v13 .home-ref-hero > figure img { width: 100%; height: auto !important; }
+body.home-v13 .home-question-box { margin-bottom: 12px; padding: 10px; }
+body.home-v13 .home-question-box input,
+body.home-v13 .home-question-box button { min-height: 44px; }
+body.home-v13 .home-hero-proof { gap: 7px 15px; font-size: 0.72rem; }
+body.home-v13 .home-hero-proof strong { font-size: 0.78rem; }
+body.home-v13 .home-ref-section { padding: 18px 2px 20px; }
+body.home-v13 .home-ref-section > header,
+body.home-v13 .home-circle-lessons > header { margin-bottom: 12px; }
+body.home-v13 .home-ref-section > header h2,
+body.home-v13 .home-circle-lessons > header h2 { font-size: 2rem; }
+body.home-v13 .home-topic-card > div { min-height: 150px; padding: 25px 12px 12px; }
+body.home-v13 .home-topic-card i { top: -18px; width: 34px; height: 34px; }
+body.home-v13 .home-topic-card h3 { font-size: 1.05rem; }
+body.home-v13 .home-topic-card p { font-size: 0.82rem; line-height: 1.4; }
+body.home-v13 .home-care-circle {
+  grid-template-columns: minmax(0, 1.5fr) minmax(300px, 0.66fr);
+  border-radius: 10px;
+}
+body.home-v13 .home-circle-lessons { padding: 18px; }
+body.home-v13 .home-circle-grid { gap: 7px; }
+body.home-v13 .home-circle-card { grid-template-columns: 72px minmax(0, 1fr); }
+body.home-v13 .home-circle-card figure { width: 72px; min-height: 106px; }
+body.home-v13 .home-circle-card > div { padding: 9px; }
+body.home-v13 .home-circle-card h3 { font-size: 0.84rem; }
+body.home-v13 .home-circle-card p { font-size: 0.8125rem; line-height: 1.28; }
+body.home-v13 .home-circle-card span { font-size: 0.64rem; }
+body.home-v13 .home-circle-ask { margin: 10px; padding: 18px; }
+body.home-v13 .home-circle-ask h2 { font-size: 1.55rem; }
+body.home-v13 .home-circle-ask > p { margin-bottom: 10px; font-size: 0.8125rem; }
+body.home-v13 .home-circle-ask textarea { min-height: 88px; margin-bottom: 8px; }
+body.home-v13 .home-circle-trust { margin-top: 10px; gap: 4px; }
+body.home-v13 .home-care-account { border-radius: 10px; }
+body.home-v13 .home-account-panel { padding: 24px; }
+body.home-v13 .home-account-panel h2 { font-size: 2rem; }
+body.home-v13 .home-account-panel > p { margin-bottom: 12px; font-size: 0.8125rem; }
+body.home-v13 .home-account-fields { gap: 16px; }
+body.home-v13 .home-account-fields input,
+body.home-v13 .home-account-fields select { min-height: 38px; }
+body.home-v13 .home-google-button,
+body.home-v13 .home-dog-fields .button { min-height: 39px; }
+body.home-v13 .home-care-account figcaption { padding: 10px 16px; font-size: 0.7rem; }
+body.home-v13 .home-ref-guide {
+  min-height: 132px;
+  padding: 18px 160px 18px 22px;
+  grid-template-columns: minmax(250px, 0.9fr) minmax(330px, 1.1fr);
+  border-radius: 10px;
+}
+body.home-v13 .home-ref-guide h2 { font-size: 1.65rem; }
+body.home-v13 .home-ref-guide input,
+body.home-v13 .home-ref-guide button { min-height: 42px; }
+body.home-v13 .home-guide-book {
+  right: 20px;
+  bottom: 8px;
+  width: 118px;
+  height: 122px;
+  padding: 9px;
+}
+body.home-v13 .home-guide-book strong { font-size: 0.86rem; }
+body.home-v13 .home-guide-book img { height: 52px !important; }
+body.home-v13 .home-vet-testimonials {
+  padding: 18px;
+  grid-template-columns: minmax(190px, 0.65fr) minmax(0, 1.55fr) minmax(170px, 0.5fr);
+  gap: 14px;
+  border-radius: 10px;
+}
+body.home-v13 .home-vet-testimonials > header h2 { font-size: 1.55rem; }
+body.home-v13 .home-vet-testimonials article {
+  padding: 8px;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 9px;
+}
+body.home-v13 .home-vet-testimonials article figure { width: 58px; height: 58px; }
+body.home-v13 .home-vet-testimonials blockquote { font-size: 0.7rem; }
+body.home-v13 .home-ref-bed { padding: 0; background: transparent; }
+body.home-v13 .home-bed-panel {
+  min-height: 260px;
+  padding: 20px;
+  grid-template-columns: minmax(0, 1.08fr) minmax(170px, 0.92fr);
+}
+body.home-v13 .home-bed-panel h3 { font-size: 1.75rem; }
+body.home-v13 .home-bed-panel p,
+body.home-v13 .home-bed-panel li { font-size: 0.8125rem; }
+body.home-v13 .home-bed-panel ul { margin: 10px 0 12px; gap: 3px; }
+body.home-v13 .home-bed-panel figure img { max-height: 220px; }
+body.home-v13 .home-bed-metrics { margin: 10px 0 12px; gap: 5px; }
+body.home-v13 .home-bed-metrics span { padding: 7px; }
+body.home-v13 .home-support-paths > a > div { min-height: 122px; padding: 13px; }
+body.home-v13 .home-support-paths h2 { font-size: 1.2rem; }
+body.home-v13 .home-support-paths p { font-size: 0.8125rem; }
+body.home-v13 .wm-footer-grid { padding: 26px 0 18px; gap: 22px; }
+body.home-v13 .wm-footer-bottom { padding: 12px 0 16px; }
+
+@media (max-width: 1080px) and (min-width: 861px) {
+  body.home-v13 .home-bed-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.home-v13 .home-bed-panel { grid-template-columns: 1fr; min-height: 0; }
+  body.home-v13 .home-bed-panel figure { min-height: 180px; }
+}
+
+@media (max-width: 860px) {
+  body.home-v13 .home-ref-hero,
+  body.home-v13 .home-care-circle,
+  body.home-v13 .home-care-account,
+  body.home-v13 .home-vet-testimonials,
+  body.home-v13 .home-bed-grid,
+  body.home-v13 .home-bed-panel {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v13 .home-ref-hero-copy,
+  body.home-v13 .home-account-panel,
+  body.home-v13 .home-circle-lessons,
+  body.home-v13 .home-circle-ask { padding: 22px; }
+  body.home-v13 .home-ref-guide {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 22px 150px 22px 22px;
+  }
+  body.home-v13 .home-bed-panel { min-height: 0; }
+}
+
+@media (max-width: 640px) {
+  body.home-v13 .home-ref-hero-copy,
+  body.home-v13 .home-account-panel,
+  body.home-v13 .home-circle-lessons,
+  body.home-v13 .home-circle-ask { padding: 18px 16px; }
+  body.home-v13 .home-ref-hero h1 { font-size: 2.35rem; }
+  body.home-v13 .home-ref-guide {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 20px 16px;
+  }
+  body.home-v13 .home-guide-book {
+    position: static;
+    width: 100%;
+    height: auto;
+    transform: none;
+  }
+  body.home-v13 .home-vet-testimonials > div { grid-template-columns: 1fr; }
+  body.home-v13 .home-bed-panel { grid-template-columns: 1fr; }
+  body.home-v13 .home-circle-card { grid-template-columns: 90px minmax(0, 1fr); }
+  body.home-v13 .home-circle-card figure { width: 90px; }
+}

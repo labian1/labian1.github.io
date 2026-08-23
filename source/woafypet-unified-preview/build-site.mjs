@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, "dist");
-const ASSET_VERSION = "20260823.2";
+const ASSET_VERSION = "20260823.3";
 
 const imageMeta = {
   "woafmeow-logo-coral.png": [512, 64],
@@ -1474,7 +1474,7 @@ function legacyHomePageV3() {
 function homePage() {
   const problemCards = [
     [
-      "problem-mobility-senior-lab.jpg",
+      "problem-restless-night-senior-black-lab.jpg",
       "Senior yellow Labrador resting at home",
       "Stiffness or trouble moving",
       "Measure one natural rise, make the usual route safer, and prepare a useful mobility note.",
@@ -2475,7 +2475,7 @@ function wmHomePage() {
       "MOBILITY",
       "When morning stiffness needs a closer look",
       "Measure one natural rise and know what to record.",
-      "problem-mobility-senior-lab.jpg",
+      "real-holding-dog.jpg",
       "/care-circle/slower-after-rest/",
     ],
     [
@@ -2549,10 +2549,10 @@ function wmHomePage() {
     title: "Know what your aging dog needs next",
     description:
       "Ask about a change in your dog and get practical Care Circle guidance, veterinarian-supported lessons, trusted care options, and supportive WoafyPet rest.",
-    bodyClass: "home-v12",
+    bodyClass: "home-v12 home-v13",
     body: `
     <div class="home-reference">
-      <section class="home-ref-hero"><div class="home-ref-hero-copy"><h1>Know what your aging dog needs next.</h1><p>Ask about the change you see. Get practical next steps, veterinarian-supported lessons and trusted care shaped around your dog.</p><form class="home-question-box" data-home-question-form><label for="home-care-question">What changed with your dog?</label><div><input id="home-care-question" name="question" type="search" maxlength="500" placeholder="e.g., She is stiff after getting up" required><button type="submit" aria-label="Ask Care Circle">Ask <span aria-hidden="true">→</span></button></div></form><div class="home-hero-proof" aria-label="Why pet owners trust WoafMeow"><strong>Trusted by 10,000+ pet owners</strong><span>Veterinarian-supported</span><span>Built for dog parents</span></div></div><figure>${image("real-home-owner-dog.jpg", "Dog owner caring for a senior dog at home", { eager: true })}</figure></section>
+      <section class="home-ref-hero"><div class="home-ref-hero-copy"><h1>Know what your aging dog needs next.</h1><p>Ask about the change you see. Get practical next steps, veterinarian-supported lessons and trusted care shaped around your dog.</p><form class="home-question-box" data-home-question-form><label for="home-care-question">What changed with your dog?</label><div><input id="home-care-question" name="question" type="search" maxlength="500" placeholder="e.g., She is stiff after getting up" required><button type="submit" aria-label="Ask Care Circle">Ask <span aria-hidden="true">→</span></button></div></form><div class="home-hero-proof" aria-label="Why pet owners trust WoafMeow"><strong>Trusted by 10,000+ pet owners</strong><span>Veterinarian-supported</span><span>Built for dog parents</span></div></div><figure>${image("problem-mobility-senior-lab.jpg", "Senior Labrador resting comfortably at home", { eager: true })}</figure></section>
 
       <section class="home-ref-section home-ref-learn" id="topics"><header><div><h2>Care topics that make a difference.</h2><p>Choose what is changing and start with something useful today.</p></div><a href="/care-circle/">View all topics →</a></header><div class="home-topic-grid">${changes.map(([title, copy, asset, href, symbol]) => `<a class="home-topic-card" href="${href}"><figure>${image(asset, `${title} care topic`)}</figure><div><i aria-hidden="true">${symbol}</i><h3>${title}</h3><p>${copy}</p><span>See guidance →</span></div></a>`).join("")}</div></section>
 
@@ -2564,7 +2564,7 @@ function wmHomePage() {
 
       <section class="home-vet-testimonials"><header><h2>Veterinarian support you can trust.</h2><p>Careful observation helps owners ask clearer questions and seek the right help sooner.</p></header><div><article><figure>${image("vet-silvan-urfer.jpg", "Veterinarian and dog-aging researcher Dr. Silvan Urfer")}</figure><div><blockquote>“Dogs often compensate until changes become obvious. Long-term tracking can give owners and veterinarians more context.”</blockquote><p><strong>Dr. Silvan Urfer</strong><span>Veterinarian &amp; dog-aging researcher</span></p></div></article><article><figure>${image("vet-annika-bremhorst.png", "Veterinarian and canine-pain researcher Dr. Annika Bremhorst")}</figure><div><blockquote>“Pain can be difficult to detect, especially when it is prolonged. Long-term monitoring can help reveal subtle changes.”</blockquote><p><strong>Dr. Annika Bremhorst</strong><span>Veterinarian &amp; canine-pain researcher</span></p></div></article></div><aside><h3>Need more help?</h3><p>Find a veterinarian, rehabilitation service or other senior-dog care professional.</p><a class="button secondary" href="/find-care/?care=senior-veterinarians">Find veterinary care →</a></aside></section>
 
-      <section class="home-ref-bed" aria-labelledby="home-bed-heading"><header><h2 id="home-bed-heading">Rest that supports them. Patterns that help you care.</h2><p>WoafyPet Smart Bed combines a senior-friendly sleep surface with passive rest and wellness context.</p></header><div class="home-bed-grid"><article class="home-bed-panel home-bed-comfort"><div><span>WoafyPet Smart Bed</span><h3>Help them rest more comfortably.</h3><p>For dogs who pause before lying down, shift through the night or wake up stiff.</p><ul><li>Low front entry</li><li>Supportive orthopedic foam</li><li>Steady bolsters</li><li>Removable, easy-clean cover</li></ul><a class="button primary" href="https://www.woafy.pet/">Explore WoafyPet Smart Bed →</a></div><figure>${image("product-prototype-golden.webp", "Golden retriever resting in the real gray WoafyPet Smart Bed prototype")}</figure></article><article class="home-bed-panel home-bed-tracking"><div><span>Smart Base insights</span><h3>Notice when familiar rest patterns change.</h3><p>Passive summaries help you see changes that are easy to miss between check-ins.</p><div class="home-bed-metrics"><span><b>Rest duration</b>Night-to-night change</span><span><b>Night movement</b>Settling and repositioning</span><span><b>Bed use</b>Visits to a familiar place</span><span><b>Weight trends</b>Longer-term context</span></div><a class="button secondary" href="https://www.woafy.pet/">See how it works →</a></div><figure>${image("product-visualization-smart-base.png", "WoafyPet Smart Base product visualization shown fully")}</figure></article></div></section>
+      <section class="home-ref-bed" aria-labelledby="home-bed-heading"><h2 class="sr-only" id="home-bed-heading">WoafyPet Smart Bed comfort and passive wellness insights</h2><div class="home-bed-grid"><article class="home-bed-panel home-bed-comfort"><div><span>WoafyPet Smart Bed</span><h3>Help them rest more comfortably.</h3><p>For dogs who pause before lying down, shift through the night or wake up stiff.</p><ul><li>Low front entry</li><li>Supportive orthopedic foam</li><li>Steady bolsters</li><li>Removable, easy-clean cover</li></ul><a class="button primary" href="https://www.woafy.pet/">Explore WoafyPet Smart Bed →</a></div><figure>${image("product-prototype-golden.webp", "Golden retriever resting in the real gray WoafyPet Smart Bed prototype")}</figure></article><article class="home-bed-panel home-bed-tracking"><div><span>Smart Base insights</span><h3>Notice when familiar rest patterns change.</h3><p>Passive summaries help you see changes that are easy to miss between check-ins.</p><div class="home-bed-metrics"><span><b>Rest duration</b>Night-to-night change</span><span><b>Night movement</b>Settling and repositioning</span><span><b>Bed use</b>Visits to a familiar place</span><span><b>Weight trends</b>Longer-term context</span></div><a class="button secondary" href="https://www.woafy.pet/">See how it works →</a></div><figure>${image("product-visualization-smart-base.png", "WoafyPet Smart Base product visualization shown fully")}</figure></article></div></section>
 
       <section class="home-support-paths" aria-label="More ways WoafMeow can help">${supportPaths.map(([title, copy, asset, href, action]) => `<a href="${href}"><figure>${image(asset, title)}</figure><div><h2>${title}</h2><p>${copy}</p><span>${action} →</span></div></a>`).join("")}</section>
     </div>`,

@@ -4203,6 +4203,20 @@ textarea {
 .wm-login-link {
   margin-left: 8px;
 }
+.wm-bed-link {
+  padding: 8px 12px;
+  border: 1px solid rgba(181, 75, 46, 0.35);
+  border-radius: 999px;
+  color: var(--clay-dark) !important;
+  background: rgba(232, 119, 87, 0.08);
+}
+.wm-bed-link:hover {
+  border-color: var(--clay);
+  background: rgba(232, 119, 87, 0.14);
+}
+.wm-header [data-account-create][hidden] {
+  display: none !important;
+}
 .wm-product-link {
   padding: 11px 15px;
   color: white;

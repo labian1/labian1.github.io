@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, "dist");
-const ASSET_VERSION = "20260824.3";
+const ASSET_VERSION = "20260824.4";
 const REFINEMENT_MARKER =
   "/* 2026-08-24 reference-contract refinement: natural images, compact rhythm, premium product storytelling */";
 
@@ -2484,9 +2484,10 @@ function header() {
         <details class="nav-group"><summary>Ask &amp; track</summary><div class="nav-menu"><a href="/account/?next=ask"><strong>Ask Care Circle</strong><span>Guidance shaped around your dog</span></a><a href="/health-timeline/"><strong>Health Timeline</strong><span>Upload records and track change</span></a></div></details>
         <details class="nav-group"><summary>Find care</summary><div class="nav-menu"><a href="/find-care/?care=senior-veterinarians"><strong>Veterinarians</strong><span>Verified official care profiles</span></a><a href="/find-care/?care=pain-mobility-rehab"><strong>Mobility &amp; rehabilitation</strong><span>Support for movement and pain</span></a><a href="/find-care/#list-your-practice"><strong>List your practice</strong><span>Join the care directory</span></a></div></details>
         <details class="nav-group"><summary>Connect &amp; support</summary><div class="nav-menu"><a href="/wednesday-introductions/"><strong>Wednesday introductions</strong><span>Meet an owner who understands</span></a><a href="/pet-loss-support/"><strong>Pet loss support</strong><span>Specific help before and after goodbye</span></a><a href="/memorial-tree/"><strong>Memorial trees</strong><span>A living tribute in their name</span></a></div></details>
+        <a class="wm-bed-link" href="https://www.woafy.pet/">WoafyPet Smart Bed</a>
         <a class="wm-login-link" href="/account/" data-account-link>Log in</a>
       </nav>
-      <a class="wm-product-link" href="/account/?next=ask">Create account</a>
+      <a class="wm-product-link" href="/account/?next=ask" data-account-create>Create account</a>
     </div>
   </header>`;
 }

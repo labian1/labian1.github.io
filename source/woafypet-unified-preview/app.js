@@ -745,6 +745,9 @@
           : "Log in or create a dog profile",
       );
     });
+    document.querySelectorAll("[data-account-create]").forEach((link) => {
+      link.hidden = Boolean(account?.email && account?.petName);
+    });
   };
 
   const accountForm = document.querySelector("[data-account-form]");

@@ -348,6 +348,9 @@ async function checkNavigation(page, route, viewport, failures) {
     }
   } else if (!(await nav.isVisible()))
     failures.push(`${route} ${viewport.name}: desktop navigation hidden`);
+  const bedLink = page.locator('.wm-bed-link[href="https://www.woafy.pet/"]');
+  if ((await bedLink.count()) !== 1)
+    failures.push(`${route} ${viewport.name}: WoafyPet Smart Bed tab missing`);
 }
 
 async function checkHome(page, viewport, baseUrl, failures) {
@@ -434,6 +437,34 @@ async function checkHome(page, viewport, baseUrl, failures) {
     if ((await registrationDialog.locator('[name="ownerName"]').count()) !== 1)
       failures.push("/: first-action registration is missing owner details");
     await registrationDialog.locator("[data-first-action-close]").click();
+
+    await page.evaluate(() => {
+      localStorage.setItem(
+        "woafmeow-account-v1",
+        JSON.stringify({
+          ownerName: "Taylor Example",
+          email: "caregiver@example.com",
+          petName: "Bobby",
+          petAge: "10–12 years",
+          breed: "Golden Retriever",
+          conditions: "arthritis",
+          medications: "",
+          publicProfileConsent: true,
+        }),
+      );
+    });
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await preparePage(page);
+    if (await page.locator("[data-account-create]").isVisible())
+      failures.push("/: Create account remains visible after sign-in");
+    if ((await page.locator("[data-account-link]").textContent())?.trim() !== "Bobby")
+      failures.push("/: signed-in account name did not replace Log in");
+    if (!(await page.locator(".wm-bed-link").isVisible()))
+      failures.push("/: Smart Bed tab disappeared after sign-in");
+
+    await page.evaluate(() => localStorage.removeItem("woafmeow-account-v1"));
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await preparePage(page);
   }
 }
 

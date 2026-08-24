@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS webinar_waitlist (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  email TEXT NOT NULL COLLATE NOCASE UNIQUE,
+  concern TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);

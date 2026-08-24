@@ -405,10 +405,10 @@ async function checkNavigation(page, route, viewport, failures) {
     }
   } else if (!(await nav.isVisible()))
     failures.push(`${route} ${viewport.name}: desktop navigation hidden`);
-  const askLink = nav.locator('a[href="/care-circle/?ask=1#ask"]');
+  const askLink = nav.locator('a[href="/care-circle/"]');
   if ((await askLink.count()) !== 1)
     failures.push(
-      `${route} ${viewport.name}: Ask Care Circle navigation target is wrong`,
+      `${route} ${viewport.name}: Care Circle navigation target is wrong`,
     );
   const bedLink = page.locator('.wm-bed-link[href="https://www.woafy.pet/"]');
   if ((await bedLink.count()) !== 1)
@@ -599,8 +599,8 @@ async function checkLesson(page, route, viewport, failures) {
     failures.push(
       `${route}: expected a distinct hero image and four chapter images`,
     );
-  if ((await page.locator("[data-community-interaction]").count()) !== 1)
-    failures.push(`${route}: expected one lesson-level conversation`);
+  if ((await page.locator("[data-community-interaction]").count()) !== 0)
+    failures.push(`${route}: lesson-level likes or comments remain`);
   if (
     (await page
       .locator("[data-lesson-chapter] [data-community-interaction]")
@@ -613,15 +613,6 @@ async function checkLesson(page, route, viewport, failures) {
     failures.push(`${route}: public pet profile missing`);
   if (viewport.width !== 1440 || route !== "/care-circle/slower-after-rest/")
     return;
-  const interaction = page.locator("[data-community-interaction]");
-  await interaction.locator("[data-local-like]").click();
-  await interaction.locator("[data-local-comments-toggle]").click();
-  await interaction
-    .locator("textarea")
-    .fill("The first-rise check was useful.");
-  await interaction.locator("form").evaluate((node) => node.requestSubmit());
-  if ((await interaction.locator("[data-local-comment]").count()) !== 1)
-    failures.push(`${route}: lesson comment failed`);
   const quiz = page.locator("[data-chapter-quiz]").first();
   const answer = await quiz.getAttribute("data-answer");
   await quiz.locator(`input[value="${answer}"]`).check();

@@ -140,8 +140,8 @@ for (const route of routes) {
     fail(`${route}: missing the quiet sitewide trust signal`);
   const primaryNavigation =
     html.match(/<nav class="wm-nav"[\s\S]*?<\/nav>/)?.[0] || "";
-  if (!primaryNavigation.includes('href="/care-circle/?ask=1#ask"'))
-    fail(`${route}: Ask Care Circle navigation target is wrong`);
+  if (!primaryNavigation.includes('href="/care-circle/"'))
+    fail(`${route}: Care Circle navigation target is wrong`);
   if (
     !primaryNavigation.includes(
       'class="wm-bed-link" href="https://www.woafy.pet/"',
@@ -347,8 +347,8 @@ for (const route of lessonRoutes) {
     fail(`${route}: expected four visible chapters`);
   if (count(html, /data-chapter-quiz\b/g) !== 4)
     fail(`${route}: expected four quizzes`);
-  if (count(html, /data-community-interaction=/g) !== 1)
-    fail(`${route}: expected one lesson-level conversation control`);
+  if (count(html, /data-community-interaction=/g) !== 0)
+    fail(`${route}: lesson-level likes or comments remain`);
   for (const chapter of html.matchAll(
     /<section[^>]*data-lesson-chapter[^>]*>([\s\S]*?)<\/section>/g,
   )) {

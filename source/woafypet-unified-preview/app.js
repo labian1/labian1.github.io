@@ -1091,7 +1091,7 @@
         .slice(0, 500);
       const slug = publishProfileQuestion(account, pendingQuestion);
       window.location.assign(
-        slug ? `/care-circle/${slug}/?mine=1` : "/care-circle/?ask=1#ask",
+        slug ? `/care-circle/${slug}/?mine=1` : "/care-circle/#ask",
       );
       return;
     }
@@ -1100,7 +1100,7 @@
     if (params.get("next") === "ask") {
       const slug = publishProfileQuestion(account, question);
       window.location.assign(
-        slug ? `/care-circle/${slug}/?mine=1` : "/care-circle/?ask=1#ask",
+        slug ? `/care-circle/${slug}/?mine=1` : "/care-circle/#ask",
       );
       return;
     }
@@ -1231,12 +1231,15 @@
       .slice(0, 500);
     if (questionField && requestedQuestion)
       questionField.value = requestedQuestion;
+    askForm.hidden = false;
     if (!account) {
       accountGate.hidden = false;
-      askForm.hidden = true;
+      const summary = askForm.querySelector("[data-active-pet-summary]");
+      if (summary)
+        summary.textContent =
+          "Ask now. You will create your dog's one-time care profile before the lesson is published.";
     } else if (existingQuestion && !askRequested) {
       accountGate.hidden = false;
-      askForm.hidden = true;
       accountGate.replaceChildren();
       const copy = document.createElement("div");
       const heading = document.createElement("h2");
@@ -1259,7 +1262,7 @@
       if (summary)
         summary.textContent = `${account.petName} · ${account.petAge} · ${account.breed} · ${account.conditions}`;
     }
-    if (askRequested && account && !askForm.hidden) {
+    if (askRequested && !askForm.hidden) {
       window.requestAnimationFrame(() => {
         askForm.scrollIntoView({ behavior: "smooth", block: "center" });
         questionField?.focus({ preventScroll: true });
@@ -1267,11 +1270,18 @@
     }
     askForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      if (!askForm.reportValidity() || !account) return;
+      if (!askForm.reportValidity()) return;
       const values = Object.fromEntries(new FormData(askForm).entries());
       const question = String(values.question || "")
         .trim()
         .slice(0, 500);
+      if (!account) {
+        const target = new URL("/account/", window.location.origin);
+        target.searchParams.set("q", question);
+        target.searchParams.set("next", "ask");
+        window.location.assign(target.href);
+        return;
+      }
       const slug = publishProfileQuestion(
         account,
         question,
@@ -1649,49 +1659,83 @@
     return [...(shared[lessonKeys[slug]] || shared.daily), fourthPart];
   };
 
-  const personalQuestion = getPublicQuestion();
+  const storedPersonalQuestion = getPublicQuestion();
+  const currentCareProfile = getAccount();
+  const personalQuestion = storedPersonalQuestion
+    ? {
+        ...storedPersonalQuestion,
+        ...(currentCareProfile
+          ? {
+              ownerName:
+                currentCareProfile.ownerName || storedPersonalQuestion.ownerName,
+              email: currentCareProfile.email || storedPersonalQuestion.email,
+              petName:
+                currentCareProfile.petName || storedPersonalQuestion.petName,
+              petAge: currentCareProfile.petAge || storedPersonalQuestion.petAge,
+              breed: currentCareProfile.breed || storedPersonalQuestion.breed,
+              conditions:
+                currentCareProfile.conditions ||
+                storedPersonalQuestion.conditions,
+              medications:
+                currentCareProfile.medications ||
+                storedPersonalQuestion.medications,
+            }
+          : {}),
+      }
+    : null;
   const lessonSlugMatch = currentPath.match(/^\/care-circle\/([^/]+)\/?$/);
   if (
     personalQuestion &&
-    lessonSlugMatch?.[1] === personalQuestion.slug &&
-    new URLSearchParams(window.location.search).get("mine") === "1"
+    lessonSlugMatch?.[1] === personalQuestion.slug
   ) {
-    const conditions =
-      personalQuestion.conditions || "no known condition shared";
-    const medicines =
-      personalQuestion.medications || "no medicine change shared";
-    document
-      .querySelector("[data-public-dog]")
-      ?.replaceChildren(
-        document.createTextNode(
-          `${personalQuestion.petName} · ${personalQuestion.petAge} · ${personalQuestion.breed}`,
-        ),
-      );
-    document
-      .querySelector("[data-public-conditions]")
-      ?.replaceChildren(document.createTextNode(conditions));
-    document
-      .querySelector("[data-public-change]")
-      ?.replaceChildren(document.createTextNode(personalQuestion.question));
-    document
-      .querySelector("[data-focused-pet]")
-      ?.replaceChildren(document.createTextNode(personalQuestion.petName));
-    const focusedResult = document.querySelector("[data-focused-result]");
-    if (focusedResult)
-      focusedResult.textContent = `This public answer focuses on ${personalQuestion.petName}'s ${personalQuestion.petAge.toLocaleLowerCase()} profile, ${conditions}, and the change you described: ${personalQuestion.question}`;
-    renderQuestionImage(
-      personalQuestion.questionImageDataUrl || "",
-      personalQuestion.petName,
-    );
-    const tailored = buildTailoredLesson(personalQuestion, lessonSlugMatch[1]);
-    document
-      .querySelectorAll("[data-tailored-chapter-summary]")
-      .forEach((summary, index) => {
-        if (tailored[index]) summary.textContent = tailored[index][0];
+    const applyPersonalLessonContext = () => {
+      const petName = String(personalQuestion.petName || "Your dog").trim();
+      const petAge = String(personalQuestion.petAge || "Age not shared").trim();
+      const breed = String(personalQuestion.breed || "Breed not shared").trim();
+      const question = String(
+        personalQuestion.question || "No current change shared",
+      ).trim();
+      const conditions =
+        personalQuestion.conditions || "no known condition shared";
+      const medicines =
+        personalQuestion.medications || "no medicine change shared";
+      document.querySelectorAll("[data-public-dog]").forEach((node) => {
+        node.textContent = `${petName} · ${petAge} · ${breed}`;
       });
-    document
-      .querySelectorAll("[data-tailored-chapter-steps]")
-      .forEach((list, index) => {
+      document.querySelectorAll("[data-public-conditions]").forEach((node) => {
+        node.textContent = conditions;
+      });
+      document.querySelectorAll("[data-public-change]").forEach((node) => {
+        node.textContent = question;
+      });
+      document.querySelectorAll("[data-focused-pet]").forEach((node) => {
+        node.textContent = petName;
+      });
+      document.querySelectorAll("[data-tailored-pet-name]").forEach((node) => {
+        node.textContent = petName;
+      });
+      document.querySelectorAll("[data-tailored-context]").forEach((node) => {
+        node.textContent = `${petName} is ${petAge.toLocaleLowerCase()}, a ${breed}, with ${conditions}; the owner reports ${question}. This part prioritizes the safest observation and next step for that exact pattern.`;
+      });
+      document.querySelectorAll("[data-focused-result]").forEach((node) => {
+        node.textContent = `This public answer focuses on ${petName}'s ${petAge.toLocaleLowerCase()} profile, ${conditions}, and the change you described: ${question}`;
+      });
+      renderQuestionImage(
+        personalQuestion.questionImageDataUrl || "",
+        petName,
+      );
+      const tailored = buildTailoredLesson(
+        { ...personalQuestion, petName, petAge, breed, question },
+        lessonSlugMatch[1],
+      );
+      document
+        .querySelectorAll("[data-tailored-chapter-summary]")
+        .forEach((summary, index) => {
+          if (tailored[index]) summary.textContent = tailored[index][0];
+        });
+      document
+        .querySelectorAll("[data-tailored-chapter-steps]")
+        .forEach((list, index) => {
         const steps = tailored[index]?.[1] || [];
         list.replaceChildren(
           ...steps.map((step) => {
@@ -1700,10 +1744,10 @@
             return item;
           }),
         );
-      });
-    document
-      .querySelectorAll("[data-tailored-part], [data-tailored-part-summary]")
-      .forEach((node) => {
+        });
+      document
+        .querySelectorAll("[data-tailored-part], [data-tailored-part-summary]")
+        .forEach((node) => {
         const partNumber = Number(
           node.dataset.tailoredPart || node.dataset.tailoredPartSummary,
         );
@@ -1714,18 +1758,24 @@
             )
           : node;
         if (part && target) target.textContent = part[0];
+        });
+      document.querySelectorAll("[data-tailored-part-steps]").forEach((list) => {
+        const part = tailored[Number(list.dataset.tailoredPartSteps) - 1];
+        if (!part) return;
+        list.replaceChildren(
+          ...part[1].map((step) => {
+            const item = document.createElement("li");
+            item.textContent = step;
+            return item;
+          }),
+        );
       });
-    document.querySelectorAll("[data-tailored-part-steps]").forEach((list) => {
-      const part = tailored[Number(list.dataset.tailoredPartSteps) - 1];
-      if (!part) return;
-      list.replaceChildren(
-        ...part[1].map((step) => {
-          const item = document.createElement("li");
-          item.textContent = step;
-          return item;
-        }),
-      );
-    });
+    };
+    applyPersonalLessonContext();
+    requestAnimationFrame(applyPersonalLessonContext);
+    [80, 240, 600].forEach((delay) =>
+      window.setTimeout(applyPersonalLessonContext, delay),
+    );
   }
 
   navigation?.querySelectorAll("a").forEach((link) => {
@@ -2421,10 +2471,7 @@
         Math.max(0, matchingProfiles - profileLimit) +
         Math.max(0, matchingResources - resourceLimit);
       loadMore.hidden = remaining === 0;
-      loadMore.textContent =
-        remaining > 12
-          ? `Show more options (${remaining} remaining) →`
-          : `Show ${remaining} more options →`;
+      loadMore.textContent = "Search more →";
     }
 
     filterButtons.forEach((button) => {

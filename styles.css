@@ -21,6 +21,2295 @@
   --shadow: 0 18px 50px rgba(64, 53, 47, 0.1);
 }
 
+/* 2026-08-24.4 — final layout, media, and responsive corrections */
+
+@media not all {
+
+/* Keep the brand mark identical on every route. */
+.wm-header .wm-header-inner {
+  grid-template-columns: 196px minmax(0, 1fr) auto;
+  min-height: 72px;
+}
+
+.wm-header .wm-wordmark[data-logo-link] {
+  align-items: center;
+  display: flex;
+  flex: 0 0 196px;
+  height: 44px;
+  max-width: 196px;
+  min-width: 196px;
+  width: 196px !important;
+}
+
+.wm-header .wm-wordmark[data-logo-link] img {
+  display: block;
+  height: 44px !important;
+  max-height: 44px;
+  max-width: 196px;
+  object-fit: contain !important;
+  object-position: left center !important;
+  width: 196px !important;
+}
+
+/* Prevent awkward single-word wraps in current editorial templates. */
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7)
+  :is(h1, h2, h3, blockquote) {
+  hyphens: none;
+  overflow-wrap: normal;
+  text-wrap: balance;
+  word-break: normal;
+}
+
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7) p {
+  text-wrap: pretty;
+}
+
+body.home-v14 .home-ref-hero-copy h1 {
+  font-size: clamp(2.75rem, 4.6vw, 4.8rem);
+  max-width: 11.5ch;
+}
+
+body.circle-v8 .circle-hero-v7 h1,
+body.lesson-v8 .lesson-hero-v7 h1,
+body.guide-v7 .guide-hero-v6 h1,
+body.find-care-v7 .directory-hero-v6 h1 {
+  font-size: clamp(2.55rem, 4vw, 4rem);
+  line-height: 0.99;
+  max-width: 17ch;
+}
+
+/* Section-level headings use one consistent centered hierarchy. */
+body.home-v14 :is(
+    .home-care-hub,
+    .home-vet-testimonials,
+    .home-ref-bed,
+    .home-support-paths
+  ) > header,
+body.circle-v8 .circle-filter-bar,
+body.guide-v7 :is(
+    .guide-outcomes,
+    .guide-topics-v6,
+    .guide-method,
+    .guide-lessons
+  ) > header,
+body.guide-v7 .guide-vet-trust > .wm-wrap > header,
+body.find-care-v7 .directory-results-v6 > header {
+  align-items: center;
+  justify-content: center;
+  margin-inline: auto;
+  max-width: 920px;
+  text-align: center;
+}
+
+body.home-v14 :is(
+    .home-care-hub,
+    .home-vet-testimonials,
+    .home-ref-bed,
+    .home-support-paths
+  ) > header h2,
+body.circle-v8 .circle-filter-bar h2,
+body.guide-v7 :is(
+    .guide-outcomes,
+    .guide-topics-v6,
+    .guide-method,
+    .guide-lessons
+  ) > header h2,
+body.guide-v7 .guide-vet-trust > .wm-wrap > header h2,
+body.find-care-v7 .directory-results-v6 > header h2 {
+  font-size: clamp(2rem, 3vw, 3.25rem);
+  line-height: 1.03;
+  margin-inline: auto;
+  max-width: 24ch;
+}
+
+/* Remove tinted image mats and show every source image without cropping. */
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7)
+  :is(
+    .home-ref-hero,
+    .home-care-hub,
+    .home-vet-testimonials,
+    .home-ref-bed,
+    .home-support-paths,
+    .circle-hero-v7,
+    .circle-public-card,
+    .lesson-hero-v7,
+    .lesson-chapter-layout,
+    .guide-hero-v6,
+    .guide-topics-v6,
+    .guide-method,
+    .guide-vet-note,
+    .guide-vet-trust,
+    .guide-lessons,
+    .directory-hero-v6,
+    .provider-card-v6,
+    .practice-band-v6
+  ) figure {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7)
+  :is(
+    .home-ref-hero,
+    .home-care-hub,
+    .home-vet-testimonials,
+    .home-ref-bed,
+    .home-support-paths,
+    .circle-hero-v7,
+    .circle-public-card,
+    .lesson-hero-v7,
+    .lesson-chapter-layout,
+    .guide-hero-v6,
+    .guide-topics-v6,
+    .guide-method,
+    .guide-vet-note,
+    .guide-vet-trust,
+    .guide-lessons,
+    .directory-hero-v6,
+    .provider-card-v6,
+    .practice-band-v6
+  ) figure img {
+  display: block;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  width: 100% !important;
+}
+
+/* Homepage: one cohesive Care Circle hub instead of duplicated topic bands. */
+body.home-v14 .home-care-hub {
+  background:
+    radial-gradient(circle at 92% 0%, rgba(226, 122, 88, 0.24), transparent 33%),
+    linear-gradient(135deg, #3d2926 0%, #5c322b 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  box-shadow: 0 24px 56px rgba(63, 35, 30, 0.16);
+  color: #fffaf7;
+  margin-block: 26px;
+  padding: clamp(26px, 3vw, 42px);
+}
+
+body.home-v14 .home-care-hub > header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 32px;
+  justify-content: space-between;
+  max-width: none;
+}
+
+body.home-v14 .home-care-hub > header > div {
+  margin-inline: auto;
+  max-width: 780px;
+  text-align: center;
+}
+
+body.home-v14 .home-care-hub > header h2 {
+  color: #fffaf7;
+  margin: 0 0 8px;
+  max-width: 24ch;
+}
+
+body.home-v14 .home-care-hub > header p {
+  color: rgba(255, 250, 247, 0.8);
+  font-size: 1.08rem;
+  margin: 0;
+}
+
+body.home-v14 .home-care-hub > header > a {
+  color: #ffd2c3;
+  font-size: 1rem;
+  font-weight: 800;
+  margin-inline: auto;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+body.home-v14 .home-care-hub .home-circle-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 26px;
+}
+
+body.home-v14 .home-care-hub .home-circle-card {
+  align-items: stretch;
+  background: #fffaf7;
+  border: 1px solid rgba(76, 43, 38, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(43, 24, 21, 0.12);
+  color: var(--ink, #342824);
+  display: grid;
+  grid-template-columns: minmax(116px, 38%) minmax(0, 1fr);
+  min-height: 184px;
+  overflow: hidden;
+  text-decoration: none;
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+body.home-v14 .home-care-hub .home-circle-card:hover {
+  box-shadow: 0 16px 34px rgba(43, 24, 21, 0.18);
+  transform: translateY(-3px);
+}
+
+body.home-v14 .home-care-hub .home-circle-card figure {
+  height: 100%;
+  min-height: 184px;
+  overflow: hidden;
+}
+
+body.home-v14 .home-care-hub .home-circle-card > div {
+  display: flex;
+  flex-direction: column;
+  padding: 17px 18px 16px;
+}
+
+body.home-v14 .home-care-hub .home-circle-card small {
+  color: #b64c32;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+body.home-v14 .home-care-hub .home-circle-card h3 {
+  color: #2f2421;
+  font-size: clamp(1.25rem, 1.55vw, 1.65rem);
+  line-height: 1.08;
+  margin: 8px 0 7px;
+}
+
+body.home-v14 .home-care-hub .home-circle-card p {
+  color: #685b55;
+  font-size: 0.93rem;
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+body.home-v14 .home-care-hub .home-circle-card span {
+  color: #a9442e;
+  font-size: 0.9rem;
+  font-weight: 850;
+  margin-top: auto;
+}
+
+body.home-v14 .home-care-hub > footer {
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 250, 247, 0.82);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  justify-content: center;
+  margin-top: 24px;
+  padding-top: 19px;
+  text-align: center;
+}
+
+body.home-v14 .home-care-hub > footer strong {
+  color: #fffaf7;
+  font-size: 1.05rem;
+}
+
+/* Homepage guide band: clear contents, strong CTA, visible book cover. */
+body.home-v14 .home-ref-guide {
+  align-items: center;
+  background:
+    radial-gradient(circle at 84% 20%, rgba(239, 133, 95, 0.22), transparent 28%),
+    linear-gradient(120deg, #3b2926 0%, #6e3b32 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 22px;
+  box-shadow: 0 22px 50px rgba(62, 34, 29, 0.17);
+  color: #fffaf7;
+  display: grid;
+  gap: clamp(22px, 3vw, 38px);
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr) 168px;
+  min-height: 0;
+  overflow: hidden;
+  padding: clamp(28px, 3.5vw, 46px);
+  padding-right: clamp(28px, 3.5vw, 46px);
+  position: relative;
+}
+
+body.home-v14 .home-guide-intro {
+  text-align: center;
+}
+
+body.home-v14 .home-guide-intro > span {
+  color: #ffc8b5;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+body.home-v14 .home-guide-intro h2 {
+  color: #fffaf7;
+  font-size: clamp(2rem, 3.1vw, 3.15rem);
+  line-height: 1.02;
+  margin: 10px auto 12px;
+  max-width: 19ch;
+}
+
+body.home-v14 .home-guide-intro p {
+  color: rgba(255, 250, 247, 0.82);
+  font-size: 1.02rem;
+  line-height: 1.58;
+  margin-inline: auto;
+  max-width: 58ch;
+}
+
+body.home-v14 .home-guide-intro ul {
+  display: grid;
+  gap: 8px 22px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 18px auto 0;
+  max-width: 650px;
+  padding: 0;
+  text-align: left;
+}
+
+body.home-v14 .home-guide-intro li {
+  color: #fffaf7;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  list-style: none;
+  padding-left: 22px;
+  position: relative;
+}
+
+body.home-v14 .home-guide-intro li::before {
+  color: #f49472;
+  content: "✓";
+  font-weight: 900;
+  left: 0;
+  position: absolute;
+}
+
+body.home-v14 .home-ref-guide > form {
+  align-content: center;
+  display: grid;
+  gap: 10px;
+}
+
+body.home-v14 .home-ref-guide > form input,
+body.home-v14 .home-ref-guide > form button {
+  font-size: 1rem;
+  min-height: 54px;
+  width: 100%;
+}
+
+body.home-v14 .home-ref-guide .home-guide-book {
+  background: #f7eee8;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 18px 30px rgba(25, 12, 10, 0.26);
+  color: #3b2926;
+  height: 218px;
+  inset: auto;
+  justify-self: center;
+  overflow: hidden;
+  position: relative;
+  right: auto;
+  top: auto;
+  transform: rotate(1.5deg);
+  width: 158px;
+}
+
+body.home-v14 .home-ref-guide .home-guide-book img {
+  height: 94px !important;
+  object-fit: contain !important;
+  width: 100% !important;
+}
+
+/* Equal veterinarian portraits and more legible testimonial cards. */
+body.home-v14 .home-vet-testimonials {
+  padding: clamp(28px, 3.5vw, 46px);
+}
+
+body.home-v14 .home-vet-testimonials > div {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 24px;
+}
+
+body.home-v14 .home-vet-testimonials article {
+  align-items: center;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: 176px minmax(0, 1fr);
+  min-height: 218px;
+  padding: 20px;
+}
+
+body.home-v14 .home-vet-testimonials article figure {
+  aspect-ratio: 1;
+  height: 176px;
+  min-height: 176px;
+  overflow: hidden;
+  width: 176px;
+}
+
+body.home-v14 .home-vet-testimonials article figure img {
+  inset: auto !important;
+  position: static !important;
+}
+
+body.home-v14 .home-vet-testimonials blockquote {
+  font-size: clamp(1rem, 1.25vw, 1.22rem);
+  line-height: 1.58;
+  margin: 0 0 14px;
+}
+
+body.home-v14 .home-vet-testimonials article p strong,
+body.home-v14 .home-vet-testimonials article p span {
+  display: block;
+}
+
+body.home-v14 .home-vet-testimonials article p strong {
+  font-size: 1.08rem;
+  margin-bottom: 3px;
+}
+
+/* Smart Bed: three spacious editorial stories with large natural visuals. */
+body.home-v14 .home-ref-bed {
+  background: linear-gradient(180deg, #fffaf7 0%, #f7ede7 100%);
+  border: 1px solid #ead8ce;
+  border-radius: 22px;
+  box-shadow: 0 22px 50px rgba(79, 49, 41, 0.12);
+  padding: clamp(30px, 4vw, 54px);
+}
+
+body.home-v14 .home-ref-bed > header {
+  display: block;
+}
+
+body.home-v14 .home-ref-bed > header > span {
+  color: #b64c32;
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  margin-bottom: 9px;
+  text-transform: uppercase;
+}
+
+body.home-v14 .home-ref-bed > header h2 {
+  font-size: clamp(2.25rem, 3.7vw, 3.8rem);
+  line-height: 1.01;
+  max-width: 24ch;
+}
+
+body.home-v14 .home-ref-bed > header p {
+  font-size: 1.12rem;
+  line-height: 1.55;
+  margin: 12px auto 0;
+  max-width: 68ch;
+}
+
+body.home-v14 .home-bed-grid {
+  display: grid;
+  gap: 22px;
+  margin-top: 30px;
+}
+
+body.home-v14 .home-bed-story,
+body.home-v14 .home-bed-comfort-story,
+body.home-v14 .home-bed-layer-story,
+body.home-v14 .home-bed-tracking-story {
+  align-items: stretch;
+  background: #fffdfb;
+  border: 1px solid #e8d4c9;
+  border-radius: 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.home-v14 .home-bed-layer-story {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+}
+
+body.home-v14 .home-bed-story > .copy,
+body.home-v14 .home-bed-comfort-story > .copy,
+body.home-v14 .home-bed-layer-story > .copy,
+body.home-v14 .home-bed-tracking-story > .copy {
+  align-content: center;
+  align-self: stretch;
+  background: transparent;
+  display: grid;
+  gap: 14px;
+  grid-area: auto;
+  max-width: none;
+  padding: clamp(28px, 4vw, 56px);
+  position: relative;
+  width: auto;
+  z-index: 1;
+}
+
+body.home-v14 .home-bed-comfort-story > .copy {
+  background: linear-gradient(135deg, #3d2926 0%, #64382f 100%);
+  color: #fffaf7;
+}
+
+body.home-v14 .home-bed-comfort-story > .copy :is(h3, p, li) {
+  color: inherit;
+}
+
+body.home-v14 .home-bed-story h3 {
+  font-size: clamp(2rem, 3vw, 3rem);
+  line-height: 1.03;
+  margin: 0;
+  max-width: 18ch;
+}
+
+body.home-v14 .home-bed-story .copy > p {
+  font-size: 1.05rem;
+  line-height: 1.62;
+  margin: 0;
+  max-width: 55ch;
+}
+
+body.home-v14 .home-bed-story figure,
+body.home-v14 .home-bed-comfort-story figure,
+body.home-v14 .home-bed-layer-story figure,
+body.home-v14 .home-bed-tracking-story figure {
+  align-items: center;
+  aspect-ratio: auto;
+  display: flex;
+  grid-area: auto;
+  justify-content: center;
+  min-height: 390px;
+  overflow: hidden;
+  position: relative;
+}
+
+body.home-v14 .home-bed-story figure img,
+body.home-v14 .home-bed-comfort-story figure img,
+body.home-v14 .home-bed-layer-story figure img,
+body.home-v14 .home-bed-tracking-story figure img {
+  height: auto !important;
+  inset: auto !important;
+  max-height: none !important;
+  max-width: none !important;
+  position: static !important;
+  width: 100% !important;
+}
+
+body.home-v14 .home-bed-feature-list,
+body.home-v14 .home-bed-metrics {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+body.home-v14 .home-bed-feature-list li,
+body.home-v14 .home-bed-metrics > * {
+  font-size: 0.98rem;
+  line-height: 1.4;
+}
+
+body.home-v14 .home-bed-story .button {
+  font-size: 1rem;
+  justify-self: start;
+  min-height: 52px;
+  padding-inline: 24px;
+}
+
+/* Care Circle: a shorter hero and dense, evenly aligned public lesson feed. */
+body.circle-v8 .circle-hero-v7 {
+  align-items: center;
+  grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
+  min-height: 0;
+}
+
+body.circle-v8 .circle-hero-v7 > div {
+  padding: clamp(26px, 3vw, 42px);
+}
+
+body.circle-v8 .circle-hero-v7 h1 {
+  font-size: clamp(2.45rem, 3.6vw, 3.65rem);
+  max-width: 16ch;
+}
+
+body.circle-v8 .circle-hero-v7 > div > p {
+  font-size: 1.02rem;
+  line-height: 1.55;
+  margin-bottom: 18px;
+  max-width: 60ch;
+}
+
+body.circle-v8 .circle-hero-v7 > figure {
+  min-height: 0;
+}
+
+body.circle-v8 .circle-hero-v7 > figure img {
+  height: auto !important;
+  max-height: 540px;
+}
+
+body.circle-v8 :is(.circle-account-gate, .circle-hero-question) {
+  margin-top: 16px;
+  padding: 18px;
+}
+
+body.circle-v8 .circle-hero-actions {
+  margin-top: 14px;
+}
+
+body.circle-v8 .circle-ask-v7 {
+  margin-block: 22px;
+  padding: clamp(22px, 3vw, 36px);
+}
+
+body.circle-v8 .circle-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+body.circle-v8 .circle-public-grid {
+  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.circle-v8 .circle-public-card figure {
+  height: 210px;
+  min-height: 210px;
+}
+
+/* Guide: generous legibility, centered section hierarchy, natural media. */
+body.guide-v7 .guide-hero-v6,
+body.find-care-v7 .directory-hero-v6,
+body.lesson-v8 .lesson-hero-v7 {
+  min-height: 0;
+}
+
+body.guide-v7 .guide-hero-v6 > figure,
+body.find-care-v7 .directory-hero-v6 > figure,
+body.lesson-v8 .lesson-hero-v7 > figure {
+  min-height: 0;
+}
+
+body.guide-v7 .guide-hero-v6 > figure img,
+body.find-care-v7 .directory-hero-v6 > figure img,
+body.lesson-v8 .lesson-hero-v7 > figure img {
+  height: auto !important;
+  max-height: 620px;
+}
+
+body.guide-v7 .guide-topics-v6 figure,
+body.guide-v7 .guide-lessons figure {
+  height: 240px;
+  min-height: 240px;
+}
+
+body.guide-v7 .guide-method figure,
+body.guide-v7 .guide-vet-note figure,
+body.lesson-v8 .lesson-chapter-layout figure {
+  min-height: 0;
+}
+
+body.guide-v7 :is(.guide-method, .guide-vet-note) figure img,
+body.lesson-v8 .lesson-chapter-layout figure img {
+  height: auto !important;
+}
+
+body.guide-v7 .guide-vet-trust > .wm-wrap {
+  align-items: stretch;
+}
+
+body.guide-v7 .guide-vet-trust article {
+  align-items: center;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 150px minmax(0, 1fr);
+  min-height: 214px;
+}
+
+body.guide-v7 .guide-vet-trust article figure {
+  aspect-ratio: 1;
+  height: 150px;
+  overflow: hidden;
+  width: 150px;
+}
+
+/* Find Care: real images stay intact; official-source cards always have media. */
+body.find-care-v7 .directory-hero-v6 {
+  align-items: center;
+}
+
+body.find-care-v7 .provider-grid-v6 {
+  align-items: stretch;
+  gap: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.find-care-v7 .provider-card-v6 {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+body.find-care-v7 .provider-card-v6 > figure,
+body.find-care-v7 .provider-card-v6 > .provider-source-mark {
+  height: 230px;
+  min-height: 230px;
+  width: 100%;
+}
+
+body.find-care-v7 .provider-card-v6 > figure {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+body.find-care-v7 .provider-card-v6 > .provider-source-mark {
+  align-items: center;
+  background:
+    radial-gradient(circle at 80% 10%, rgba(236, 128, 92, 0.28), transparent 34%),
+    linear-gradient(135deg, #29463c 0%, #17342d 100%);
+  color: #fffaf7;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px;
+  text-align: center;
+}
+
+body.find-care-v7 .provider-source-mark span {
+  color: #fffaf7;
+  font-family: var(--serif, Georgia, serif);
+  font-size: clamp(1.45rem, 2vw, 2rem);
+  font-weight: 700;
+  line-height: 1.08;
+  max-width: 17ch;
+}
+
+body.find-care-v7 .provider-source-mark small {
+  color: rgba(255, 250, 247, 0.76);
+  font-size: 0.9rem;
+  margin-top: 12px;
+}
+
+body.find-care-v7 .provider-card-v6 > div:last-child {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+body.find-care-v7 .provider-card-v6 > div:last-child > a:last-child {
+  margin-top: auto;
+}
+
+body.find-care-v7 .practice-band-v6 figure img {
+  height: auto !important;
+}
+
+@media (max-width: 1180px) {
+  .wm-header .wm-header-inner {
+    grid-template-columns: 184px minmax(0, 1fr) auto;
+  }
+
+  .wm-header .wm-wordmark[data-logo-link],
+  .wm-header .wm-wordmark[data-logo-link] img {
+    height: 41px !important;
+    max-width: 184px;
+    min-width: 184px;
+    width: 184px !important;
+  }
+
+  body.home-v14 .home-care-hub .home-circle-grid,
+  body.circle-v8 .circle-public-grid,
+  body.find-care-v7 .provider-grid-v6 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.home-v14 .home-ref-guide {
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  }
+
+  body.home-v14 .home-ref-guide .home-guide-book {
+    grid-column: 1 / -1;
+    height: 190px;
+    width: 140px;
+  }
+
+  body.home-v14 .home-vet-testimonials article {
+    grid-template-columns: 150px minmax(0, 1fr);
+  }
+
+  body.home-v14 .home-vet-testimonials article figure {
+    height: 150px;
+    min-height: 150px;
+    width: 150px;
+  }
+}
+
+@media (max-width: 900px) {
+  body.home-v14 .home-ref-guide,
+  body.home-v14 :is(
+      .home-bed-story,
+      .home-bed-comfort-story,
+      .home-bed-layer-story,
+      .home-bed-tracking-story
+    ),
+  body.circle-v8 .circle-hero-v7 {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-ref-guide {
+    text-align: center;
+  }
+
+  body.home-v14 .home-ref-guide > form {
+    margin-inline: auto;
+    max-width: 620px;
+    width: 100%;
+  }
+
+  body.home-v14 .home-bed-story figure,
+  body.home-v14 .home-bed-comfort-story figure,
+  body.home-v14 .home-bed-layer-story figure,
+  body.home-v14 .home-bed-tracking-story figure {
+    min-height: 0;
+  }
+
+  body.home-v14 .home-bed-story figure img,
+  body.home-v14 .home-bed-comfort-story figure img,
+  body.home-v14 .home-bed-layer-story figure img,
+  body.home-v14 .home-bed-tracking-story figure img {
+    height: auto !important;
+  }
+
+  body.circle-v8 .circle-hero-v7 > figure {
+    order: -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .wm-header .wm-header-inner {
+    grid-template-columns: 164px minmax(0, 1fr) auto;
+    min-height: 66px;
+  }
+
+  .wm-header .wm-wordmark[data-logo-link],
+  .wm-header .wm-wordmark[data-logo-link] img {
+    height: 37px !important;
+    max-height: 37px;
+    max-width: 164px;
+    min-width: 164px;
+    width: 164px !important;
+  }
+
+  body.home-v14 .home-care-hub,
+  body.home-v14 .home-ref-guide,
+  body.home-v14 .home-vet-testimonials,
+  body.home-v14 .home-ref-bed {
+    border-radius: 16px;
+    padding: 22px 16px;
+  }
+
+  body.home-v14 .home-care-hub .home-circle-grid,
+  body.home-v14 .home-vet-testimonials > div,
+  body.circle-v8 .circle-public-grid,
+  body.find-care-v7 .provider-grid-v6 {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-care-hub .home-circle-card {
+    grid-template-columns: 112px minmax(0, 1fr);
+  }
+
+  body.home-v14 .home-guide-intro ul,
+  body.home-v14 .home-bed-feature-list,
+  body.home-v14 .home-bed-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-vet-testimonials article {
+    gap: 16px;
+    grid-template-columns: 118px minmax(0, 1fr);
+    min-height: 0;
+    padding: 16px;
+  }
+
+  body.home-v14 .home-vet-testimonials article figure {
+    height: 118px;
+    min-height: 118px;
+    width: 118px;
+  }
+
+  body.home-v14 .home-bed-story > .copy,
+  body.home-v14 .home-bed-comfort-story > .copy,
+  body.home-v14 .home-bed-layer-story > .copy,
+  body.home-v14 .home-bed-tracking-story > .copy {
+    padding: 26px 20px;
+  }
+
+  body.home-v14 .home-bed-story h3 {
+    font-size: clamp(1.9rem, 8vw, 2.45rem);
+  }
+
+  body.circle-v8 .circle-hero-v7 > div {
+    padding: 24px 18px;
+  }
+
+  body.circle-v8 .circle-hero-v7 h1,
+  body.lesson-v8 .lesson-hero-v7 h1,
+  body.guide-v7 .guide-hero-v6 h1,
+  body.find-care-v7 .directory-hero-v6 h1 {
+    font-size: clamp(2.25rem, 10vw, 3.15rem);
+  }
+
+  body.guide-v7 .guide-vet-trust article {
+    grid-template-columns: 112px minmax(0, 1fr);
+  }
+
+  body.guide-v7 .guide-vet-trust article figure {
+    height: 112px;
+    width: 112px;
+  }
+}
+
+@media (max-width: 520px) {
+  .wm-header .wm-header-inner {
+    grid-template-columns: 148px minmax(0, 1fr) auto;
+  }
+
+  .wm-header .wm-wordmark[data-logo-link],
+  .wm-header .wm-wordmark[data-logo-link] img {
+    height: 34px !important;
+    max-height: 34px;
+    max-width: 148px;
+    min-width: 148px;
+    width: 148px !important;
+  }
+
+  body.home-v14 .home-care-hub .home-circle-card {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+
+  body.home-v14 .home-care-hub .home-circle-card figure {
+    min-height: 172px;
+  }
+
+  body.home-v14 .home-vet-testimonials article,
+  body.guide-v7 .guide-vet-trust article {
+    align-items: start;
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-vet-testimonials article figure,
+  body.guide-v7 .guide-vet-trust article figure {
+    height: 160px;
+    justify-self: center;
+    width: 160px;
+  }
+
+  body.find-care-v7 .provider-card-v6 > figure,
+  body.find-care-v7 .provider-card-v6 > .provider-source-mark {
+    height: 205px; /* wm-tail-skip */
+    min-height: 205px;
+  }
+}
+
+/* 2026-08-24.6 — final current-markup visual QA overrides */
+
+/* Keep the supplied WoafMeow mark identical on every route. */
+.wm-header .wm-header-inner {
+  grid-template-columns: 196px minmax(0, 1fr) auto;
+  min-height: 72px;
+}
+
+.wm-header .wm-wordmark[data-logo-link],
+.wm-header .wm-wordmark[data-logo-link] picture,
+.wm-header .wm-wordmark[data-logo-link] img {
+  display: block;
+  flex: 0 0 196px;
+  height: 44px !important;
+  max-height: 44px !important;
+  max-width: 196px !important;
+  min-width: 196px;
+  width: 196px !important;
+}
+
+.wm-header .wm-wordmark[data-logo-link] img {
+  object-fit: contain !important;
+  object-position: left center !important;
+}
+
+/* Balance editorial headings and keep section titles out of narrow orphan columns. */
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7, .match-v6, .bed-v7)
+  :is(h1, h2, h3, blockquote) {
+  hyphens: none;
+  overflow-wrap: normal;
+  text-wrap: balance;
+  word-break: normal;
+}
+
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7, .match-v6, .bed-v7) p {
+  text-wrap: pretty;
+}
+
+body.home-v14 .home-ref-hero-copy h1,
+body.circle-v8 .circle-hero-v7 h1,
+body.lesson-v8 .lesson-hero-v7 h1,
+body.guide-v7 .guide-hero-v6 h1,
+body.find-care-v7 .directory-hero-v6 h1,
+body.match-v6 .match-hero h1,
+body.bed-v7 .bed-hero-v6 h1 {
+  line-height: 1.01;
+  max-width: 19ch;
+}
+
+body:is(.home-v14, .circle-v8, .guide-v7, .find-care-v7, .match-v6, .bed-v7)
+  :is(
+    .home-care-hub,
+    .home-vet-testimonials,
+    .home-ref-bed,
+    .home-support-paths,
+    .circle-filter-bar,
+    .guide-outcomes,
+    .guide-topics-v6,
+    .guide-method,
+    .guide-lessons,
+    .guide-vet-trust,
+    .directory-results-v6,
+    .bed-proof-v6,
+    .bed-insights-v6
+  ) > header,
+body.guide-v7 .guide-vet-trust > .wm-wrap > header,
+body.find-care-v7 .directory-results-v6 > .wm-wrap > header {
+  margin-inline: auto;
+  max-width: 900px;
+  text-align: center;
+}
+
+body:is(.home-v14, .circle-v8, .guide-v7, .find-care-v7, .match-v6, .bed-v7)
+  :is(
+    .home-care-hub,
+    .home-vet-testimonials,
+    .home-ref-bed,
+    .home-support-paths,
+    .circle-filter-bar,
+    .guide-outcomes,
+    .guide-topics-v6,
+    .guide-method,
+    .guide-lessons,
+    .guide-vet-trust,
+    .directory-results-v6,
+    .bed-proof-v6,
+    .bed-insights-v6
+  ) > header :is(h2, h3),
+body.guide-v7 .guide-vet-trust > .wm-wrap > header h2,
+body.find-care-v7 .directory-results-v6 > .wm-wrap > header h2 {
+  margin-inline: auto;
+  max-width: 26ch;
+  text-align: center;
+}
+
+/* No gray image mats, no crop, and no distorted media on current templates. */
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7, .match-v6, .bed-v7)
+  figure,
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7, .match-v6, .bed-v7)
+  picture {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7, .match-v6, .bed-v7)
+  figure > img,
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7, .match-v6, .bed-v7)
+  picture > img {
+  display: block;
+  max-width: 100%;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+body.home-v14 .home-ref-hero-media img,
+body.circle-v8 .circle-hero-v7 > figure img,
+body.lesson-v8 .lesson-hero-v7 > figure img,
+body.guide-v7 .guide-hero-v6 > figure img,
+body.find-care-v7 .directory-hero-v6 > figure img,
+body.match-v6 .match-hero figure img,
+body.bed-v7 .bed-hero-v6 figure img {
+  height: auto !important;
+  max-height: none !important;
+  width: 100% !important;
+}
+
+/* One polished, information-dense Care Circle hub on the homepage. */
+body.home-v14 .home-care-hub {
+  margin-block: 28px;
+  padding: clamp(28px, 3.4vw, 46px);
+}
+
+body.home-v14 .home-care-hub > header {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+  text-align: center;
+}
+
+body.home-v14 .home-care-hub > header h2 {
+  font-size: clamp(2.15rem, 3.25vw, 3.35rem);
+  line-height: 1.02;
+}
+
+body.home-v14 .home-care-hub .home-circle-grid {
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.home-v14 .home-care-hub .home-circle-card {
+  align-items: stretch;
+  grid-template-columns: 132px minmax(0, 1fr);
+  min-height: 196px;
+  overflow: hidden;
+}
+
+body.home-v14 .home-care-hub .home-circle-card figure {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 196px;
+  overflow: hidden;
+  width: 132px;
+}
+
+body.home-v14 .home-care-hub .home-circle-card figure img {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+body.home-v14 .home-care-hub .home-circle-card > div {
+  min-width: 0;
+  padding: 18px 16px;
+}
+
+/* Make the free guide band read as a complete, valuable deliverable. */
+body.home-v14 .home-ref-guide {
+  align-items: center;
+  gap: clamp(22px, 3vw, 38px);
+  grid-template-columns: minmax(0, 1.18fr) minmax(300px, 0.82fr) 176px;
+  padding: clamp(30px, 4vw, 50px);
+}
+
+body.home-v14 .home-guide-intro h2 {
+  font-size: clamp(2.2rem, 3.25vw, 3.4rem);
+  line-height: 1.02;
+  max-width: 21ch;
+}
+
+body.home-v14 .home-guide-intro ul {
+  gap: 10px 24px;
+}
+
+body.home-v14 .home-ref-guide > form :is(input, button) {
+  font-size: 1rem;
+  min-height: 56px;
+}
+
+body.home-v14 .home-ref-guide .home-guide-book {
+  height: 238px;
+  width: 176px;
+}
+
+body.home-v14 .home-ref-guide .home-guide-book img {
+  height: 108px !important;
+  object-fit: contain !important;
+  width: 100% !important;
+}
+
+/* Equal, uncropped veterinarian portraits on Home and Guide. */
+body.home-v14 .home-vet-testimonials article,
+body.guide-v7 .guide-vet-trust article {
+  align-items: center;
+}
+
+body.home-v14 .home-vet-testimonials article {
+  gap: 22px;
+  grid-template-columns: 168px minmax(0, 1fr);
+  min-height: 226px;
+}
+
+body.home-v14 .home-vet-testimonials article figure,
+body.guide-v7 .guide-vet-trust article figure {
+  aspect-ratio: 1;
+  background: transparent !important;
+  display: flex;
+  height: 168px;
+  justify-content: center;
+  min-height: 168px;
+  overflow: hidden;
+  width: 168px;
+}
+
+body.home-v14 .home-vet-testimonials article figure img,
+body.guide-v7 .guide-vet-trust article figure img {
+  height: 100% !important;
+  inset: auto !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  position: static !important;
+  width: 100% !important;
+}
+
+body.home-v14 .home-vet-testimonials blockquote,
+body.guide-v7 .guide-vet-trust blockquote {
+  font-size: clamp(1.02rem, 1.2vw, 1.2rem);
+  line-height: 1.56;
+}
+
+/* Smart Bed stories use large, natural product media and readable feature copy. */
+body.home-v14 .home-ref-bed {
+  padding: clamp(32px, 4.3vw, 58px);
+}
+
+body.home-v14 .home-ref-bed > header {
+  margin-bottom: 30px;
+  max-width: 980px;
+}
+
+body.home-v14 .home-ref-bed > header h2 {
+  font-size: clamp(2.35rem, 3.8vw, 3.9rem);
+  line-height: 1.02;
+  max-width: 25ch;
+}
+
+body.home-v14 .home-bed-grid {
+  gap: 24px;
+}
+
+body.home-v14 :is(.home-bed-story, .home-bed-comfort-story, .home-bed-layer-story, .home-bed-tracking-story) {
+  grid-template-columns: minmax(360px, 0.86fr) minmax(0, 1.14fr);
+  min-height: 470px;
+}
+
+body.home-v14 .home-bed-layer-story {
+  grid-template-columns: minmax(0, 1.14fr) minmax(360px, 0.86fr);
+}
+
+body.home-v14 .home-bed-story .home-bed-copy {
+  align-content: center;
+  align-self: stretch;
+  display: grid;
+  gap: 14px;
+  max-width: none;
+  padding: clamp(32px, 4vw, 58px);
+  position: relative;
+  width: auto;
+}
+
+body.home-v14 .home-bed-comfort-story .home-bed-copy {
+  background: linear-gradient(135deg, #392623 0%, #66382f 100%);
+  color: #fffaf7;
+}
+
+body.home-v14 .home-bed-comfort-story .home-bed-copy :is(h3, p, strong, span) {
+  color: inherit;
+}
+
+body.home-v14 .home-bed-story h3 {
+  font-size: clamp(2.15rem, 3.25vw, 3.35rem);
+  line-height: 1.02;
+  max-width: 22ch;
+}
+
+body.home-v14 .home-bed-story .home-bed-copy > p {
+  font-size: 1.08rem;
+  line-height: 1.58;
+}
+
+body.home-v14 :is(.home-bed-story, .home-bed-comfort-story, .home-bed-layer-story, .home-bed-tracking-story) figure {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 470px;
+  overflow: hidden;
+  position: relative;
+}
+
+body.home-v14 :is(.home-bed-story, .home-bed-comfort-story, .home-bed-layer-story, .home-bed-tracking-story) figure img {
+  height: auto !important;
+  inset: auto !important;
+  max-height: none !important;
+  max-width: 100% !important;
+  position: static !important;
+  width: 100% !important;
+}
+
+body.home-v14 .home-bed-feature-list,
+body.home-v14 .home-bed-metrics {
+  gap: 11px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+body.home-v14 .home-bed-feature-list li,
+body.home-v14 .home-bed-metrics > span {
+  min-height: 76px;
+  padding: 12px 14px;
+}
+
+body.home-v14 .home-bed-story .button {
+  font-size: 1.02rem;
+  min-height: 54px;
+  padding-inline: 26px;
+}
+
+body.home-v14 .home-bed-story figure figcaption,
+body.bed-v7 figure figcaption {
+  bottom: 12px;
+  color: #4f403a;
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.25;
+  position: absolute;
+  right: 14px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.88);
+  z-index: 2;
+}
+
+/* A compact Care Circle entry point with one clear question flow. */
+body.circle-v8 .circle-hero-v7 {
+  align-items: center;
+  grid-template-columns: minmax(0, 0.98fr) minmax(0, 1.02fr);
+  min-height: 0;
+}
+
+body.circle-v8 .circle-hero-v7 > div {
+  padding: clamp(26px, 3vw, 42px);
+}
+
+body.circle-v8 .circle-hero-v7 h1 {
+  font-size: clamp(2.35rem, 3.5vw, 3.55rem);
+  max-width: 18ch;
+}
+
+body.circle-v8 .circle-hero-v7 > div > p {
+  font-size: 1.02rem;
+  line-height: 1.52;
+  margin-bottom: 16px;
+}
+
+body.circle-v8 :is(.circle-account-gate, .circle-hero-question) {
+  margin-top: 14px;
+  padding: 18px;
+}
+
+body.circle-v8 .circle-hero-v7 > figure {
+  min-height: 0;
+}
+
+body.circle-v8 .circle-hero-v7 > figure img {
+  height: auto !important;
+  max-height: 520px !important;
+}
+
+body.circle-v8 .circle-public-grid {
+  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.circle-v8 .circle-public-card figure {
+  align-items: center;
+  display: flex;
+  height: 210px;
+  justify-content: center;
+  min-height: 210px;
+}
+
+body.circle-v8 .circle-public-card figure img {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+/* Current upload previews stay natural, useful and free of tinted mats. */
+:is(.profile-photo-field, .question-image-field, .pet-photo-field) img,
+.account-pet-photo img,
+[data-pet-photo-preview],
+[data-question-image-preview] {
+  background: transparent !important;
+  border: 1px solid rgba(96, 62, 49, 0.18);
+  border-radius: 12px;
+  display: block;
+  height: auto !important;
+  margin-top: 12px;
+  max-height: 280px;
+  max-width: min(100%, 420px);
+  object-fit: contain !important;
+  padding: 0 !important;
+  width: auto !important;
+}
+
+:is(.profile-photo-field, .question-image-field, .pet-photo-field) img[hidden],
+[data-pet-photo-preview][hidden],
+[data-question-image-preview][hidden] {
+  display: none !important;
+}
+
+/* Four clear owner-matching steps at desktop, one continuous flow on mobile. */
+body.match-v6 .match-how ol {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 22px 0 0;
+  padding: 0;
+}
+
+body.match-v6 .match-how ol > li {
+  align-items: start;
+  background: #fffaf7;
+  border: 1px solid rgba(86, 55, 43, 0.16);
+  border-radius: 13px;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 38px minmax(0, 1fr);
+  margin: 0;
+  min-height: 132px;
+  padding: 16px;
+}
+
+body.match-v6 .match-how ol > li > span {
+  align-items: center;
+  background: #c75437;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  font-weight: 900;
+  height: 36px;
+  justify-content: center;
+  width: 36px;
+}
+
+/* Real-photo cards remain even; source-only cards never render an empty image slot. */
+body.find-care-v7 .provider-grid-v6 {
+  align-items: stretch;
+  gap: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.find-care-v7 .provider-card-v6 {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+body.find-care-v7 .provider-card-v6.has-photo > figure {
+  align-items: center;
+  background: transparent !important;
+  display: flex;
+  height: 230px;
+  justify-content: center;
+  min-height: 230px;
+  overflow: hidden;
+  width: 100%;
+}
+
+body.find-care-v7 .provider-card-v6.has-photo > figure img {
+  height: 100% !important;
+  object-fit: contain !important;
+  width: 100% !important;
+}
+
+body.find-care-v7 .provider-card-v6.no-photo {
+  border-top: 6px solid #c75437;
+}
+
+body.find-care-v7 .provider-card-v6.no-photo::before,
+body.find-care-v7 .provider-card-v6.no-photo::after {
+  content: none !important;
+  display: none !important;
+}
+
+body.find-care-v7 .provider-card-v6.no-photo > div:last-child {
+  padding-top: 30px;
+}
+
+body.find-care-v7 .provider-card-v6 > div:last-child {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+body.find-care-v7 .provider-card-v6 > div:last-child > a:last-child {
+  margin-top: auto;
+}
+
+body.find-care-v7 .provider-source-type {
+  color: #a8422d;
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.25;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1180px) {
+  .wm-header .wm-header-inner {
+    grid-template-columns: 180px minmax(0, 1fr) auto;
+  }
+
+  .wm-header .wm-wordmark[data-logo-link],
+  .wm-header .wm-wordmark[data-logo-link] picture,
+  .wm-header .wm-wordmark[data-logo-link] img {
+    flex-basis: 180px;
+    height: 41px !important;
+    max-height: 41px !important;
+    max-width: 180px !important;
+    min-width: 180px;
+    width: 180px !important;
+  }
+
+  body.home-v14 .home-care-hub .home-circle-grid,
+  body.circle-v8 .circle-public-grid,
+  body.find-care-v7 .provider-grid-v6 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.home-v14 .home-ref-guide {
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  }
+
+  body.home-v14 .home-ref-guide .home-guide-book {
+    grid-column: 1 / -1;
+    height: 218px;
+    width: 160px;
+  }
+}
+
+@media (max-width: 900px) {
+  body.home-v14 .home-ref-guide,
+  body.home-v14 :is(.home-bed-story, .home-bed-comfort-story, .home-bed-layer-story, .home-bed-tracking-story),
+  body.circle-v8 .circle-hero-v7 {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-ref-guide {
+    text-align: center;
+  }
+
+  body.home-v14 .home-ref-guide > form {
+    margin-inline: auto;
+    max-width: 620px;
+    width: 100%;
+  }
+
+  body.home-v14 :is(.home-bed-story, .home-bed-comfort-story, .home-bed-layer-story, .home-bed-tracking-story),
+  body.home-v14 :is(.home-bed-story, .home-bed-comfort-story, .home-bed-layer-story, .home-bed-tracking-story) figure {
+    min-height: 0;
+  }
+
+  body.home-v14 :is(.home-bed-story, .home-bed-comfort-story, .home-bed-layer-story, .home-bed-tracking-story) figure img {
+    height: auto !important;
+  }
+
+  body.circle-v8 .circle-hero-v7 > figure {
+    order: -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .wm-header .wm-header-inner {
+    grid-template-columns: 158px minmax(0, 1fr) auto;
+    min-height: 66px;
+  }
+
+  .wm-header .wm-wordmark[data-logo-link],
+  .wm-header .wm-wordmark[data-logo-link] picture,
+  .wm-header .wm-wordmark[data-logo-link] img {
+    flex-basis: 158px;
+    height: 36px !important;
+    max-height: 36px !important;
+    max-width: 158px !important;
+    min-width: 158px;
+    width: 158px !important;
+  }
+
+  body.home-v14 .home-care-hub,
+  body.home-v14 .home-ref-guide,
+  body.home-v14 .home-vet-testimonials,
+  body.home-v14 .home-ref-bed {
+    border-radius: 16px;
+    padding: 22px 16px;
+  }
+
+  body.home-v14 .home-care-hub .home-circle-grid,
+  body.home-v14 .home-vet-testimonials > div,
+  body.circle-v8 .circle-public-grid,
+  body.find-care-v7 .provider-grid-v6 {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-care-hub .home-circle-card {
+    grid-template-columns: 108px minmax(0, 1fr);
+    min-height: 176px;
+  }
+
+  body.home-v14 .home-care-hub .home-circle-card figure {
+    min-height: 176px;
+    width: 108px;
+  }
+
+  body.home-v14 .home-vet-testimonials article,
+  body.guide-v7 .guide-vet-trust article {
+    gap: 16px;
+    grid-template-columns: 124px minmax(0, 1fr);
+    min-height: 0;
+    padding: 16px;
+  }
+
+  body.home-v14 .home-vet-testimonials article figure,
+  body.guide-v7 .guide-vet-trust article figure {
+    height: 124px;
+    min-height: 124px;
+    width: 124px;
+  }
+
+  body.home-v14 .home-bed-story .home-bed-copy {
+    padding: 28px 20px;
+  }
+
+  body.home-v14 .home-bed-feature-list,
+  body.home-v14 .home-bed-metrics,
+  body.match-v6 .match-how ol {
+    grid-template-columns: 1fr;
+  }
+
+  body.match-v6 .match-how ol > li {
+    min-height: 0;
+  }
+
+  body.circle-v8 .circle-hero-v7 h1,
+  body.lesson-v8 .lesson-hero-v7 h1,
+  body.guide-v7 .guide-hero-v6 h1,
+  body.find-care-v7 .directory-hero-v6 h1 {
+    font-size: clamp(2.15rem, 9vw, 2.85rem);
+    max-width: 21ch;
+  }
+
+  body.home-v14 .home-ref-hero-copy,
+  body.home-v14 .home-question-box,
+  body.circle-v8 .circle-hero-v7,
+  body.circle-v8 .circle-hero-v7 > div,
+  body.circle-v8 .circle-hero-question {
+    min-width: 0;
+    width: 100%;
+  }
+
+  body.home-v14 .home-question-box form,
+  body.home-v14 .home-question-box > form,
+  body.circle-v8 .circle-hero-question {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-question-box :is(input, button),
+  body.circle-v8 .circle-hero-question :is(textarea, input, button) {
+    max-width: 100%;
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .wm-header .wm-header-inner {
+    grid-template-columns: 144px minmax(0, 1fr) auto;
+  }
+
+  .wm-header .wm-wordmark[data-logo-link],
+  .wm-header .wm-wordmark[data-logo-link] picture,
+  .wm-header .wm-wordmark[data-logo-link] img {
+    flex-basis: 144px;
+    height: 33px !important;
+    max-height: 33px !important;
+    max-width: 144px !important;
+    min-width: 144px;
+    width: 144px !important;
+  }
+
+  body.home-v14 .home-care-hub .home-circle-card {
+    grid-template-columns: 94px minmax(0, 1fr);
+  }
+
+  body.home-v14 .home-care-hub .home-circle-card figure {
+    width: 94px;
+  }
+
+  body.home-v14 .home-vet-testimonials article,
+  body.guide-v7 .guide-vet-trust article {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  body.home-v14 .home-vet-testimonials article figure,
+  body.guide-v7 .guide-vet-trust article figure {
+    height: 156px;
+    justify-self: center;
+    width: 156px;
+  }
+
+  body.find-care-v7 .provider-card-v6.has-photo > figure {
+    height: 205px;
+    min-height: 205px;
+  }
+}
+
+/* 2026-08-24.5 — final current-markup corrections */
+
+/* Keep the supplied WoafMeow mark stable, including pages with long menus. */
+.wm-header .wm-wordmark[data-logo-link],
+.wm-header .wm-wordmark[data-logo-link] picture,
+.wm-header .wm-wordmark[data-logo-link] img {
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.wm-header .wm-wordmark[data-logo-link] picture {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+/* Current page headings balance as phrases and never break inside words. */
+body:is(
+    .home-v14,
+    .circle-v8,
+    .lesson-v8,
+    .guide-v7,
+    .find-care-v7,
+    .match-v6,
+    .bed-v7
+  ) :is(h1, h2, h3, blockquote) {
+  hyphens: none !important;
+  overflow-wrap: normal !important;
+  text-wrap: balance;
+  word-break: keep-all !important;
+}
+
+body:is(
+    .home-v14,
+    .circle-v8,
+    .lesson-v8,
+    .guide-v7,
+    .find-care-v7,
+    .match-v6,
+    .bed-v7
+  ) p {
+  text-wrap: pretty;
+}
+
+/* Non-hero section introductions use one centered, readable hierarchy. */
+body.home-v14 :is(
+    .home-care-hub,
+    .home-vet-testimonials,
+    .home-ref-bed
+  ) > header,
+body.circle-v8 .circle-feed-v7 .circle-filter-bar,
+body.guide-v7 .guide-topics-v6 .editorial-heading,
+body.guide-v7 .guide-vet-trust header,
+body.find-care-v7 .directory-results-v6 .editorial-heading,
+body.match-v6 .match-how h2,
+body.bed-v7 :is(.bed-layers-v7, .bed-insights-v6) h2 {
+  margin-inline: auto;
+  max-width: 920px;
+  text-align: center;
+}
+
+body.home-v14 :is(
+    .home-care-hub,
+    .home-vet-testimonials,
+    .home-ref-bed
+  ) > header :is(h2, p),
+body.circle-v8 .circle-feed-v7 .circle-filter-bar h2,
+body.guide-v7 .guide-topics-v6 .editorial-heading :is(h2, p),
+body.guide-v7 .guide-vet-trust header :is(h2, p),
+body.find-care-v7 .directory-results-v6 .editorial-heading :is(h2, p) {
+  margin-inline: auto;
+}
+
+/* No gray image mats and no cropping on the current WoafMeow templates. */
+body:is(
+    .home-v14,
+    .circle-v8,
+    .lesson-v8,
+    .guide-v7,
+    .find-care-v7,
+    .match-v6,
+    .bed-v7
+  ) figure {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+body:is(
+    .home-v14,
+    .circle-v8,
+    .lesson-v8,
+    .guide-v7,
+    .find-care-v7,
+    .match-v6,
+    .bed-v7
+  ) figure > img {
+  display: block;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+body:is(.home-v14, .bed-v7) figure > figcaption {
+  background: transparent !important;
+  color: inherit;
+  font-size: 0.78rem;
+  line-height: 1.3;
+  padding: 8px 12px 10px;
+  text-align: center;
+}
+
+/* Equal, uncropped veterinarian portraits on the home page and guide. */
+body.home-v14 .home-vet-testimonials article,
+body.guide-v7 .guide-vet-trust article {
+  align-items: center;
+}
+
+body.home-v14 .home-vet-testimonials article figure,
+body.guide-v7 .guide-vet-trust article figure {
+  align-items: center;
+  aspect-ratio: 1;
+  background: transparent !important;
+  display: flex;
+  height: 168px;
+  justify-content: center;
+  min-height: 168px;
+  overflow: hidden;
+  width: 168px;
+}
+
+body.home-v14 .home-vet-testimonials article figure img,
+body.guide-v7 .guide-vet-trust article figure img {
+  height: 100% !important;
+  inset: auto !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  position: static !important;
+  width: 100% !important;
+}
+
+body.home-v14 .home-vet-testimonials article,
+body.guide-v7 .guide-vet-trust article {
+  grid-template-columns: 168px minmax(0, 1fr);
+}
+
+/* Compact Care Circle hero; the single question flow remains inside it. */
+body.circle-v8 .circle-hero-v7 {
+  align-items: center;
+  min-height: 0 !important;
+}
+
+body.circle-v8 .circle-hero-v7 > div {
+  padding: clamp(24px, 3vw, 38px);
+}
+
+body.circle-v8 .circle-hero-v7 h1 {
+  font-size: clamp(2.35rem, 3.55vw, 3.55rem);
+  line-height: 1;
+  max-width: 18ch;
+}
+
+body.circle-v8 .circle-hero-v7 > figure,
+body.circle-v8 .circle-hero-v7 > figure img {
+  min-height: 0 !important;
+}
+
+body.circle-v8 .circle-hero-v7 > figure img {
+  height: auto !important;
+  max-height: 500px;
+  width: 100% !important;
+}
+
+body.circle-v8 :is(.circle-account-gate, .circle-hero-question) {
+  margin-top: 14px;
+  padding: 16px;
+}
+
+body.circle-v8 .circle-hero-question textarea {
+  min-height: 104px;
+}
+
+/* Keep the combined home lesson hub dense, polished, and easy to scan. */
+body.home-v14 .home-care-hub .home-circle-card figure {
+  background: transparent !important;
+}
+
+body.home-v14 .home-care-hub .home-circle-card figure img {
+  height: 100% !important;
+  object-fit: contain !important;
+  width: 100% !important;
+}
+
+body.home-v14 .home-care-hub .home-circle-card > div {
+  min-width: 0;
+}
+
+/* Make the guide band read as one premium, useful offer. */
+body.home-v14 .home-ref-guide {
+  isolation: isolate;
+}
+
+body.home-v14 .home-ref-guide .home-guide-book {
+  background: #fffaf7;
+}
+
+body.home-v14 .home-ref-guide .home-guide-book img {
+  background: transparent !important;
+  object-fit: contain !important;
+}
+
+/* Current Smart Bed markup: large natural visuals, clear copy, no overlays. */
+body.home-v14 .home-bed-story,
+body.home-v14 .home-bed-comfort-story,
+body.home-v14 .home-bed-layer-story,
+body.home-v14 .home-bed-tracking-story {
+  align-items: stretch;
+  grid-template-columns: minmax(360px, 0.82fr) minmax(0, 1.18fr);
+  min-height: 0;
+}
+
+body.home-v14 .home-bed-layer-story {
+  grid-template-columns: minmax(0, 1.18fr) minmax(360px, 0.82fr);
+}
+
+body.home-v14 .home-bed-comfort-story .home-bed-copy,
+body.home-v14 .home-bed-comfort-story > figure,
+body.home-v14 .home-bed-story .home-bed-copy,
+body.home-v14 .home-bed-story > figure {
+  grid-area: auto;
+  position: static;
+  width: auto;
+}
+
+body.home-v14 .home-bed-story .home-bed-copy {
+  align-content: center;
+  display: grid;
+  gap: 14px;
+  max-width: none;
+  padding: clamp(30px, 4vw, 52px);
+}
+
+body.home-v14 .home-bed-comfort-story .home-bed-copy {
+  background: linear-gradient(145deg, #342420 0%, #60332b 100%);
+  color: #fffaf7;
+}
+
+body.home-v14 .home-bed-story > figure {
+  align-content: center;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.home-v14 .home-bed-story > figure > img {
+  align-self: center;
+  height: auto !important;
+  inset: auto !important;
+  max-height: none !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+  position: static !important;
+  width: 100% !important;
+}
+
+body.home-v14 .home-bed-story > figure > figcaption {
+  align-self: end;
+  color: #7a665e;
+}
+
+body.home-v14 .home-bed-story h3 {
+  font-size: clamp(2.15rem, 3vw, 3.35rem);
+  line-height: 1.02;
+  max-width: 20ch;
+}
+
+body.home-v14 .home-bed-story .button {
+  font-size: 1.05rem;
+  min-height: 54px;
+  padding-inline: 25px;
+}
+
+/* Smart Bed detail page uses the same natural-media rule. */
+body.bed-v7 :is(.bed-hero-v6, .bed-layers-v7, .bed-insights-v6) figure {
+  align-items: center;
+  background: transparent !important;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding: 0 !important;
+}
+
+body.bed-v7 :is(.bed-hero-v6, .bed-layers-v7, .bed-insights-v6) figure img {
+  height: auto !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  width: 100% !important;
+}
+
+/* Find Care: equal real media; source-only cards never render empty media. */
+body.find-care-v7 .provider-card-v6.has-photo > figure {
+  align-items: center;
+  aspect-ratio: 16 / 10;
+  background: transparent !important;
+  display: flex;
+  height: auto;
+  justify-content: center;
+  min-height: 220px;
+  overflow: hidden;
+}
+
+body.find-care-v7 .provider-card-v6.has-photo > figure img {
+  height: 100% !important;
+  object-fit: contain !important;
+  width: 100% !important;
+}
+
+body.find-care-v7 .provider-card-v6.no-photo {
+  border-top: 8px solid #d66d50;
+}
+
+body.find-care-v7 .provider-card-v6.no-photo::before,
+body.find-care-v7 .provider-card-v6.no-photo::after {
+  content: none !important;
+  display: none !important;
+}
+
+body.find-care-v7 .provider-card-v6.no-photo > div:last-child {
+  padding-top: 28px;
+}
+
+body.find-care-v7 .provider-source-type {
+  align-self: flex-start;
+  background: #f7e8df;
+  border-radius: 999px;
+  color: #9f3f2d;
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.075em;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  padding: 7px 10px;
+  text-transform: uppercase;
+}
+
+body.find-care-v7 .provider-card-v6.official-resource .provider-source-type {
+  background: #e4eee8;
+  color: #214d40;
+}
+
+/* Four-step owner matching stays even at desktop and stacks cleanly. */
+body.match-v6 .match-how .image-text {
+  align-items: center;
+}
+
+body.match-v6 .match-how ol {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 24px 0 0;
+  padding: 0;
+}
+
+body.match-v6 .match-how ol > li {
+  align-items: start;
+  background: #fffaf7;
+  border: 1px solid #ead7cb;
+  border-radius: 14px;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  list-style: none;
+  min-height: 150px;
+  padding: 18px;
+}
+
+body.match-v6 .match-how ol > li > span {
+  align-items: center;
+  background: #d66d50;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  font-weight: 900;
+  height: 34px;
+  justify-content: center;
+  width: 34px;
+}
+
+/* Uploaded dog/profile images are visible, natural, and never distorted. */
+:is(.profile-photo-field, .question-image-field, .pet-photo-field)
+  img:not([hidden]):is([data-pet-photo-preview], [data-question-image-preview]),
+img.account-pet-photo:not([hidden]) {
+  background: transparent !important;
+  border: 1px solid #ead7cb;
+  border-radius: 14px;
+  display: block;
+  height: auto !important;
+  margin-top: 10px;
+  max-height: 280px;
+  max-width: 100%;
+  object-fit: contain !important;
+  object-position: center !important;
+  padding: 0 !important;
+  width: auto !important;
+}
+
+:is(.profile-photo-field, .question-image-field, .pet-photo-field)
+  img[hidden]:is([data-pet-photo-preview], [data-question-image-preview]),
+img.account-pet-photo[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 1120px) {
+  body.home-v14 .home-bed-story,
+  body.home-v14 .home-bed-comfort-story,
+  body.home-v14 .home-bed-layer-story,
+  body.home-v14 .home-bed-tracking-story {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-bed-layer-story > figure {
+    order: 2;
+  }
+
+  body.home-v14 .home-bed-story > figure > img {
+    height: auto !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body.home-v14 .home-ref-hero,
+  body.circle-v8 .circle-hero-v7,
+  body.match-v6 .match-how .image-text,
+  body.bed-v7 :is(.bed-hero-v6, .bed-layers-v7, .bed-insights-v6) > .wm-wrap {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body.circle-v8 .circle-hero-v7 > figure {
+    order: 0;
+  }
+
+  body.match-v6 .match-how figure {
+    margin-inline: auto;
+    max-width: 720px;
+  }
+}
+
+@media (max-width: 760px) {
+  .wm-header .wm-header-inner {
+    grid-template-columns: minmax(0, 164px) minmax(0, 1fr) auto;
+  }
+
+  body.home-v14 .home-reference,
+  body.home-v14 .home-ref-hero,
+  body.home-v14 .home-ref-hero-copy,
+  body.home-v14 .home-question-box,
+  body.home-v14 .home-question-box > div {
+    box-sizing: border-box;
+    max-width: 100%;
+    min-width: 0;
+    width: 100%;
+  }
+
+  body.home-v14 .home-ref-hero {
+    grid-template-columns: minmax(0, 1fr);
+    overflow: hidden;
+  }
+
+  body.home-v14 .home-ref-hero-copy {
+    overflow: hidden;
+    padding: 24px 16px;
+  }
+
+  body.home-v14 .home-question-box > div {
+    grid-template-columns: minmax(0, 1fr) 76px;
+  }
+
+  body.home-v14 .home-question-box input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  body.home-v14 .home-ref-hero > figure img {
+    height: auto !important;
+  }
+
+  body.home-v14 .home-bed-story .home-bed-copy {
+    padding: 26px 20px;
+  }
+
+  body.home-v14 .home-bed-story > figure {
+    min-height: 0;
+  }
+
+  body.home-v14 .home-vet-testimonials article,
+  body.guide-v7 .guide-vet-trust article {
+    grid-template-columns: 128px minmax(0, 1fr);
+  }
+
+  body.home-v14 .home-vet-testimonials article figure,
+  body.guide-v7 .guide-vet-trust article figure {
+    height: 128px;
+    min-height: 128px;
+    width: 128px;
+  }
+
+  body.match-v6 .match-how ol {
+    grid-template-columns: 1fr;
+  }
+
+  body.match-v6 .match-how ol > li {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .wm-header .wm-header-inner {
+    grid-template-columns: minmax(0, 148px) minmax(0, 1fr) auto;
+  }
+
+  body.home-v14 .home-ref-hero-copy h1,
+  body.circle-v8 .circle-hero-v7 h1,
+  body.guide-v7 .guide-hero-v6 h1,
+  body.find-care-v7 .directory-hero-v6 h1,
+  body.lesson-v8 .lesson-hero-v7 h1 {
+    font-size: clamp(2.15rem, 11vw, 2.75rem);
+    max-width: none;
+  }
+
+  body.home-v14 .home-vet-testimonials article,
+  body.guide-v7 .guide-vet-trust article {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-vet-testimonials article figure,
+  body.guide-v7 .guide-vet-trust article figure {
+    height: 156px;
+    justify-self: center;
+    min-height: 156px;
+    width: 156px;
+  }
+
+  body.find-care-v7 .provider-card-v6.has-photo > figure {
+    min-height: 190px;
+  }
+}
+}
+
 /* Health Timeline */
 .health-v1 main {
   background: #f7f0eb;
@@ -12818,5 +15107,1821 @@ body.guide-v7 .guide-vet-trust article {
 
   .profile-gate-wide {
     grid-column: auto;
+  }
+}
+
+/* 2026-08-24.4 — final layout, media, and responsive corrections */
+
+/* Keep the brand mark identical on every route. */
+.wm-header .wm-header-inner {
+  grid-template-columns: 196px minmax(0, 1fr) auto;
+  min-height: 72px;
+}
+
+.wm-header .wm-wordmark[data-logo-link] {
+  align-items: center;
+  display: flex;
+  flex: 0 0 196px;
+  height: 44px;
+  max-width: 196px;
+  min-width: 196px;
+  width: 196px !important;
+}
+
+.wm-header .wm-wordmark[data-logo-link] img {
+  display: block;
+  height: 44px !important;
+  max-height: 44px;
+  max-width: 196px;
+  object-fit: contain !important;
+  object-position: left center !important;
+  width: 196px !important;
+}
+
+/* Prevent awkward single-word wraps in current editorial templates. */
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7)
+  :is(h1, h2, h3, blockquote) {
+  hyphens: none;
+  overflow-wrap: normal;
+  text-wrap: balance;
+  word-break: normal;
+}
+
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7) p {
+  text-wrap: pretty;
+}
+
+body.home-v14 .home-ref-hero-copy h1 {
+  font-size: clamp(2.75rem, 4.6vw, 4.8rem);
+  max-width: 11.5ch;
+}
+
+body.circle-v8 .circle-hero-v7 h1,
+body.lesson-v8 .lesson-hero-v7 h1,
+body.guide-v7 .guide-hero-v6 h1,
+body.find-care-v7 .directory-hero-v6 h1 {
+  font-size: clamp(2.55rem, 4vw, 4rem);
+  line-height: 0.99;
+  max-width: 17ch;
+}
+
+/* Section-level headings use one consistent centered hierarchy. */
+body.home-v14 :is(
+    .home-care-hub,
+    .home-vet-testimonials,
+    .home-ref-bed,
+    .home-support-paths
+  ) > header,
+body.circle-v8 .circle-filter-bar,
+body.guide-v7 :is(
+    .guide-outcomes,
+    .guide-topics-v6,
+    .guide-method,
+    .guide-lessons
+  ) > header,
+body.guide-v7 .guide-vet-trust > .wm-wrap > header,
+body.find-care-v7 .directory-results-v6 > header {
+  align-items: center;
+  justify-content: center;
+  margin-inline: auto;
+  max-width: 920px;
+  text-align: center;
+}
+
+body.home-v14 :is(
+    .home-care-hub,
+    .home-vet-testimonials,
+    .home-ref-bed,
+    .home-support-paths
+  ) > header h2,
+body.circle-v8 .circle-filter-bar h2,
+body.guide-v7 :is(
+    .guide-outcomes,
+    .guide-topics-v6,
+    .guide-method,
+    .guide-lessons
+  ) > header h2,
+body.guide-v7 .guide-vet-trust > .wm-wrap > header h2,
+body.find-care-v7 .directory-results-v6 > header h2 {
+  font-size: clamp(2rem, 3vw, 3.25rem);
+  line-height: 1.03;
+  margin-inline: auto;
+  max-width: 24ch;
+}
+
+/* Remove tinted image mats and show every source image without cropping. */
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7)
+  :is(
+    .home-ref-hero,
+    .home-care-hub,
+    .home-vet-testimonials,
+    .home-ref-bed,
+    .home-support-paths,
+    .circle-hero-v7,
+    .circle-public-card,
+    .lesson-hero-v7,
+    .lesson-chapter-layout,
+    .guide-hero-v6,
+    .guide-topics-v6,
+    .guide-method,
+    .guide-vet-note,
+    .guide-vet-trust,
+    .guide-lessons,
+    .directory-hero-v6,
+    .provider-card-v6,
+    .practice-band-v6
+  ) figure {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7)
+  :is(
+    .home-ref-hero,
+    .home-care-hub,
+    .home-vet-testimonials,
+    .home-ref-bed,
+    .home-support-paths,
+    .circle-hero-v7,
+    .circle-public-card,
+    .lesson-hero-v7,
+    .lesson-chapter-layout,
+    .guide-hero-v6,
+    .guide-topics-v6,
+    .guide-method,
+    .guide-vet-note,
+    .guide-vet-trust,
+    .guide-lessons,
+    .directory-hero-v6,
+    .provider-card-v6,
+    .practice-band-v6
+  ) figure img {
+  display: block;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  width: 100% !important;
+}
+
+/* Homepage: one cohesive Care Circle hub instead of duplicated topic bands. */
+body.home-v14 .home-care-hub {
+  background:
+    radial-gradient(circle at 92% 0%, rgba(226, 122, 88, 0.24), transparent 33%),
+    linear-gradient(135deg, #3d2926 0%, #5c322b 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  box-shadow: 0 24px 56px rgba(63, 35, 30, 0.16);
+  color: #fffaf7;
+  margin-block: 26px;
+  padding: clamp(26px, 3vw, 42px);
+}
+
+body.home-v14 .home-care-hub > header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 32px;
+  justify-content: space-between;
+  max-width: none;
+}
+
+body.home-v14 .home-care-hub > header > div {
+  margin-inline: auto;
+  max-width: 780px;
+  text-align: center;
+}
+
+body.home-v14 .home-care-hub > header h2 {
+  color: #fffaf7;
+  margin: 0 0 8px;
+  max-width: 24ch;
+}
+
+body.home-v14 .home-care-hub > header p {
+  color: rgba(255, 250, 247, 0.8);
+  font-size: 1.08rem;
+  margin: 0;
+}
+
+body.home-v14 .home-care-hub > header > a {
+  color: #ffd2c3;
+  font-size: 1rem;
+  font-weight: 800;
+  margin-inline: auto;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+body.home-v14 .home-care-hub .home-circle-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 26px;
+}
+
+body.home-v14 .home-care-hub .home-circle-card {
+  align-items: stretch;
+  background: #fffaf7;
+  border: 1px solid rgba(76, 43, 38, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(43, 24, 21, 0.12);
+  color: var(--ink, #342824);
+  display: grid;
+  grid-template-columns: minmax(116px, 38%) minmax(0, 1fr);
+  min-height: 184px;
+  overflow: hidden;
+  text-decoration: none;
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+body.home-v14 .home-care-hub .home-circle-card:hover {
+  box-shadow: 0 16px 34px rgba(43, 24, 21, 0.18);
+  transform: translateY(-3px);
+}
+
+body.home-v14 .home-care-hub .home-circle-card figure {
+  height: 100%;
+  min-height: 184px;
+  overflow: hidden;
+}
+
+body.home-v14 .home-care-hub .home-circle-card > div {
+  display: flex;
+  flex-direction: column;
+  padding: 17px 18px 16px;
+}
+
+body.home-v14 .home-care-hub .home-circle-card small {
+  color: #b64c32;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+body.home-v14 .home-care-hub .home-circle-card h3 {
+  color: #2f2421;
+  font-size: clamp(1.25rem, 1.55vw, 1.65rem);
+  line-height: 1.08;
+  margin: 8px 0 7px;
+}
+
+body.home-v14 .home-care-hub .home-circle-card p {
+  color: #685b55;
+  font-size: 0.93rem;
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+body.home-v14 .home-care-hub .home-circle-card span {
+  color: #a9442e;
+  font-size: 0.9rem;
+  font-weight: 850;
+  margin-top: auto;
+}
+
+body.home-v14 .home-care-hub > footer {
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 250, 247, 0.82);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  justify-content: center;
+  margin-top: 24px;
+  padding-top: 19px;
+  text-align: center;
+}
+
+body.home-v14 .home-care-hub > footer strong {
+  color: #fffaf7;
+  font-size: 1.05rem;
+}
+
+/* Homepage guide band: clear contents, strong CTA, visible book cover. */
+body.home-v14 .home-ref-guide {
+  align-items: center;
+  background:
+    radial-gradient(circle at 84% 20%, rgba(239, 133, 95, 0.22), transparent 28%),
+    linear-gradient(120deg, #3b2926 0%, #6e3b32 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 22px;
+  box-shadow: 0 22px 50px rgba(62, 34, 29, 0.17);
+  color: #fffaf7;
+  display: grid;
+  gap: clamp(22px, 3vw, 38px);
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr) 168px;
+  min-height: 0;
+  overflow: hidden;
+  padding: clamp(28px, 3.5vw, 46px);
+  padding-right: clamp(28px, 3.5vw, 46px);
+  position: relative;
+}
+
+body.home-v14 .home-guide-intro {
+  text-align: center;
+}
+
+body.home-v14 .home-guide-intro > span {
+  color: #ffc8b5;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+body.home-v14 .home-guide-intro h2 {
+  color: #fffaf7;
+  font-size: clamp(2rem, 3.1vw, 3.15rem);
+  line-height: 1.02;
+  margin: 10px auto 12px;
+  max-width: 19ch;
+}
+
+body.home-v14 .home-guide-intro p {
+  color: rgba(255, 250, 247, 0.82);
+  font-size: 1.02rem;
+  line-height: 1.58;
+  margin-inline: auto;
+  max-width: 58ch;
+}
+
+body.home-v14 .home-guide-intro ul {
+  display: grid;
+  gap: 8px 22px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 18px auto 0;
+  max-width: 650px;
+  padding: 0;
+  text-align: left;
+}
+
+body.home-v14 .home-guide-intro li {
+  color: #fffaf7;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  list-style: none;
+  padding-left: 22px;
+  position: relative;
+}
+
+body.home-v14 .home-guide-intro li::before {
+  color: #f49472;
+  content: "✓";
+  font-weight: 900;
+  left: 0;
+  position: absolute;
+}
+
+body.home-v14 .home-ref-guide > form {
+  align-content: center;
+  display: grid;
+  gap: 10px;
+}
+
+body.home-v14 .home-ref-guide > form input,
+body.home-v14 .home-ref-guide > form button {
+  font-size: 1rem;
+  min-height: 54px;
+  width: 100%;
+}
+
+body.home-v14 .home-ref-guide .home-guide-book {
+  background: #f7eee8;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 18px 30px rgba(25, 12, 10, 0.26);
+  color: #3b2926;
+  height: 218px;
+  inset: auto;
+  justify-self: center;
+  overflow: hidden;
+  position: relative;
+  right: auto;
+  top: auto;
+  transform: rotate(1.5deg);
+  width: 158px;
+}
+
+body.home-v14 .home-ref-guide .home-guide-book img {
+  height: 94px !important;
+  object-fit: contain !important;
+  width: 100% !important;
+}
+
+/* Equal veterinarian portraits and more legible testimonial cards. */
+body.home-v14 .home-vet-testimonials {
+  padding: clamp(28px, 3.5vw, 46px);
+}
+
+body.home-v14 .home-vet-testimonials > div {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 24px;
+}
+
+body.home-v14 .home-vet-testimonials article {
+  align-items: center;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: 176px minmax(0, 1fr);
+  min-height: 218px;
+  padding: 20px;
+}
+
+body.home-v14 .home-vet-testimonials article figure {
+  aspect-ratio: 1;
+  height: 176px;
+  min-height: 176px;
+  overflow: hidden;
+  width: 176px;
+}
+
+body.home-v14 .home-vet-testimonials article figure img {
+  inset: auto !important;
+  position: static !important;
+}
+
+body.home-v14 .home-vet-testimonials blockquote {
+  font-size: clamp(1rem, 1.25vw, 1.22rem);
+  line-height: 1.58;
+  margin: 0 0 14px;
+}
+
+body.home-v14 .home-vet-testimonials article p strong,
+body.home-v14 .home-vet-testimonials article p span {
+  display: block;
+}
+
+body.home-v14 .home-vet-testimonials article p strong {
+  font-size: 1.08rem;
+  margin-bottom: 3px;
+}
+
+/* Smart Bed: three spacious editorial stories with large natural visuals. */
+body.home-v14 .home-ref-bed {
+  background: linear-gradient(180deg, #fffaf7 0%, #f7ede7 100%);
+  border: 1px solid #ead8ce;
+  border-radius: 22px;
+  box-shadow: 0 22px 50px rgba(79, 49, 41, 0.12);
+  padding: clamp(30px, 4vw, 54px);
+}
+
+body.home-v14 .home-ref-bed > header {
+  display: block;
+}
+
+body.home-v14 .home-ref-bed > header > span {
+  color: #b64c32;
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  margin-bottom: 9px;
+  text-transform: uppercase;
+}
+
+body.home-v14 .home-ref-bed > header h2 {
+  font-size: clamp(2.25rem, 3.7vw, 3.8rem);
+  line-height: 1.01;
+  max-width: 24ch;
+}
+
+body.home-v14 .home-ref-bed > header p {
+  font-size: 1.12rem;
+  line-height: 1.55;
+  margin: 12px auto 0;
+  max-width: 68ch;
+}
+
+body.home-v14 .home-bed-grid {
+  display: grid;
+  gap: 22px;
+  margin-top: 30px;
+}
+
+body.home-v14 .home-bed-story,
+body.home-v14 .home-bed-comfort-story,
+body.home-v14 .home-bed-layer-story,
+body.home-v14 .home-bed-tracking-story {
+  align-items: stretch;
+  background: #fffdfb;
+  border: 1px solid #e8d4c9;
+  border-radius: 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.home-v14 .home-bed-layer-story {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+}
+
+body.home-v14 .home-bed-story > .copy,
+body.home-v14 .home-bed-comfort-story > .copy,
+body.home-v14 .home-bed-layer-story > .copy,
+body.home-v14 .home-bed-tracking-story > .copy {
+  align-content: center;
+  align-self: stretch;
+  background: transparent;
+  display: grid;
+  gap: 14px;
+  grid-area: auto;
+  max-width: none;
+  padding: clamp(28px, 4vw, 56px);
+  position: relative;
+  width: auto;
+  z-index: 1;
+}
+
+body.home-v14 .home-bed-comfort-story > .copy {
+  background: linear-gradient(135deg, #3d2926 0%, #64382f 100%);
+  color: #fffaf7;
+}
+
+body.home-v14 .home-bed-comfort-story > .copy :is(h3, p, li) {
+  color: inherit;
+}
+
+body.home-v14 .home-bed-story h3 {
+  font-size: clamp(2rem, 3vw, 3rem);
+  line-height: 1.03;
+  margin: 0;
+  max-width: 18ch;
+}
+
+body.home-v14 .home-bed-story .copy > p {
+  font-size: 1.05rem;
+  line-height: 1.62;
+  margin: 0;
+  max-width: 55ch;
+}
+
+body.home-v14 .home-bed-story figure,
+body.home-v14 .home-bed-comfort-story figure,
+body.home-v14 .home-bed-layer-story figure,
+body.home-v14 .home-bed-tracking-story figure {
+  align-items: center;
+  aspect-ratio: auto;
+  display: flex;
+  grid-area: auto;
+  justify-content: center;
+  min-height: 390px;
+  overflow: hidden;
+  position: relative;
+}
+
+body.home-v14 .home-bed-story figure img,
+body.home-v14 .home-bed-comfort-story figure img,
+body.home-v14 .home-bed-layer-story figure img,
+body.home-v14 .home-bed-tracking-story figure img {
+  height: auto !important;
+  inset: auto !important;
+  max-height: none !important;
+  max-width: none !important;
+  position: static !important;
+  width: 100% !important;
+}
+
+body.home-v14 .home-bed-feature-list,
+body.home-v14 .home-bed-metrics {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+body.home-v14 .home-bed-feature-list li,
+body.home-v14 .home-bed-metrics > * {
+  font-size: 0.98rem;
+  line-height: 1.4;
+}
+
+body.home-v14 .home-bed-story .button {
+  font-size: 1rem;
+  justify-self: start;
+  min-height: 52px;
+  padding-inline: 24px;
+}
+
+/* Care Circle: a shorter hero and dense, evenly aligned public lesson feed. */
+body.circle-v8 .circle-hero-v7 {
+  align-items: center;
+  grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
+  min-height: 0;
+}
+
+body.circle-v8 .circle-hero-v7 > div {
+  padding: clamp(26px, 3vw, 42px);
+}
+
+body.circle-v8 .circle-hero-v7 h1 {
+  font-size: clamp(2.45rem, 3.6vw, 3.65rem);
+  max-width: 16ch;
+}
+
+body.circle-v8 .circle-hero-v7 > div > p {
+  font-size: 1.02rem;
+  line-height: 1.55;
+  margin-bottom: 18px;
+  max-width: 60ch;
+}
+
+body.circle-v8 .circle-hero-v7 > figure {
+  min-height: 0;
+}
+
+body.circle-v8 .circle-hero-v7 > figure img {
+  height: auto !important;
+  max-height: 540px;
+}
+
+body.circle-v8 :is(.circle-account-gate, .circle-hero-question) {
+  margin-top: 16px;
+  padding: 18px;
+}
+
+body.circle-v8 .circle-hero-actions {
+  margin-top: 14px;
+}
+
+body.circle-v8 .circle-ask-v7 {
+  margin-block: 22px;
+  padding: clamp(22px, 3vw, 36px);
+}
+
+body.circle-v8 .circle-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+body.circle-v8 .circle-public-grid {
+  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.circle-v8 .circle-public-card figure {
+  height: 210px;
+  min-height: 210px;
+}
+
+/* Guide: generous legibility, centered section hierarchy, natural media. */
+body.guide-v7 .guide-hero-v6,
+body.find-care-v7 .directory-hero-v6,
+body.lesson-v8 .lesson-hero-v7 {
+  min-height: 0;
+}
+
+body.guide-v7 .guide-hero-v6 > figure,
+body.find-care-v7 .directory-hero-v6 > figure,
+body.lesson-v8 .lesson-hero-v7 > figure {
+  min-height: 0;
+}
+
+body.guide-v7 .guide-hero-v6 > figure img,
+body.find-care-v7 .directory-hero-v6 > figure img,
+body.lesson-v8 .lesson-hero-v7 > figure img {
+  height: auto !important;
+  max-height: 620px;
+}
+
+body.guide-v7 .guide-topics-v6 figure,
+body.guide-v7 .guide-lessons figure {
+  height: 240px;
+  min-height: 240px;
+}
+
+body.guide-v7 .guide-method figure,
+body.guide-v7 .guide-vet-note figure,
+body.lesson-v8 .lesson-chapter-layout figure {
+  min-height: 0;
+}
+
+body.guide-v7 :is(.guide-method, .guide-vet-note) figure img,
+body.lesson-v8 .lesson-chapter-layout figure img {
+  height: auto !important;
+}
+
+body.guide-v7 .guide-vet-trust > .wm-wrap {
+  align-items: stretch;
+}
+
+body.guide-v7 .guide-vet-trust article {
+  align-items: center;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 150px minmax(0, 1fr);
+  min-height: 214px;
+}
+
+body.guide-v7 .guide-vet-trust article figure {
+  aspect-ratio: 1;
+  height: 150px;
+  overflow: hidden;
+  width: 150px;
+}
+
+/* Find Care: real images stay intact; official-source cards always have media. */
+body.find-care-v7 .directory-hero-v6 {
+  align-items: center;
+}
+
+body.find-care-v7 .provider-grid-v6 {
+  align-items: stretch;
+  gap: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.find-care-v7 .provider-card-v6 {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+body.find-care-v7 .provider-card-v6 > figure,
+body.find-care-v7 .provider-card-v6 > .provider-source-mark {
+  height: 230px;
+  min-height: 230px;
+  width: 100%;
+}
+
+body.find-care-v7 .provider-card-v6 > figure {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+body.find-care-v7 .provider-card-v6 > .provider-source-mark {
+  align-items: center;
+  background:
+    radial-gradient(circle at 80% 10%, rgba(236, 128, 92, 0.28), transparent 34%),
+    linear-gradient(135deg, #29463c 0%, #17342d 100%);
+  color: #fffaf7;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px;
+  text-align: center;
+}
+
+body.find-care-v7 .provider-source-mark span {
+  color: #fffaf7;
+  font-family: var(--serif, Georgia, serif);
+  font-size: clamp(1.45rem, 2vw, 2rem);
+  font-weight: 700;
+  line-height: 1.08;
+  max-width: 17ch;
+}
+
+body.find-care-v7 .provider-source-mark small {
+  color: rgba(255, 250, 247, 0.76);
+  font-size: 0.9rem;
+  margin-top: 12px;
+}
+
+body.find-care-v7 .provider-card-v6 > div:last-child {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+body.find-care-v7 .provider-card-v6 > div:last-child > a:last-child {
+  margin-top: auto;
+}
+
+body.find-care-v7 .practice-band-v6 figure img {
+  height: auto !important;
+}
+
+@media (max-width: 1180px) {
+  .wm-header .wm-header-inner {
+    grid-template-columns: 184px minmax(0, 1fr) auto;
+  }
+
+  .wm-header .wm-wordmark[data-logo-link],
+  .wm-header .wm-wordmark[data-logo-link] img {
+    height: 41px !important;
+    max-width: 184px;
+    min-width: 184px;
+    width: 184px !important;
+  }
+
+  body.home-v14 .home-care-hub .home-circle-grid,
+  body.circle-v8 .circle-public-grid,
+  body.find-care-v7 .provider-grid-v6 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.home-v14 .home-ref-guide {
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  }
+
+  body.home-v14 .home-ref-guide .home-guide-book {
+    grid-column: 1 / -1;
+    height: 190px;
+    width: 140px;
+  }
+
+  body.home-v14 .home-vet-testimonials article {
+    grid-template-columns: 150px minmax(0, 1fr);
+  }
+
+  body.home-v14 .home-vet-testimonials article figure {
+    height: 150px;
+    min-height: 150px;
+    width: 150px;
+  }
+}
+
+@media (max-width: 900px) {
+  body.home-v14 .home-ref-guide,
+  body.home-v14 :is(
+      .home-bed-story,
+      .home-bed-comfort-story,
+      .home-bed-layer-story,
+      .home-bed-tracking-story
+    ),
+  body.circle-v8 .circle-hero-v7 {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-ref-guide {
+    text-align: center;
+  }
+
+  body.home-v14 .home-ref-guide > form {
+    margin-inline: auto;
+    max-width: 620px;
+    width: 100%;
+  }
+
+  body.home-v14 .home-bed-story figure,
+  body.home-v14 .home-bed-comfort-story figure,
+  body.home-v14 .home-bed-layer-story figure,
+  body.home-v14 .home-bed-tracking-story figure {
+    min-height: 0;
+  }
+
+  body.home-v14 .home-bed-story figure img,
+  body.home-v14 .home-bed-comfort-story figure img,
+  body.home-v14 .home-bed-layer-story figure img,
+  body.home-v14 .home-bed-tracking-story figure img {
+    height: auto !important;
+  }
+
+  body.circle-v8 .circle-hero-v7 > figure {
+    order: -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .wm-header .wm-header-inner {
+    grid-template-columns: 164px minmax(0, 1fr) auto;
+    min-height: 66px;
+  }
+
+  .wm-header .wm-wordmark[data-logo-link],
+  .wm-header .wm-wordmark[data-logo-link] img {
+    height: 37px !important;
+    max-height: 37px;
+    max-width: 164px;
+    min-width: 164px;
+    width: 164px !important;
+  }
+
+  body.home-v14 .home-care-hub,
+  body.home-v14 .home-ref-guide,
+  body.home-v14 .home-vet-testimonials,
+  body.home-v14 .home-ref-bed {
+    border-radius: 16px;
+    padding: 22px 16px;
+  }
+
+  body.home-v14 .home-care-hub .home-circle-grid,
+  body.home-v14 .home-vet-testimonials > div,
+  body.circle-v8 .circle-public-grid,
+  body.find-care-v7 .provider-grid-v6 {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-care-hub .home-circle-card {
+    grid-template-columns: 112px minmax(0, 1fr);
+  }
+
+  body.home-v14 .home-guide-intro ul,
+  body.home-v14 .home-bed-feature-list,
+  body.home-v14 .home-bed-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-vet-testimonials article {
+    gap: 16px;
+    grid-template-columns: 118px minmax(0, 1fr);
+    min-height: 0;
+    padding: 16px;
+  }
+
+  body.home-v14 .home-vet-testimonials article figure {
+    height: 118px;
+    min-height: 118px;
+    width: 118px;
+  }
+
+  body.home-v14 .home-bed-story > .copy,
+  body.home-v14 .home-bed-comfort-story > .copy,
+  body.home-v14 .home-bed-layer-story > .copy,
+  body.home-v14 .home-bed-tracking-story > .copy {
+    padding: 26px 20px;
+  }
+
+  body.home-v14 .home-bed-story h3 {
+    font-size: clamp(1.9rem, 8vw, 2.45rem);
+  }
+
+  body.circle-v8 .circle-hero-v7 > div {
+    padding: 24px 18px;
+  }
+
+  body.circle-v8 .circle-hero-v7 h1,
+  body.lesson-v8 .lesson-hero-v7 h1,
+  body.guide-v7 .guide-hero-v6 h1,
+  body.find-care-v7 .directory-hero-v6 h1 {
+    font-size: clamp(2.25rem, 10vw, 3.15rem);
+  }
+
+  body.guide-v7 .guide-vet-trust article {
+    grid-template-columns: 112px minmax(0, 1fr);
+  }
+
+  body.guide-v7 .guide-vet-trust article figure {
+    height: 112px;
+    width: 112px;
+  }
+}
+
+@media (max-width: 520px) {
+  .wm-header .wm-header-inner {
+    grid-template-columns: 148px minmax(0, 1fr) auto;
+  }
+
+  .wm-header .wm-wordmark[data-logo-link],
+  .wm-header .wm-wordmark[data-logo-link] img {
+    height: 34px !important;
+    max-height: 34px;
+    max-width: 148px;
+    min-width: 148px;
+    width: 148px !important;
+  }
+
+  body.home-v14 .home-care-hub .home-circle-card {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+
+  body.home-v14 .home-care-hub .home-circle-card figure {
+    min-height: 172px;
+  }
+
+  body.home-v14 .home-vet-testimonials article,
+  body.guide-v7 .guide-vet-trust article {
+    align-items: start;
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 .home-vet-testimonials article figure,
+  body.guide-v7 .guide-vet-trust article figure {
+    height: 160px;
+    justify-self: center;
+    width: 160px;
+  }
+
+  body.find-care-v7 .provider-card-v6 > figure,
+  body.find-care-v7 .provider-card-v6 > .provider-source-mark {
+    height: 205px; /* wm-final-tail */
+    min-height: 205px;
+  }
+}
+
+/* 2026-08-24.7 — final current-generator compatibility overrides */
+.wm-header .wm-wordmark[data-logo-link],
+.wm-header .wm-wordmark[data-logo-link] picture,
+.wm-header .wm-wordmark[data-logo-link] img {
+  flex: 0 0 196px;
+  height: 44px !important;
+  max-height: 44px;
+  max-width: 196px;
+  min-width: 196px;
+  width: 196px !important;
+}
+
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7, .match-v6, .bed-v7)
+  :is(h1, h2, h3, blockquote) {
+  hyphens: none;
+  overflow-wrap: normal;
+  text-wrap: balance;
+  word-break: normal;
+}
+
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7, .match-v6, .bed-v7)
+  :is(figure, picture) {
+  background: transparent !important;
+}
+
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7, .match-v6, .bed-v7)
+  figure {
+  padding: 0 !important;
+}
+
+body:is(.home-v14, .circle-v8, .lesson-v8, .guide-v7, .find-care-v7, .match-v6, .bed-v7)
+  figure > img {
+  background: transparent !important;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+body.home-v14 :is(.home-vet-testimonials article, .guide-vet-trust article) figure,
+body.guide-v7 .guide-vet-trust article figure {
+  aspect-ratio: 1;
+  background: transparent !important;
+  height: 168px;
+  min-height: 168px;
+  width: 168px;
+}
+
+body.home-v14 :is(.home-vet-testimonials article, .guide-vet-trust article) figure img,
+body.guide-v7 .guide-vet-trust article figure img {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+body.home-v14 .home-bed-story .home-bed-copy,
+body.home-v14 :is(.home-bed-comfort-story, .home-bed-layer-story, .home-bed-tracking-story) > div:first-child {
+  align-content: center;
+  padding: clamp(26px, 4vw, 54px);
+}
+
+body.home-v14 :is(.home-bed-story, .home-bed-comfort-story, .home-bed-layer-story, .home-bed-tracking-story)
+  figure {
+  background: transparent !important;
+  min-height: clamp(360px, 38vw, 560px);
+  padding: 0 !important;
+}
+
+body.home-v14 :is(.home-bed-story, .home-bed-comfort-story, .home-bed-layer-story, .home-bed-tracking-story)
+  figure img {
+  height: 100% !important;
+  max-height: 620px;
+  object-fit: contain !important;
+  width: 100% !important;
+}
+
+body.home-v14 .home-ref-bed figcaption {
+  color: var(--muted, #675d57);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  margin-top: 10px;
+  text-align: center;
+}
+
+body.circle-v8 .circle-hero-v7 {
+  align-items: center;
+  min-height: 0;
+}
+
+body.circle-v8 .circle-hero-v7 > div {
+  padding: clamp(24px, 4vw, 52px);
+}
+
+body.circle-v8 .circle-hero-question {
+  margin-top: 18px;
+  padding: 18px;
+}
+
+body.match-v6 .match-how ol {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+}
+
+body.match-v6 .match-how ol > li {
+  border: 1px solid var(--line, #e5d7cc);
+  border-radius: 16px;
+  min-height: 148px;
+  padding: 22px;
+}
+
+body.find-care-v7 .provider-card-v6.no-photo {
+  border-top: 5px solid var(--brand, #e27a5a);
+}
+
+body.find-care-v7 .provider-card-v6.no-photo::before,
+body.find-care-v7 .provider-card-v6.no-photo::after {
+  content: none !important;
+  display: none !important;
+}
+
+body.find-care-v7 .provider-card-v6.no-photo > div:last-child {
+  padding-top: 30px;
+}
+
+body.find-care-v7 .provider-source-type {
+  color: var(--brand-dark, #a6472e);
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+body.find-care-v7 .provider-card-v6.has-photo > figure {
+  background: transparent !important;
+  height: 230px;
+  min-height: 230px;
+  padding: 0 !important;
+}
+
+body.find-care-v7 .provider-card-v6.has-photo > figure img {
+  height: 100% !important;
+  object-fit: contain !important;
+  width: 100% !important;
+}
+
+:is(.profile-photo-field, .question-image-field, .pet-photo-field, .account-pet-photo),
+:is([data-pet-photo-preview], [data-question-image-preview]) {
+  background: transparent !important;
+}
+
+:is([data-pet-photo-preview], [data-question-image-preview]) img,
+img:is([data-pet-photo-preview], [data-question-image-preview]) {
+  height: auto !important;
+  max-height: 280px;
+  object-fit: contain !important;
+  width: auto !important;
+}
+
+@media (max-width: 760px) {
+  .wm-header .wm-wordmark[data-logo-link],
+  .wm-header .wm-wordmark[data-logo-link] picture,
+  .wm-header .wm-wordmark[data-logo-link] img {
+    flex-basis: 164px;
+    height: 37px !important;
+    max-height: 37px;
+    max-width: 164px;
+    min-width: 164px;
+    width: 164px !important;
+  }
+
+  body.match-v6 .match-how ol {
+    grid-template-columns: 1fr;
+  }
+
+  body.home-v14 :is(.home-bed-story, .home-bed-comfort-story, .home-bed-layer-story, .home-bed-tracking-story)
+    figure {
+    min-height: 0;
+  }
+
+  body.home-v14 :is(.home-bed-story, .home-bed-comfort-story, .home-bed-layer-story, .home-bed-tracking-story)
+    figure img {
+    height: auto !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .wm-header .wm-wordmark[data-logo-link],
+  .wm-header .wm-wordmark[data-logo-link] picture,
+  .wm-header .wm-wordmark[data-logo-link] img {
+    flex-basis: 148px;
+    height: 34px !important;
+    max-height: 34px;
+    max-width: 148px;
+    min-width: 148px;
+    width: 148px !important;
+  }
+}
+
+/* 2026-08-24.8 — contain natural product and guide media without cropping */
+body.home-v14 h2 {
+  font-size: clamp(30px, 3vw, 52px) !important;
+  line-height: 1.08;
+  max-inline-size: 100%;
+  text-wrap: balance;
+}
+
+body:is(.home-v14, .guide-v7, .bed-v7) :is(h1, h2, h3) {
+  hyphens: none;
+  overflow-wrap: normal;
+  text-wrap: balance;
+  word-break: normal;
+}
+
+body.home-v14 :is(.bed-v6-comfort, .bed-v6-insights),
+body.bed-v7 :is(.bed-hero-v6, .bed-comfort-v6, .bed-layers-v7, .bed-insights-v6),
+body.guide-v7 .guide-topics-v6 article {
+  min-width: 0;
+  overflow: hidden;
+}
+
+body.home-v14 :is(.bed-v6-comfort, .bed-v6-insights) > figure,
+body.bed-v7 :is(.bed-hero-v6, .bed-comfort-v6, .bed-layers-v7, .bed-insights-v6) figure,
+body.guide-v7 .guide-topics-v6 article figure {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+body.home-v14 :is(.bed-v6-comfort, .bed-v6-insights) > figure > img,
+body.bed-v7 :is(.bed-hero-v6, .bed-comfort-v6, .bed-layers-v7, .bed-insights-v6) figure > img,
+body.guide-v7 .guide-topics-v6 article figure > img {
+  display: block;
+  height: 100% !important;
+  max-height: 100% !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  width: 100% !important;
+}
+
+body.home-v14 .bed-v6-comfort > figure,
+body.bed-v7 :is(.bed-hero-v6, .bed-comfort-v6) figure {
+  aspect-ratio: 4 / 3;
+}
+
+body.home-v14 .bed-v6-insights > figure,
+body.bed-v7 :is(.bed-layers-v7, .bed-insights-v6) figure {
+  aspect-ratio: 16 / 9;
+}
+
+body.guide-v7 .guide-topics-v6 article figure {
+  height: clamp(230px, 24vw, 300px);
+  min-height: 0;
+}
+
+body:is(.home-v14, .guide-v7, .bed-v7)
+  figure:has(> img:is(
+      [src$="product-prototype-golden.webp"],
+      [src$="product-visualization-smart-base.png"],
+      [src$="real-golden-forest.jpg"]
+    )) {
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+body:is(.home-v14, .guide-v7, .bed-v7)
+  img:is(
+    [src$="product-prototype-golden.webp"],
+    [src$="product-visualization-smart-base.png"],
+    [src$="real-golden-forest.jpg"]
+  ) {
+  display: block;
+  height: 100% !important;
+  max-height: 100% !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  width: 100% !important;
+}
+
+@media (max-width: 1024px) {
+  body.guide-v7 .guide-topics-v6 article figure {
+    height: 260px;
+  }
+}
+
+@media (max-width: 760px) {
+  body.home-v14 h2 {
+    font-size: clamp(28px, 8vw, 42px) !important;
+  }
+
+  body.home-v14 :is(.bed-v6-comfort, .bed-v6-insights) > figure,
+  body.bed-v7 :is(.bed-hero-v6, .bed-comfort-v6, .bed-layers-v7, .bed-insights-v6) figure {
+    height: auto;
+    min-height: 0;
+  }
+
+  body.guide-v7 .guide-topics-v6 article figure {
+    height: 230px;
+  }
+}
+
+/* 2026-08-24.9 — Smart Bed feature stage and Care Circle filter wrapping */
+body.home-v14 .bed-v6-comfort {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: clamp(520px, 54vw, 720px);
+  overflow: hidden;
+  border-radius: 22px;
+  color: #fffaf6;
+  background: #201713;
+}
+
+body.home-v14 .bed-v6-comfort > .bed-v6-copy,
+body.home-v14 .bed-v6-comfort > figure {
+  grid-area: 1 / 1;
+}
+
+body.home-v14 .bed-v6-comfort > figure {
+  position: relative;
+  z-index: 0;
+  align-self: stretch;
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: inherit;
+  width: 100%;
+  background: transparent !important;
+}
+
+body.home-v14 .bed-v6-comfort > figure > img {
+  position: absolute;
+  inset: 0;
+  height: 100% !important;
+  max-height: 100% !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  width: 100% !important;
+}
+
+body.home-v14 .bed-v6-comfort > .bed-v6-copy {
+  position: relative;
+  z-index: 2;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: min(54%, 720px);
+  padding: clamp(34px, 5vw, 72px);
+  background: linear-gradient(
+    90deg,
+    rgba(29, 19, 15, 0.97) 0%,
+    rgba(29, 19, 15, 0.9) 62%,
+    rgba(29, 19, 15, 0) 100%
+  );
+}
+
+body.home-v14 .bed-v6-comfort :is(h2, p, strong, span) {
+  color: inherit;
+}
+
+body.home-v14 .bed-v6-comfort .bed-v6-benefits {
+  display: grid;
+  gap: 12px;
+  margin-block: 22px 26px;
+}
+
+body.home-v14 .bed-v6-comfort .bed-v6-benefits article {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: 28px minmax(0, 1fr);
+}
+
+body.home-v14 .bed-v6-comfort .button {
+  align-self: flex-start;
+}
+
+body.circle-v8 .circle-filter-bar {
+  align-items: center;
+  max-width: 100%;
+  text-align: center;
+}
+
+body.circle-v8 .circle-filter-bar > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 100%;
+  min-width: 0;
+}
+
+body.circle-v8 .circle-filter-bar button {
+  flex: 0 1 auto;
+  max-width: 100%;
+  white-space: normal;
+}
+
+@media (max-width: 760px) {
+  body.home-v14 .bed-v6-comfort {
+    min-height: 690px;
+  }
+
+  body.home-v14 .bed-v6-comfort > figure {
+    height: 100%;
+    min-height: inherit;
+  }
+
+  body.home-v14 .bed-v6-comfort > .bed-v6-copy {
+    align-self: end;
+    justify-content: flex-end;
+    max-width: 100%;
+    padding: 30px 22px;
+    background: linear-gradient(
+      0deg,
+      rgba(29, 19, 15, 0.98) 0%,
+      rgba(29, 19, 15, 0.9) 68%,
+      rgba(29, 19, 15, 0) 100%
+    );
+  }
+
+  body.circle-v8 .circle-filter-bar > div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  body.circle-v8 .circle-filter-bar button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  body.circle-v8 .circle-filter-bar > div {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 2026-08-24.10 — final live-template geometry, readable type, and uncropped media */
+body:is(
+    .home-v14,
+    .circle-v8,
+    .lesson-v8,
+    .guide-v7,
+    .find-care-v7,
+    .loss-v7,
+    .memorial-v7,
+    .match-v6,
+    .bed-v7,
+    .about-v6,
+    .support-v6,
+    .account-v7,
+    .health-v1
+  )
+  :is(h1, h2, h3, h4, blockquote) {
+  hyphens: none !important;
+  overflow-wrap: normal !important;
+  text-wrap: balance;
+  word-break: normal !important;
+}
+
+body.circle-v8 .circle-hero-v7 h1 {
+  font-size: clamp(2.35rem, 3.55vw, 3.85rem) !important;
+  line-height: 1.03 !important;
+  max-width: 18ch !important;
+}
+
+body.circle-v8 .circle-hero-v7 > div > p {
+  font-size: clamp(1rem, 1.25vw, 1.15rem) !important;
+  max-width: 62ch !important;
+}
+
+body.home-v14 .home-ref-bed {
+  padding-top: clamp(24px, 4vw, 48px) !important;
+}
+
+body.home-v14 .home-ref-bed > header,
+body.home-v14 .home-vet-testimonials > header,
+body.guide-v7 :is(.guide-topics-v6, .guide-lessons) > header,
+body.find-care-v7 .directory-results-v6 > header,
+body.match-v6 :is(.match-how, .match-issues) > header,
+body.loss-v7 main > section > header,
+body.memorial-v7 main > section > header {
+  margin-inline: auto !important;
+  text-align: center !important;
+}
+
+body.home-v14 .home-ref-bed > header :is(h2, p),
+body.home-v14 .home-vet-testimonials > header :is(h2, p),
+body.guide-v7 :is(.guide-topics-v6, .guide-lessons) > header :is(h2, p),
+body.find-care-v7 .directory-results-v6 > header :is(h2, p),
+body.match-v6 :is(.match-how, .match-issues) > header :is(h2, p),
+body.loss-v7 main > section > header :is(h2, p),
+body.memorial-v7 main > section > header :is(h2, p) {
+  margin-inline: auto !important;
+}
+
+body.home-v14 .home-bed-grid {
+  display: grid !important;
+  gap: clamp(22px, 3vw, 34px) !important;
+}
+
+body.home-v14 :is(
+    .home-bed-comfort-story,
+    .home-bed-layer-story,
+    .home-bed-tracking-story
+  ) {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 0.9fr) minmax(380px, 1.1fr) !important;
+  align-items: stretch !important;
+  aspect-ratio: auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(76, 50, 40, 0.16) !important;
+  border-radius: 22px !important;
+  background: #fffaf6 !important;
+  box-shadow: 0 24px 58px rgba(62, 40, 32, 0.12) !important;
+}
+
+body.home-v14 .home-bed-layer-story {
+  grid-template-columns: minmax(380px, 1.1fr) minmax(0, 0.9fr) !important;
+}
+
+body.home-v14 :is(
+    .home-bed-comfort-story,
+    .home-bed-layer-story,
+    .home-bed-tracking-story
+  )
+  .home-bed-copy {
+  position: static !important;
+  grid-area: auto !important;
+  align-self: stretch !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  width: auto !important;
+  max-width: none !important;
+  padding: clamp(34px, 4.4vw, 64px) !important;
+  color: var(--wm-espresso, #422b24) !important;
+  background: #fffaf6 !important;
+}
+
+body.home-v14 .home-bed-comfort-story .home-bed-copy {
+  color: #fffaf6 !important;
+  background: linear-gradient(145deg, #34211c 0%, #5b3028 100%) !important;
+}
+
+body.home-v14 .home-bed-comfort-story .home-bed-copy :is(h3, p, strong, span) {
+  color: inherit !important;
+}
+
+body.home-v14 :is(
+    .home-bed-comfort-story,
+    .home-bed-layer-story,
+    .home-bed-tracking-story
+  )
+  h3 {
+  max-width: 18ch !important;
+  font-size: clamp(2.15rem, 3.25vw, 3.65rem) !important;
+  line-height: 1.02 !important;
+}
+
+body.home-v14 :is(
+    .home-bed-comfort-story,
+    .home-bed-layer-story,
+    .home-bed-tracking-story
+  )
+  .home-bed-copy > p {
+  font-size: clamp(1.03rem, 1.35vw, 1.18rem) !important;
+  line-height: 1.62 !important;
+}
+
+body.home-v14 :is(
+    .home-bed-comfort-story,
+    .home-bed-layer-story,
+    .home-bed-tracking-story
+  )
+  .button {
+  align-self: flex-start !important;
+  min-height: 56px !important;
+  padding-inline: 24px !important;
+  font-size: 1.02rem !important;
+}
+
+body.home-v14 :is(
+    .home-bed-comfort-story,
+    .home-bed-layer-story,
+    .home-bed-tracking-story
+  )
+  figure {
+  position: static !important;
+  grid-area: auto !important;
+  box-sizing: border-box !important;
+  align-self: stretch !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: clamp(18px, 2.5vw, 34px) !important;
+  overflow: hidden !important;
+  background: transparent !important;
+}
+
+body.home-v14 :is(
+    .home-bed-comfort-story,
+    .home-bed-layer-story,
+    .home-bed-tracking-story
+  )
+  figure img {
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+body.home-v14 .home-bed-comfort-story figure {
+  padding-block: 24px !important;
+}
+
+body.home-v14 .home-bed-comfort-story figure img {
+  width: min(100%, 560px) !important;
+}
+
+body.home-v14 :is(.home-vet-testimonials article, .guide-vet-trust article) figure,
+body.guide-v7 .guide-vet-trust article figure {
+  position: relative !important;
+  box-sizing: border-box !important;
+  aspect-ratio: 1 / 1 !important;
+  width: 168px !important;
+  height: 168px !important;
+  min-width: 168px !important;
+  min-height: 168px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+}
+
+body.home-v14 :is(.home-vet-testimonials article, .guide-vet-trust article) figure img,
+body.guide-v7 .guide-vet-trust article figure img {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  background: transparent !important;
+}
+
+body.find-care-v7 .provider-card-v6.has-photo > figure,
+body.find-care-v7 .directory-hero-v6 > figure,
+body.find-care-v7 .practice-band-v6 figure,
+body.circle-v8 .circle-hero-v7 > figure,
+body.guide-v7 :is(.guide-method, .guide-vet-note) figure,
+body.match-v6 figure,
+body.memorial-v7 figure {
+  background: transparent !important;
+}
+
+body.find-care-v7 .provider-card-v6.has-photo > figure img,
+body.find-care-v7 .directory-hero-v6 > figure img,
+body.find-care-v7 .practice-band-v6 figure img,
+body.circle-v8 .circle-hero-v7 > figure img,
+body.guide-v7 :is(.guide-method, .guide-vet-note) figure img,
+body.match-v6 figure img,
+body.memorial-v7 figure img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  background: transparent !important;
+}
+
+@media (max-width: 980px) {
+  body.home-v14 :is(
+      .home-bed-comfort-story,
+      .home-bed-layer-story,
+      .home-bed-tracking-story
+    ) {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.home-v14 .home-bed-layer-story figure {
+    order: 2 !important;
+  }
+
+  body.home-v14 :is(
+      .home-bed-comfort-story,
+      .home-bed-layer-story,
+      .home-bed-tracking-story
+    )
+    figure {
+    min-height: 0 !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body.circle-v8 .circle-hero-v7 h1 {
+    font-size: clamp(2.15rem, 10vw, 3.1rem) !important;
+  }
+
+  body.home-v14 :is(
+      .home-bed-comfort-story,
+      .home-bed-layer-story,
+      .home-bed-tracking-story
+    )
+    .home-bed-copy {
+    padding: 30px 22px !important;
+  }
+
+  body.home-v14 :is(
+      .home-bed-comfort-story,
+      .home-bed-layer-story,
+      .home-bed-tracking-story
+    )
+    h3 {
+    font-size: clamp(2rem, 9vw, 3rem) !important;
+  }
+
+  body.home-v14 :is(.home-vet-testimonials article, .guide-vet-trust article) figure,
+  body.guide-v7 .guide-vet-trust article figure {
+    width: 148px !important;
+    height: 148px !important;
+    min-width: 148px !important;
+    min-height: 148px !important;
+  }
+}
+
+/* 2026-08-24.11 — keep every uncropped image inside its measured frame */
+body.home-v14 :is(
+    .home-bed-comfort-story,
+    .home-bed-layer-story,
+    .home-bed-tracking-story
+  )
+  figure,
+body.guide-v7 .guide-topics-v6 article figure,
+body.find-care-v7 .provider-card-v6.has-photo > figure,
+body.bed-v7 :is(.bed-hero-v6, .bed-comfort-v6, .bed-layers-v7, .bed-insights-v6) figure {
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+}
+
+body.home-v14 :is(
+    .home-bed-comfort-story,
+    .home-bed-layer-story,
+    .home-bed-tracking-story
+  )
+  figure > img,
+body.guide-v7 .guide-topics-v6 article figure > img,
+body.find-care-v7 .provider-card-v6.has-photo > figure > img,
+body.bed-v7 :is(.bed-hero-v6, .bed-comfort-v6, .bed-layers-v7, .bed-insights-v6) figure > img {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+body.home-v14 :is(
+    .home-bed-comfort-story,
+    .home-bed-layer-story,
+    .home-bed-tracking-story
+  )
+  figure > figcaption {
+  position: absolute !important;
+  right: 12px !important;
+  bottom: 10px !important;
+  z-index: 2 !important;
+  margin: 0 !important;
+  padding: 5px 8px !important;
+  border-radius: 999px !important;
+  background: rgb(255 250 246 / 88%) !important;
+  color: #4b3129 !important;
+  font-size: 0.78rem !important;
+  line-height: 1.2 !important;
+}
+
+@media (max-width: 980px) {
+  body.home-v14 .home-bed-comfort-story > figure {
+    aspect-ratio: 1083 / 1452 !important;
+  }
+
+  body.home-v14 .home-bed-layer-story > figure {
+    aspect-ratio: 795 / 634 !important;
+  }
+
+  body.home-v14 .home-bed-tracking-story > figure {
+    aspect-ratio: 1600 / 899 !important;
   }
 }

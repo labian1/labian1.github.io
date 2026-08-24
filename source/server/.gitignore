@@ -1,9 +1,0 @@
-.DS_Store
-.dev.vars
-**/.dev.vars
-**/.env
-**/.wrangler/
-**/.woafmeow-data/
-**/*.sqlite
-**/*.sqlite3
-**/*.db

@@ -57,6 +57,10 @@
       const endpoint = form.dataset.submitApi;
       if (endpoint) {
         const isGuideDelivery = form.hasAttribute("data-guide-delivery");
+        const isOwnerMatch = form.hasAttribute("data-owner-match-form");
+        const requestId = isOwnerMatch
+          ? `WM-${Date.now().toString(36).toUpperCase()}`
+          : "";
         const button = form.querySelector("button[type='submit']");
         if (button) button.disabled = true;
         note.textContent = "Sending…";
@@ -72,6 +76,13 @@
             body: JSON.stringify({
               ...stored,
               consent: stored.consent === "true" || stored.consent === "on",
+              ...(requestId
+                ? {
+                    requestId,
+                    submittedAt: new Date().toISOString(),
+                    workflowStatus: "pending-team-review",
+                  }
+                : {}),
               pageContext: window.location.href,
             }),
           });
@@ -493,7 +504,15 @@
         (value) =>
           `Bring the timeline for ${value}, what helps, and what daily activity has become harder to your veterinarian.`,
       ];
-      const tailoredSummaries = templates.map((template) =>
+      const completeTemplates =
+        templates.length >= 4
+          ? templates
+          : [
+              ...templates,
+              (value) =>
+                `Know which sudden, painful or worsening signs around ${value} mean your dog needs faster veterinary care.`,
+            ];
+      const tailoredSummaries = completeTemplates.map((template) =>
         template(conditionPhrase),
       );
       if (profile) {
@@ -714,8 +733,99 @@
   };
   const getAccount = () => readStoredJson(accountStorageKey);
   const getPublicQuestion = () => readStoredJson(publicQuestionStorageKey);
+  const safeImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+  const readImageFile = (
+    file,
+    { maxBytes = 8 * 1024 * 1024, maxDimension = 720, quality = 0.82 } = {},
+  ) =>
+    new Promise((resolve, reject) => {
+      if (!(file instanceof File) || !file.name) {
+        reject(new Error("Choose an image first."));
+        return;
+      }
+      if (!safeImageTypes.has(file.type)) {
+        reject(new Error("Choose a JPG, PNG or WebP image."));
+        return;
+      }
+      if (file.size > maxBytes) {
+        reject(
+          new Error(
+            `Choose an image smaller than ${Math.round(maxBytes / 1024 / 1024)} MB.`,
+          ),
+        );
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("This image could not be read."));
+      reader.onload = () => {
+        const source = new Image();
+        source.onerror = () =>
+          reject(new Error("This image could not be previewed."));
+        source.onload = () => {
+          const largestSide = Math.max(source.naturalWidth, source.naturalHeight);
+          const scale = Math.min(1, maxDimension / Math.max(1, largestSide));
+          const width = Math.max(1, Math.round(source.naturalWidth * scale));
+          const height = Math.max(1, Math.round(source.naturalHeight * scale));
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const context = canvas.getContext("2d");
+          if (!context) {
+            reject(new Error("This browser could not prepare the image."));
+            return;
+          }
+          context.fillStyle = "#ffffff";
+          context.fillRect(0, 0, width, height);
+          context.drawImage(source, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        source.src = String(reader.result || "");
+      };
+      reader.readAsDataURL(file);
+    });
+  const renderStoredImage = (node, dataUrl, alt) => {
+    if (!node) return;
+    const image = node.matches("img")
+      ? node
+      : node.querySelector("img") || document.createElement("img");
+    if (!node.matches("img") && !image.isConnected) node.append(image);
+    if (dataUrl) {
+      image.src = dataUrl;
+      image.alt = alt;
+      node.hidden = false;
+    } else {
+      image.removeAttribute("src");
+      image.alt = "";
+      node.hidden = true;
+    }
+  };
   const selectLessonSlug = (question) => {
     const value = question.toLocaleLowerCase();
+    if (
+      /\b(medicine|medication|prescription|dose|dosage|drug|pill|tablet|capsule|side effect)\b/.test(
+        value,
+      )
+    )
+      return "after-a-medicine-change";
+    if (/\b(tooth|teeth|dental|mouth|gum|gums|oral|bad breath)\b/.test(value))
+      return "mouth-or-dental-pain";
+    if (/\b(cough|coughing|breath|breathing|wheez|panting)\b/.test(value))
+      return "new-cough-or-breathing-change";
+    if (/\b(lump|bump|mass|skin|rash|itch|itching|sore|coat)\b/.test(value))
+      return "new-lump-or-skin-change";
+    if (
+      /\b(vision|sight|blind|hearing|hear|deaf|startle|bumping into)\b/.test(
+        value,
+      )
+    )
+      return "vision-or-hearing-change";
+    if (
+      /\b(weight|weigh|heavier|lighter|thin|skinny|gaining|losing)\b|\bweight (?:gain|loss)\b/.test(
+        value,
+      )
+    )
+      return "unexpected-weight-change";
     if (
       /\b(stiff|rise|rising|limp|stairs?|mobility|slip|walk|walking|joint)\b/.test(
         value,
@@ -763,7 +873,33 @@
   const googleSigninStatus = document.querySelector("[data-google-status]");
   const firstActionDialog = document.querySelector("[data-first-action-dialog]");
   const firstActionClose = document.querySelector("[data-first-action-close]");
+  const petPhotoInput = accountForm?.querySelector(
+    "[data-pet-photo-input], [name='petPhoto']",
+  );
+  const petPhotoNodes = [
+    ...document.querySelectorAll(
+      "[data-pet-photo-preview], [data-account-pet-photo]",
+    ),
+  ];
+  let pendingPetPhotoDataUrl = getAccount()?.petPhotoDataUrl || "";
   let editingAccount = false;
+  const publishProfileQuestion = (account, question, questionImageDataUrl = "") => {
+    const cleanQuestion = String(question || "")
+      .trim()
+      .slice(0, 500);
+    if (!account || !cleanQuestion) return "";
+    const slug = selectLessonSlug(cleanQuestion);
+    const publicQuestion = {
+      ...account,
+      question: cleanQuestion,
+      slug,
+      questionImageDataUrl,
+      createdAt: new Date().toISOString(),
+    };
+    return writeStoredJson(publicQuestionStorageKey, publicQuestion)
+      ? slug
+      : "";
+  };
   const accountNext = new URLSearchParams(window.location.search).get("next");
   if (accountSubmit && accountNext === "health")
     accountSubmit.textContent = "Save profile and open Health Timeline →";
@@ -778,9 +914,41 @@
   firstActionDialog?.addEventListener("click", (event) => {
     if (event.target === firstActionDialog) firstActionDialog.close();
   });
+  const renderPetPhoto = (dataUrl, petName = "") => {
+    petPhotoNodes.forEach((node) =>
+      renderStoredImage(
+        node,
+        dataUrl,
+        petName ? `${petName}'s profile photo` : "Dog profile photo",
+      ),
+    );
+  };
+  petPhotoInput?.addEventListener("change", async () => {
+    const file = petPhotoInput.files?.[0];
+    if (!file) return;
+    if (accountNote) accountNote.textContent = "Preparing photo…";
+    try {
+      pendingPetPhotoDataUrl = await readImageFile(file, {
+        maxBytes: 8 * 1024 * 1024,
+        maxDimension: 720,
+        quality: 0.82,
+      });
+      renderPetPhoto(
+        pendingPetPhotoDataUrl,
+        accountForm?.elements.namedItem("petName")?.value || "",
+      );
+      if (accountNote) accountNote.textContent = "Photo ready to save.";
+    } catch (error) {
+      petPhotoInput.value = "";
+      if (accountNote)
+        accountNote.textContent =
+          error instanceof Error ? error.message : "This image could not be read.";
+    }
+  });
   const renderAccount = () => {
     const account = getAccount();
     updateAccountLinks();
+    renderPetPhoto(account?.petPhotoDataUrl || "", account?.petName || "");
     if (!accountForm || !accountCurrent || !accountSummary) return;
     accountCurrent.hidden = !account || editingAccount;
     accountForm.hidden = Boolean(account) && !editingAccount;
@@ -808,6 +976,8 @@
   };
   const populateAccountForm = (account) => {
     if (!accountForm || !account) return;
+    pendingPetPhotoDataUrl = account.petPhotoDataUrl || "";
+    renderPetPhoto(pendingPetPhotoDataUrl, account.petName || "");
     [
       "ownerName",
       "email",
@@ -838,6 +1008,7 @@
     event.preventDefault();
     if (!accountForm.reportValidity()) return;
     const values = Object.fromEntries(new FormData(accountForm).entries());
+    const previousAccount = getAccount();
     const account = {
       ownerName: String(values.ownerName || "")
         .trim()
@@ -861,6 +1032,8 @@
         .trim()
         .slice(0, 360),
       publicProfileConsent: values.publicProfileConsent === "on",
+      petPhotoDataUrl:
+        pendingPetPhotoDataUrl || previousAccount?.petPhotoDataUrl || "",
     };
     if (!writeStoredJson(accountStorageKey, account)) {
       if (accountNote)
@@ -897,6 +1070,7 @@
             focus: "not-sure",
             healthConditions: account.conditions,
             medications: account.medications,
+            hasPetPhoto: Boolean(account.petPhotoDataUrl),
             routineNotes: "Created from the WoafMeow Care Circle profile.",
             consent: account.publicProfileConsent,
             pageContext: window.location.href,
@@ -908,27 +1082,26 @@
             "Your profile is saved in this browser, but we could not sync it right now.";
       }
     }
+    pendingPetPhotoDataUrl = account.petPhotoDataUrl;
     editingAccount = false;
     renderAccount();
     if (accountForm.matches("[data-home-account-form]")) {
-      const target = new URL("/care-circle/", window.location.origin);
       const pendingQuestion = String(accountForm.dataset.pendingQuestion || "")
         .trim()
         .slice(0, 500);
-      target.searchParams.set("ask", "1");
-      if (pendingQuestion) target.searchParams.set("q", pendingQuestion);
-      target.hash = "ask";
-      window.location.assign(target.href);
+      const slug = publishProfileQuestion(account, pendingQuestion);
+      window.location.assign(
+        slug ? `/care-circle/${slug}/?mine=1` : "/care-circle/?ask=1#ask",
+      );
       return;
     }
     const params = new URLSearchParams(window.location.search);
     const question = (params.get("q") || "").trim().slice(0, 500);
     if (params.get("next") === "ask") {
-      const target = new URL("/care-circle/", window.location.origin);
-      target.searchParams.set("ask", "1");
-      if (question) target.searchParams.set("q", question);
-      target.hash = "ask";
-      window.location.assign(target.href);
+      const slug = publishProfileQuestion(account, question);
+      window.location.assign(
+        slug ? `/care-circle/${slug}/?mine=1` : "/care-circle/?ask=1#ask",
+      );
       return;
     }
     if (params.get("next") === "health") {
@@ -947,6 +1120,7 @@
         // The current screen still resets even if storage access changes.
       }
       accountForm?.reset();
+      pendingPetPhotoDataUrl = "";
       editingAccount = false;
       renderAccount();
     });
@@ -961,12 +1135,14 @@
       const question = String(new FormData(form).get("question") || "")
         .trim()
         .slice(0, 500);
-      if (getAccount()) {
-        const target = new URL("/care-circle/", window.location.origin);
-        target.searchParams.set("q", question);
-        target.searchParams.set("ask", "1");
-        target.hash = "ask";
-        window.location.assign(target.href);
+      const account = getAccount();
+      if (account) {
+        const slug = publishProfileQuestion(account, question);
+        if (slug) {
+          window.location.assign(`/care-circle/${slug}/?mine=1`);
+          return;
+        }
+        form.querySelector("input, textarea")?.focus();
         return;
       }
       if (firstActionDialog?.showModal && accountForm) {
@@ -986,11 +1162,68 @@
 
   const accountGate = document.querySelector("[data-account-gate]");
   const askForm = document.querySelector("[data-account-ask-form]");
+  const questionImageInput =
+    askForm?.querySelector(
+      "[data-question-image-input], [name='questionImage']",
+    ) || document.querySelector("[data-question-image-input]");
+  const questionImageNodes = [
+    ...document.querySelectorAll(
+      "[data-question-image-preview], [data-public-question-image], [data-tailored-question-image]",
+    ),
+  ];
+  let pendingQuestionImageDataUrl =
+    getPublicQuestion()?.questionImageDataUrl || "";
+  const renderQuestionImage = (dataUrl, petName = "") => {
+    questionImageNodes.forEach((node) =>
+      renderStoredImage(
+        node,
+        dataUrl,
+        petName ? `${petName}'s owner-shared care photo` : "Owner-shared care photo",
+      ),
+    );
+  };
+  renderQuestionImage(
+    pendingQuestionImageDataUrl,
+    getPublicQuestion()?.petName || "",
+  );
+  questionImageInput?.addEventListener("change", async () => {
+    const file = questionImageInput.files?.[0];
+    if (!file) return;
+    const note = askForm?.querySelector("[data-account-ask-note]");
+    if (note) note.textContent = "Preparing photo…";
+    try {
+      pendingQuestionImageDataUrl = await readImageFile(file, {
+        maxBytes: 10 * 1024 * 1024,
+        maxDimension: 960,
+        quality: 0.78,
+      });
+      renderQuestionImage(
+        pendingQuestionImageDataUrl,
+        getAccount()?.petName || "",
+      );
+      if (note) note.textContent = "Photo ready to include.";
+    } catch (error) {
+      questionImageInput.value = "";
+      if (note)
+        note.textContent =
+          error instanceof Error ? error.message : "This image could not be read.";
+    }
+  });
+  document
+    .querySelector("[data-question-image-remove]")
+    ?.addEventListener("click", () => {
+      pendingQuestionImageDataUrl = "";
+      if (questionImageInput) questionImageInput.value = "";
+      renderQuestionImage("", getAccount()?.petName || "");
+    });
   if (accountGate && askForm) {
     const account = getAccount();
     const existingQuestion = getPublicQuestion();
     const questionField = askForm.querySelector('[name="question"]');
     const askNote = askForm.querySelector("[data-account-ask-note]");
+    const askParams = new URLSearchParams(window.location.search);
+    const askRequested =
+      askParams.get("ask") === "1" || window.location.hash === "#ask";
     const requestedQuestion = (
       new URLSearchParams(window.location.search).get("q") || ""
     )
@@ -1001,9 +1234,9 @@
     if (!account) {
       accountGate.hidden = false;
       askForm.hidden = true;
-    } else if (existingQuestion) {
+    } else if (existingQuestion && !askRequested) {
       accountGate.hidden = false;
-      askForm.hidden = false;
+      askForm.hidden = true;
       accountGate.replaceChildren();
       const copy = document.createElement("div");
       const heading = document.createElement("h2");
@@ -1026,6 +1259,12 @@
       if (summary)
         summary.textContent = `${account.petName} · ${account.petAge} · ${account.breed} · ${account.conditions}`;
     }
+    if (askRequested && account && !askForm.hidden) {
+      window.requestAnimationFrame(() => {
+        askForm.scrollIntoView({ behavior: "smooth", block: "center" });
+        questionField?.focus({ preventScroll: true });
+      });
+    }
     askForm.addEventListener("submit", (event) => {
       event.preventDefault();
       if (!askForm.reportValidity() || !account) return;
@@ -1033,14 +1272,12 @@
       const question = String(values.question || "")
         .trim()
         .slice(0, 500);
-      const slug = selectLessonSlug(question);
-      const publicQuestion = {
-        ...account,
+      const slug = publishProfileQuestion(
+        account,
         question,
-        slug,
-        createdAt: new Date().toISOString(),
-      };
-      if (!writeStoredJson(publicQuestionStorageKey, publicQuestion)) {
+        pendingQuestionImageDataUrl,
+      );
+      if (!slug) {
         if (askNote)
           askNote.textContent =
             "This browser could not save the question. Please allow site storage and try again.";
@@ -1230,20 +1467,186 @@
           ],
         ],
       ],
+      breathing: [
+        [
+          `For ${pet}, describe the breathing change before trying to label its cause. ${clinicalContext}`,
+          [
+            `Record whether the change happens at rest, during sleep or after activity.`,
+            `Count resting breaths for one full minute only while ${pet} is calm.`,
+            `Note cough sound, effort, gum color, posture and recovery time.`,
+          ],
+        ],
+        [
+          `Reduce exertion and keep ${pet} calm while you contact the veterinary team.`,
+          [
+            `Move ${pet} to a cool, quiet space with easy access to water.`,
+            `Avoid exercise, neck pressure and repeated breathing tests.`,
+            `Take a short natural video if doing so does not delay care.`,
+          ],
+        ],
+        [
+          `Share the breathing timeline, ${conditions}, and ${medicines} clearly.`,
+          [
+            `Give the resting rate, trigger, duration and recovery time.`,
+            `Include coughing, faintness, appetite, sleep and medicine timing.`,
+            `Ask whether ${pet} needs same-day or emergency assessment.`,
+          ],
+        ],
+      ],
+      weight: [
+        [
+          `For ${pet}, confirm the weight direction and timeline instead of relying on appearance alone. ${clinicalContext}`,
+          [
+            `Use the same scale and similar time of day when practical.`,
+            `Record food eaten, treats, water, stool and activity beside each weight.`,
+            `Note muscle loss, abdominal change, swelling or clothing and harness fit.`,
+          ],
+        ],
+        [
+          `Keep ${pet}'s routine steady while you collect a short, useful trend.`,
+          [
+            `Do not make a major diet change from one measurement.`,
+            `Measure portions for several days and record what is actually eaten.`,
+            `Flag vomiting, diarrhea, thirst, pain or reduced activity.`,
+          ],
+        ],
+        [
+          `Bring dated weights, intake, ${conditions}, and ${medicines} to the care team.`,
+          [
+            `State how much weight changed and over what period.`,
+            `Include appetite, bathroom, breathing and energy changes.`,
+            `Ask what examination or testing should come next.`,
+          ],
+        ],
+      ],
+      medicine: [
+        [
+          `For ${pet}, place the new pattern on the medicine timeline. ${clinicalContext}`,
+          [
+            `Record the medicine name, dose, time given and first sign noticed.`,
+            `Note missed doses, supplements and any other recent prescription change.`,
+            `Track appetite, water, bathroom, sleep, energy and balance.`,
+          ],
+        ],
+        [
+          `Keep ${pet} safe without changing the prescription on your own.`,
+          [
+            `Follow the current label unless the prescribing team advises otherwise.`,
+            `Prevent falls and keep food, water and bathroom access easy.`,
+            `Save packaging and take a photo of the label for the call.`,
+          ],
+        ],
+        [
+          `Contact the prescribing team with the exact dose-to-symptom sequence.`,
+          [
+            `Share dose, time, symptom onset, duration and what improved it.`,
+            `List every medicine and supplement ${pet} receives.`,
+            `Ask whether the next dose or an examination needs to change.`,
+          ],
+        ],
+      ],
+      skin: [
+        [
+          `For ${pet}, make the skin or lump record measurable. ${clinicalContext}`,
+          [
+            `Photograph it beside a ruler in the same light and position.`,
+            `Record location, size, color, texture, warmth, pain and discharge.`,
+            `Note licking, scratching, appetite, energy and how quickly it changed.`,
+          ],
+        ],
+        [
+          `Protect the area while avoiding treatments that could hide the pattern.`,
+          [
+            `Prevent licking or scratching if it can be done comfortably.`,
+            `Keep the area clean and dry without squeezing a lump.`,
+            `Do not use human creams unless the veterinary team approves them.`,
+          ],
+        ],
+        [
+          `Bring the dated photo sequence, ${conditions}, and ${medicines} to the visit.`,
+          [
+            `Share size changes and any bleeding, pain or discharge.`,
+            `List new foods, products, medicines and outdoor exposures.`,
+            `Ask how soon the change should be examined or sampled.`,
+          ],
+        ],
+      ],
+      senses: [
+        [
+          `For ${pet}, separate a vision or hearing change from pain, balance or confusion. ${clinicalContext}`,
+          [
+            `Record the room, lighting, sound and exact response.`,
+            `Note bumping, startling, circling, head tilt, eye change or discharge.`,
+            `Compare familiar cues without repeatedly testing or frightening ${pet}.`,
+          ],
+        ],
+        [
+          `Make familiar routes easier while ${pet}'s change is evaluated.`,
+          [
+            `Keep furniture, bowls and sleeping places predictable.`,
+            `Use traction, gentle lighting and calm touch or voice cues.`,
+            `Block stairs, pools and other fall risks.`,
+          ],
+        ],
+        [
+          `Share onset, side affected, ${conditions}, and ${medicines} with the care team.`,
+          [
+            `Bring a short video of the natural behavior.`,
+            `Include balance, eye appearance, pain, sleep and orientation changes.`,
+            `Ask which sudden signs require urgent examination.`,
+          ],
+        ],
+      ],
+      dental: [
+        [
+          `For ${pet}, record whether the first problem is approach, chewing, swallowing or mouth pain. ${clinicalContext}`,
+          [
+            `Watch one normal meal without opening or probing the mouth.`,
+            `Note dropping food, chewing on one side, drooling, odor, bleeding or pawing.`,
+            `Record food texture, amount eaten and time needed.`,
+          ],
+        ],
+        [
+          `Make eating easier for ${pet} while arranging a dental assessment.`,
+          [
+            `Offer the familiar veterinary-approved food in an easy-to-reach bowl.`,
+            `Avoid hard chews, bones and forceful mouth handling.`,
+            `Keep water available and record whether drinking is also painful.`,
+          ],
+        ],
+        [
+          `Bring the meal pattern, mouth signs, ${conditions}, and ${medicines} to the team.`,
+          [
+            `State when eating changed and what textures are affected.`,
+            `Include swelling, odor, bleeding, weight and energy changes.`,
+            `Ask what pain relief and oral examination are appropriate.`,
+          ],
+        ],
+      ],
     };
-    const key =
-      slug === "slower-after-rest"
-        ? "mobility"
-        : slug === "restless-at-night"
-          ? "night"
-          : slug === "changes-in-appetite"
-            ? "appetite"
-            : slug === "drinking-more-water"
-              ? "water"
-              : slug === "bathroom-accidents"
-                ? "bathroom"
-                : "daily";
-    return shared[key];
+    const lessonKeys = {
+      "slower-after-rest": "mobility",
+      "restless-at-night": "night",
+      "changes-in-appetite": "appetite",
+      "drinking-more-water": "water",
+      "bathroom-accidents": "bathroom",
+      "less-interest-in-life": "daily",
+      "new-cough-or-breathing-change": "breathing",
+      "unexpected-weight-change": "weight",
+      "after-a-medicine-change": "medicine",
+      "new-lump-or-skin-change": "skin",
+      "vision-or-hearing-change": "senses",
+      "mouth-or-dental-pain": "dental",
+    };
+    const fourthPart = [
+      `Know when ${pet}'s pattern should move from tracking to faster veterinary care.`,
+      [
+        `Contact the care team promptly when the change is sudden, persistent, painful or worsening.`,
+        `Seek urgent care for trouble breathing, collapse, uncontrolled bleeding, repeated unproductive retching, inability to urinate or severe distress.`,
+        `Share ${pet}'s timeline, photos and saved records so the team can triage the next step.`,
+      ],
+    ];
+    return [...(shared[lessonKeys[slug]] || shared.daily), fourthPart];
   };
 
   const personalQuestion = getPublicQuestion();
@@ -1276,6 +1679,10 @@
     const focusedResult = document.querySelector("[data-focused-result]");
     if (focusedResult)
       focusedResult.textContent = `This public answer focuses on ${personalQuestion.petName}'s ${personalQuestion.petAge.toLocaleLowerCase()} profile, ${conditions}, and the change you described: ${personalQuestion.question}`;
+    renderQuestionImage(
+      personalQuestion.questionImageDataUrl || "",
+      personalQuestion.petName,
+    );
     const tailored = buildTailoredLesson(personalQuestion, lessonSlugMatch[1]);
     document
       .querySelectorAll("[data-tailored-chapter-summary]")
@@ -1294,6 +1701,31 @@
           }),
         );
       });
+    document
+      .querySelectorAll("[data-tailored-part], [data-tailored-part-summary]")
+      .forEach((node) => {
+        const partNumber = Number(
+          node.dataset.tailoredPart || node.dataset.tailoredPartSummary,
+        );
+        const part = tailored[partNumber - 1];
+        const target = node.matches("section, article, div")
+          ? node.querySelector(
+              "[data-tailored-part-summary], [data-tailored-chapter-summary]",
+            )
+          : node;
+        if (part && target) target.textContent = part[0];
+      });
+    document.querySelectorAll("[data-tailored-part-steps]").forEach((list) => {
+      const part = tailored[Number(list.dataset.tailoredPartSteps) - 1];
+      if (!part) return;
+      list.replaceChildren(
+        ...part[1].map((step) => {
+          const item = document.createElement("li");
+          item.textContent = step;
+          return item;
+        }),
+      );
+    });
   }
 
   navigation?.querySelectorAll("a").forEach((link) => {
@@ -1365,6 +1797,21 @@
   const mentionSummary = root.querySelector("[data-health-record-mentions]");
   const patternSummary = root.querySelector("[data-health-pattern-summary]");
   const weightSummary = root.querySelector("[data-health-weight-summary]");
+  const shareForm = root.querySelector("[data-health-share-form]");
+  const vetEmailField =
+    root.querySelector("[data-health-vet-email]") ||
+    shareForm?.querySelector("[name='vetEmail']");
+  const vetNameField =
+    root.querySelector("[data-health-vet-name]") ||
+    shareForm?.querySelector("[name='vetName']");
+  const shareNoteField =
+    root.querySelector("[data-health-share-note]") ||
+    shareForm?.querySelector("[name='shareNote']");
+  const emailVetButton = root.querySelector(
+    "[data-health-email-vet], [data-health-email-draft]",
+  );
+  const webShareButton = root.querySelector("[data-health-web-share]");
+  const shareStatus = root.querySelector("[data-health-share-status]");
   const account = (() => {
     try {
       return JSON.parse(localStorage.getItem(ACCOUNT_KEY) || "null");
@@ -1482,6 +1929,162 @@
     ]
       .filter(Boolean)
       .join(" ");
+
+  const setShareStatus = (message, isError = false) => {
+    if (!shareStatus) return;
+    shareStatus.textContent = message;
+    shareStatus.dataset.state = isError ? "error" : "success";
+  };
+
+  const buildVetReadySummary = (records, logs) => {
+    const owner = String(account.ownerName || "Pet owner").trim();
+    const vetName = String(vetNameField?.value || "").trim();
+    const ownerNote = String(shareNoteField?.value || "").trim();
+    const conditions = splitProfileList(account.conditions);
+    const medicines = splitProfileList(account.medications);
+    const patterns = patternRules
+      .filter(([, rule]) => rule.test(combinedText(records, logs)))
+      .map(([label]) => label);
+    const datedLogs = [...logs].sort((left, right) =>
+      String(right.date || "").localeCompare(String(left.date || "")),
+    );
+    const datedRecords = [...records].sort((left, right) =>
+      String(right.date || "").localeCompare(String(left.date || "")),
+    );
+    const lines = [
+      `${account.petName}'s health timeline`,
+      vetName ? `Prepared for ${vetName}` : "Prepared for veterinary review",
+      "",
+      "OWNER",
+      `${owner} · ${account.email}`,
+      "",
+      "PET PROFILE",
+      `Name: ${account.petName}`,
+      `Age: ${account.petAge || "Not shared"}`,
+      `Breed or mix: ${account.breed || "Not shared"}`,
+      `Owner-shared conditions: ${conditions.join("; ") || "None shared"}`,
+      `Medicines or recent changes: ${medicines.join("; ") || "None shared"}`,
+      `Patterns mentioned across the timeline: ${patterns.join("; ") || "No repeated pattern identified yet"}`,
+      "",
+      "DATED OBSERVATIONS",
+      ...(datedLogs.length
+        ? datedLogs.map((log) => {
+            const details = [
+              log.weight
+                ? `weight ${log.weight} ${log.weightUnit || "lb"}`
+                : "",
+              log.medicineChange
+                ? `related change: ${log.medicineChange}`
+                : "",
+            ].filter(Boolean);
+            return `- ${formatDate(log.date)} · ${log.category || "Other"} · ${log.severity || "Not rated"}: ${log.observation || "No observation entered"}${details.length ? ` (${details.join("; ")})` : ""}`;
+          })
+        : ["- No dated observations saved yet."]),
+      "",
+      "UPLOADED RECORDS",
+      ...(datedRecords.length
+        ? datedRecords.map(
+            (record) =>
+              `- ${formatDate(record.date)} · ${record.type || "Other"}: ${record.name}${record.note ? ` — ${record.note}` : ""}`,
+          )
+        : ["- No records uploaded yet."]),
+    ];
+    if (ownerNote) lines.push("", "OWNER'S NOTE OR QUESTIONS", ownerNote);
+    lines.push(
+      "",
+      "Prepared from the owner's WoafMeow Health Timeline for veterinary review.",
+    );
+    return lines.join("\n");
+  };
+
+  const loadVetShare = async () => {
+    const [records, logs] = await Promise.all([
+      getRecords(),
+      Promise.resolve(readLogs()),
+    ]);
+    return {
+      records,
+      logs,
+      title: `${account.petName}'s health timeline`,
+      summary: buildVetReadySummary(records, logs),
+    };
+  };
+
+  const openVetEmailDraft = async () => {
+    if (
+      vetEmailField &&
+      typeof vetEmailField.reportValidity === "function" &&
+      !vetEmailField.reportValidity()
+    )
+      return;
+    setShareStatus("Preparing the veterinary email draft…");
+    try {
+      const { title, summary } = await loadVetShare();
+      const recipient = String(vetEmailField?.value || "")
+        .trim()
+        .slice(0, 254);
+      const subject = `${title} from ${account.ownerName || "their owner"}`;
+      window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(summary.slice(0, 7000))}`;
+      setShareStatus("Email draft opened. Review it before sending.");
+    } catch {
+      setShareStatus(
+        "The email draft could not be prepared. Please try again.",
+        true,
+      );
+    }
+  };
+
+  const openWebShare = async () => {
+    if (typeof navigator.share !== "function") {
+      setShareStatus(
+        "Sharing is not available in this browser. Use the veterinary email draft instead.",
+        true,
+      );
+      return;
+    }
+    setShareStatus("Preparing the timeline and saved records…");
+    try {
+      const { records, title, summary } = await loadVetShare();
+      const recordFiles =
+        typeof File === "function"
+          ? records
+              .filter((record) => record.blob && record.name)
+              .slice(0, 6)
+              .map(
+                (record) =>
+                  new File([record.blob], record.name, {
+                    type:
+                      record.mime ||
+                      record.blob.type ||
+                      "application/octet-stream",
+                  }),
+              )
+          : [];
+      const payload = { title, text: summary.slice(0, 7000) };
+      if (
+        recordFiles.length &&
+        typeof navigator.canShare === "function" &&
+        navigator.canShare({ files: recordFiles })
+      ) {
+        payload.files = recordFiles;
+      }
+      await navigator.share(payload);
+      setShareStatus(
+        payload.files
+          ? "Timeline and selected records shared."
+          : "Timeline summary shared.",
+      );
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        setShareStatus("Sharing cancelled.");
+        return;
+      }
+      setShareStatus(
+        "The timeline could not be shared. Try the veterinary email draft instead.",
+        true,
+      );
+    }
+  };
 
   const createTimelineItem = (entry) => {
     const article = document.createElement("article");
@@ -1690,6 +2293,25 @@
   root
     .querySelector("[data-health-print]")
     ?.addEventListener("click", () => window.print());
+  shareForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!shareForm.reportValidity()) return;
+    openVetEmailDraft();
+  });
+  emailVetButton?.addEventListener("click", (event) => {
+    if (
+      shareForm &&
+      emailVetButton.form === shareForm &&
+      emailVetButton.type === "submit"
+    )
+      return;
+    event.preventDefault();
+    openVetEmailDraft();
+  });
+  webShareButton?.addEventListener("click", (event) => {
+    event.preventDefault();
+    openWebShare();
+  });
   render().catch(() => {
     if (recordNote)
       recordNote.textContent =

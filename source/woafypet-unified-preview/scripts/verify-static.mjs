@@ -244,7 +244,7 @@ for (const [route, html] of routeHtml) {
 const home = routeHtml.get("/") || "";
 if (!home.includes("Trusted by 10,000+ pet owners"))
   fail("/: missing the user-supplied 10,000+ pet-owner trust signal");
-if (!home.includes('class="home-hero-proof"'))
+if (!home.includes('class="home-trust-proof"'))
   fail("/: missing the integrated homepage credibility proof");
 if (home.includes('class="home-proof-strip"'))
   fail("/: obsolete standalone credibility strip remains");
@@ -279,8 +279,12 @@ if (
   fail("home: veterinarian testimonial section is incomplete");
 if (home.includes('<section class="home-care-account"'))
   fail("home: permanent registration section should not be visible");
-if (!home.includes('href="/care-circle/#ask"'))
-  fail("home: direct Care Circle path is missing");
+if (
+  !home.includes('class="home-hero-chat"') ||
+  !home.includes('action="/care-circle/"') ||
+  !home.includes('name="q"')
+)
+  fail("home: working Care Circle hero chatbox is missing");
 if (home.includes("data-home-question-form"))
   fail("home: legacy question shortcut still bypasses per-question privacy");
 const editableAccountHtml = routeHtml.get("/account/") || "";

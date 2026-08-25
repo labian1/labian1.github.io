@@ -60,6 +60,7 @@ const VIEWPORTS = [
 ];
 
 const LESSON_ROUTE = /^\/care-circle\/[^/]+\/$/;
+const LEGACY_LEARN_ROUTE = /^\/learn\/[^/]+\/$/;
 const FULL_PAGE_ROUTES = new Set([
   "/",
   "/guide/",
@@ -205,6 +206,30 @@ async function checkGlobal(page, route, viewport, failures) {
         `${route} ${viewport.name}: exact footer social URL missing ${href}`,
       );
   }
+  const footerScale = await page.locator(".wm-footer").evaluate((footer) => {
+    const heading = footer.querySelector("h2");
+    const logo = footer.querySelector(".wm-footer-brand img");
+    const headingStyle = heading ? getComputedStyle(heading) : null;
+    const logoRect = logo?.getBoundingClientRect();
+    return {
+      headingSize: headingStyle ? parseFloat(headingStyle.fontSize) : 0,
+      logoWidth: logoRect?.width || 0,
+      logoHeight: logoRect?.height || 0,
+    };
+  });
+  if (footerScale.headingSize < 12 || footerScale.headingSize > 20)
+    failures.push(
+      `${route} ${viewport.name}: footer heading scale is broken (${footerScale.headingSize}px)`,
+    );
+  if (
+    footerScale.logoWidth < 120 ||
+    footerScale.logoWidth > 220 ||
+    footerScale.logoHeight < 18 ||
+    footerScale.logoHeight > 42
+  )
+    failures.push(
+      `${route} ${viewport.name}: footer logo scale is broken (${Math.round(footerScale.logoWidth)}×${Math.round(footerScale.logoHeight)}px)`,
+    );
 
   const layout = await page.evaluate(() => {
     const root = document.documentElement;
@@ -445,8 +470,8 @@ async function checkHome(page, viewport, baseUrl, failures) {
     if ((await page.locator(selector).count()) !== 1)
       failures.push(`/: missing ${selector}`);
   }
-  if ((await page.locator('[href="/care-circle/#ask"]').count()) < 1)
-    failures.push("/: direct Care Circle privacy path is missing");
+  if ((await page.locator(".home-hero-chat").count()) !== 1)
+    failures.push("/: homepage Care Circle chatbox is missing");
   if ((await page.locator("[data-home-question-form]").count()) !== 0)
     failures.push("/: legacy homepage question shortcut remains");
   const heroHeight = await page
@@ -460,7 +485,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
     () => document.documentElement.scrollHeight,
   );
   const maxHeight =
-    viewport.width <= 768 ? 11000 : viewport.width <= 1100 ? 9000 : 6200;
+    viewport.width <= 768 ? 11400 : viewport.width <= 1100 ? 9000 : 6400;
   if (totalHeight > maxHeight)
     failures.push(
       `/: ${viewport.name} homepage too tall (${Math.round(totalHeight)}px)`,
@@ -496,6 +521,18 @@ async function checkHome(page, viewport, baseUrl, failures) {
     failures.push("/: Smart Bed CTA does not open woafy.pet");
   if ((await page.locator("[data-guide-delivery]").count()) !== 1)
     failures.push("/: expected one guide delivery form");
+  const proofSizes = await page
+    .locator(".home-trust-proof strong")
+    .evaluateAll((nodes) => nodes.map((node) => parseFloat(getComputedStyle(node).fontSize)));
+  if (proofSizes.length !== 3 || proofSizes.some((size) => size < 16))
+    failures.push(`/: trust proof is missing or too small (${proofSizes.join(", ")}px)`);
+  if (viewport.width === 1440) {
+    const productWidth = await page
+      .locator(".home-bed-comfort-story figure img")
+      .evaluate((node) => node.getBoundingClientRect().width);
+    if (productWidth < 480)
+      failures.push(`/: Smart Bed product is too small (${Math.round(productWidth)}px)`);
+  }
   const homeImageSources = await page
     .locator("main img")
     .evaluateAll((images) =>
@@ -504,6 +541,34 @@ async function checkHome(page, viewport, baseUrl, failures) {
   if (new Set(homeImageSources).size !== homeImageSources.length)
     failures.push("/: homepage repeats an image");
   if (viewport.width === 1440) {
+    const heroChat = page.locator(".home-hero-chat");
+    const heroQuestion =
+      "Why is my older dog slower when standing up after rest?";
+    await heroChat.locator('[name="q"]').fill(heroQuestion);
+    await Promise.all([
+      page.waitForURL(
+        (url) =>
+          url.pathname === "/care-circle/" &&
+          url.searchParams.get("ask") === "1" &&
+          url.searchParams.get("q") === heroQuestion,
+        { waitUntil: "domcontentloaded" },
+      ),
+      heroChat.evaluate((node) => node.requestSubmit()),
+    ]);
+    if (
+      (await page.locator('[data-account-ask-form] [name="question"]').inputValue()) !==
+      heroQuestion
+    )
+      failures.push("/: hero chat question did not reach Care Circle");
+    if (
+      !(await page
+        .locator('[name="lessonVisibility"][value="private"]')
+        .isChecked())
+    )
+      failures.push("/: hero chat bypassed the per-question privacy choice");
+    await page.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+    await preparePage(page);
+
     await page.evaluate(() => {
       localStorage.setItem(
         "woafmeow-account-v1",
@@ -553,6 +618,22 @@ async function checkCareCircle(page, viewport, failures) {
     1
   )
     failures.push("/care-circle/: optional question photo upload missing");
+  const conversationLayout = await page.evaluate(() => {
+    const hero = document.querySelector(".circle-hero-v7")?.getBoundingClientRect();
+    const form = document.querySelector(".circle-question-form")?.getBoundingClientRect();
+    const gate = document.querySelector(".circle-account-gate")?.getBoundingClientRect();
+    return {
+      heroWidth: hero?.width || 0,
+      formWidth: form?.width || 0,
+      gateWidth: gate?.width || 0,
+    };
+  });
+  if (
+    !conversationLayout.heroWidth ||
+    conversationLayout.formWidth < conversationLayout.heroWidth * 0.9 ||
+    conversationLayout.gateWidth < conversationLayout.heroWidth * 0.9
+  )
+    failures.push("/care-circle/: conversation form or profile gate is deformed");
   if (viewport.width !== 1440) return;
   await page.locator("[data-circle-filter]").nth(1).click();
   const visible = await page.locator("[data-care-post]:visible").count();
@@ -1218,6 +1299,14 @@ async function inspect(page, route, viewport, options, apiCalls) {
   });
   if (!response || response.status() >= 400)
     failures.push(`${route}: HTTP ${response?.status() || "no response"}`);
+  let renderedRoute = route;
+  if (LEGACY_LEARN_ROUTE.test(route)) {
+    renderedRoute = route.replace(/^\/learn\//, "/care-circle/");
+    await page.waitForURL(
+      (url) => url.pathname === renderedRoute,
+      { waitUntil: "domcontentloaded", timeout: 5000 },
+    );
+  }
   await page.evaluate(() => localStorage.clear());
   await page.reload({ waitUntil: "domcontentloaded" });
   await preparePage(page);
@@ -1246,7 +1335,7 @@ async function inspect(page, route, viewport, options, apiCalls) {
   for (const error of pageErrors)
     failures.push(`${route}: page error ${error}`);
 
-  await page.goto(new URL(route, `${options.baseUrl}/`).href, {
+  await page.goto(new URL(renderedRoute, `${options.baseUrl}/`).href, {
     waitUntil: "domcontentloaded",
     timeout: 30000,
   });

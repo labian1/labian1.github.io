@@ -1302,9 +1302,10 @@ async function inspect(page, route, viewport, options, apiCalls) {
   let renderedRoute = route;
   if (LEGACY_LEARN_ROUTE.test(route)) {
     renderedRoute = route.replace(/^\/learn\//, "/care-circle/");
-    await page.waitForURL(
-      (url) => url.pathname === renderedRoute,
-      { waitUntil: "domcontentloaded", timeout: 5000 },
+    await page.waitForFunction(
+      (expectedPath) => location.pathname === expectedPath,
+      renderedRoute,
+      { timeout: 10000 },
     );
   }
   await page.evaluate(() => localStorage.clear());

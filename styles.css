@@ -21,6 +21,166 @@
   --shadow: 0 18px 50px rgba(64, 53, 47, 0.1);
 }
 
+/* Bobby story and direct contact */
+.bobby-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+  align-items: center;
+  gap: clamp(48px, 7vw, 112px);
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(40px, 6vw, 88px) 32px;
+}
+.bobby-hero figure { margin: 0; }
+.bobby-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+}
+.bobby-hero > div > span,
+.bobby-purpose header > span,
+.contact-direct > div > span {
+  display: inline-block;
+  margin-bottom: 18px;
+  color: #b64b2f;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+.bobby-hero h1 {
+  max-width: 720px;
+  margin: 0 0 26px;
+  font-size: clamp(3rem, 4.35vw, 4rem);
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+}
+.bobby-hero p {
+  max-width: 640px;
+  font-size: clamp(1.08rem, 1.5vw, 1.32rem);
+  line-height: 1.7;
+}
+.bobby-hero .bobby-signoff {
+  margin-top: 24px;
+  color: #e56f50;
+  font-family: Georgia, serif;
+  font-size: 1.35rem;
+  font-style: italic;
+  line-height: 1.15;
+}
+.bobby-hero .bobby-signoff strong { font-size: 1.8rem; }
+.bobby-letter {
+  padding: clamp(64px, 9vw, 128px) 24px;
+  background: #fffdf9;
+}
+.bobby-letter .reading-width { max-width: 790px; }
+.bobby-letter p {
+  margin: 0 0 28px;
+  color: #584a44;
+  font-family: Georgia, serif;
+  font-size: clamp(1.15rem, 1.7vw, 1.42rem);
+  line-height: 1.75;
+}
+.bobby-letter blockquote {
+  margin: 46px 0;
+  padding: 8px 0 8px 32px;
+  border-left: 4px solid #ed7658;
+  color: #382d29;
+  font-size: clamp(1.65rem, 3vw, 2.45rem);
+  line-height: 1.28;
+}
+.bobby-purpose { padding: clamp(72px, 9vw, 128px) 24px; }
+.bobby-purpose .wm-wrap { max-width: 1180px; }
+.bobby-purpose header {
+  max-width: 850px;
+  margin: 0 auto 56px;
+  text-align: center;
+}
+.bobby-purpose h2 {
+  margin: 0 0 18px;
+  font-size: clamp(2.25rem, 3.5vw, 3.2rem);
+  line-height: 1.02;
+}
+.bobby-purpose header p {
+  color: #6e5d55;
+  font-size: 1.15rem;
+  line-height: 1.65;
+}
+.bobby-purpose .wm-wrap > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 46px;
+  border-top: 1px solid #e6d7ce;
+  border-bottom: 1px solid #e6d7ce;
+}
+.bobby-purpose article { padding: 40px 34px; }
+.bobby-purpose article + article { border-left: 1px solid #e6d7ce; }
+.bobby-purpose article strong { color: #e56f50; }
+.bobby-purpose article h3 { margin: 18px 0 12px; font-size: 1.55rem; }
+.bobby-purpose article p { margin: 0; color: #6e5d55; line-height: 1.65; }
+.bobby-purpose .button { display: table; margin: 0 auto; }
+.bobby-closing {
+  padding: clamp(64px, 8vw, 104px) 24px;
+  background: #f7ebe3;
+  text-align: center;
+}
+.bobby-closing p {
+  margin: 0 0 26px;
+  color: #3d312d;
+  font-family: Georgia, serif;
+  font-size: clamp(1.75rem, 3.5vw, 3rem);
+  line-height: 1.25;
+}
+.contact-direct {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: calc(100vh - 84px);
+}
+.contact-direct figure { align-self: center; margin: 0; padding: clamp(32px, 5vw, 72px); }
+.contact-direct figure img { display: block; width: 100%; height: auto; border-radius: 14px; }
+.contact-direct > div {
+  align-self: center;
+  width: min(100%, 650px);
+  padding: clamp(56px, 8vw, 112px);
+}
+.contact-direct h1 {
+  margin: 0 0 18px;
+  font-size: clamp(2.8rem, 4.35vw, 4rem);
+  line-height: 0.98;
+}
+.contact-direct > div > p { margin: 0 0 34px; color: #6e5d55; font-size: 1.12rem; line-height: 1.65; }
+.contact-direct form { display: grid; gap: 18px; padding: 0; background: transparent; border: 0; box-shadow: none; }
+.contact-direct form label { display: grid; gap: 8px; }
+.contact-direct form label span { font-weight: 750; }
+.contact-direct form input,
+.contact-direct form textarea {
+  width: 100%;
+  border: 1px solid #d7c7bd;
+  border-radius: 8px;
+  background: #fffdf9;
+}
+.contact-direct form textarea { min-height: 180px; resize: vertical; }
+.contact-direct form .button { justify-self: start; }
+.contact-privacy { margin: -4px 0 0; color: #7a6a63; font-size: 0.86rem; }
+
+@media (max-width: 780px) {
+  .bobby-hero,
+  .contact-direct { grid-template-columns: 1fr; }
+  .bobby-hero { gap: 36px; padding: 28px 20px 60px; }
+  .bobby-hero h1 { font-size: clamp(2.55rem, 11vw, 3.2rem); }
+  .bobby-letter { padding: 64px 20px; }
+  .bobby-letter blockquote { margin: 36px 0; padding-left: 22px; }
+  .bobby-purpose { padding: 64px 20px; }
+  .bobby-purpose .wm-wrap > div { grid-template-columns: 1fr; }
+  .bobby-purpose article { padding: 28px 4px; }
+  .bobby-purpose article + article { border-top: 1px solid #e6d7ce; border-left: 0; }
+  .bobby-purpose .button { display: flex; width: 100%; text-align: center; }
+  .contact-direct figure { padding: 20px 20px 0; }
+  .contact-direct > div { width: auto; padding: 56px 20px 72px; }
+  .contact-direct h1 { font-size: clamp(2.55rem, 11vw, 3.2rem); }
+  .contact-direct form .button { width: 100%; }
+}
+
 /* 2026-08-24.4 — final layout, media, and responsive corrections */
 
 @media not all {

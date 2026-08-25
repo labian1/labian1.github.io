@@ -513,6 +513,21 @@ if (!wednesday.includes("Under 1 year") || !wednesday.includes("16+ years"))
 const support = routeHtml.get("/support/") || "";
 if (!support.includes('data-submit-api="https://www.woafmeow.com/api/contact"'))
   fail("support: contact endpoint missing");
+if (!support.includes('class="contact-direct"') || !support.includes("Talk to a real person."))
+  fail("support: direct contact page is missing");
+if (/support-faq|Common questions|FAQs/i.test(support))
+  fail("support: removed FAQ content remains");
+
+const about = routeHtml.get("/about/") || "";
+if (
+  !about.includes("I was Bobby. This is why WoafMeow exists.") ||
+  !about.includes("OUR MISSION · HOW WE HELP")
+)
+  fail("about: Bobby's first-person story or combined mission is missing");
+if (/story-mission-v7|story-build-v7|story-values/.test(about))
+  fail("about: old split mission and values sections remain");
+if ([...routeHtml.values()].some((html) => />FAQs?</i.test(html)))
+  fail("site: FAQ navigation remains");
 
 const css = readFileSync(resolve(dist, "styles.css"), "utf8");
 if (/object-fit:\s*cover/.test(css))

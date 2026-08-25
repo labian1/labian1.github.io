@@ -72,6 +72,8 @@ const FULL_PAGE_ROUTES = new Set([
   "/memorial-tree/",
   "/wednesday-introductions/",
   "/smart-bed/",
+  "/about/",
+  "/support/",
 ]);
 
 const BANNED_COPY = [
@@ -1140,16 +1142,34 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
       }
     }
   }
+  if (route === "/about/") {
+    if ((await page.locator(".bobby-hero").count()) !== 1)
+      failures.push("/about/: Bobby first-person hero is missing");
+    const aboutCopy = normalize(await page.locator("main").innerText());
+    for (const expected of [
+      "i was bobby",
+      "our mission · how we help",
+      "help families hear what their dogs are already telling them",
+    ])
+      if (!aboutCopy.includes(expected))
+        failures.push(`/about/: missing Bobby story message: ${expected}`);
+    if ((await page.locator(".story-mission-v7, .story-build-v7, .story-values").count()) !== 0)
+      failures.push("/about/: old mission/how-we-help sections remain");
+  }
+  if (route === "/support/") {
+    if ((await page.locator(".contact-direct").count()) !== 1)
+      failures.push("/support/: direct contact layout is missing");
+    if ((await page.locator(".support-faq-v7, .support-routes-v6, .support-expect-v7").count()) !== 0)
+      failures.push("/support/: removed FAQ or support-directory content remains");
+  }
   if (route === "/support/" && viewport.width === 1440)
     await submitGeneric(
       page,
-      "[data-form-title='WoafMeow support']",
+      "[data-form-title='WoafMeow contact']",
       {
         name: "Taylor",
         email: "taylor@example.com",
-        topic: 1,
         message: "I need help choosing the right care lesson.",
-        consent: true,
       },
       "https://www.woafmeow.com/api/contact",
       apiCalls,

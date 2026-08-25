@@ -279,12 +279,10 @@ if (
   fail("home: veterinarian testimonial section is incomplete");
 if (home.includes('<section class="home-care-account"'))
   fail("home: permanent registration section should not be visible");
-if (
-  count(home, /data-home-question-form\b/g) !== 1 ||
-  count(home, /<form[^>]*data-home-question-form[\s\S]*?name="question"/g) !==
-    1
-)
-  fail("home: hero Care Circle question box is missing");
+if (!home.includes('href="/care-circle/#ask"'))
+  fail("home: direct Care Circle path is missing");
+if (home.includes("data-home-question-form"))
+  fail("home: legacy question shortcut still bypasses per-question privacy");
 const editableAccountHtml = routeHtml.get("/account/") || "";
 if (!editableAccountHtml.includes("data-account-edit"))
   fail("account: editable profile control is missing");
@@ -387,8 +385,10 @@ if (
   fail("account: email or pet profile form is missing");
 if (!account.includes("Under 1 year") || !account.includes("16+ years"))
   fail("account: dog age range is incomplete");
-if (!account.includes('name="publicProfileConsent"'))
-  fail("account: public pet-profile consent is missing");
+if (account.includes('name="publicProfileConsent"'))
+  fail("account: legacy account-wide public consent is still present");
+if (!account.includes("Choose Public or Private separately"))
+  fail("account: per-question privacy explanation is missing");
 if (
   !account.includes('name="ownerName"') ||
   !account.includes('name="breed"') ||

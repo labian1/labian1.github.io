@@ -67,11 +67,8 @@
         try {
           const response = await fetch(endpoint, {
             method: "POST",
-            mode: isGuideDelivery ? "cors" : "no-cors",
             headers: {
-              "Content-Type": isGuideDelivery
-                ? "application/json"
-                : "text/plain;charset=UTF-8",
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
               ...stored,
@@ -86,19 +83,27 @@
               pageContext: window.location.href,
             }),
           });
-          if (isGuideDelivery && !response.ok) {
-            const payload = await response.json().catch(() => ({}));
-            throw new Error(payload.error || "Guide delivery failed.");
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok || result.delivery === "fallback") {
+            if (isGuideDelivery) {
+              note.innerHTML = `The email was not sent. <a href="${result.guideUrl || "/guide/"}">Open the complete guide now →</a>`;
+              note.classList.add("is-confirmed");
+              return;
+            }
+            throw new Error(result.error || "The request was not sent.");
           }
-          note.textContent =
-            form.dataset.successMessage || "Thank you. Your request was sent.";
+          note.textContent = result.message || form.dataset.successMessage || "Thank you. Your request was sent.";
           note.classList.add("is-confirmed");
           form.reset();
         } catch (error) {
-          note.textContent = isGuideDelivery
-            ? "We could not email the guide right now. Please check the address and try again."
-            : "We could not send this right now. Please try again.";
-          note.classList.remove("is-confirmed");
+          if (isGuideDelivery) {
+            note.innerHTML =
+              'Email delivery is delayed. <a href="/guide/">Open the complete guide now →</a>';
+            note.classList.add("is-confirmed");
+          } else {
+            note.textContent = "We could not send this right now. Please try again.";
+            note.classList.remove("is-confirmed");
+          }
         } finally {
           if (button) button.disabled = false;
         }
@@ -883,7 +888,12 @@
   ];
   let pendingPetPhotoDataUrl = getAccount()?.petPhotoDataUrl || "";
   let editingAccount = false;
-  const publishProfileQuestion = (account, question, questionImageDataUrl = "") => {
+  const publishProfileQuestion = (
+    account,
+    question,
+    questionImageDataUrl = "",
+    visibility = "private",
+  ) => {
     const cleanQuestion = String(question || "")
       .trim()
       .slice(0, 500);
@@ -894,6 +904,7 @@
       question: cleanQuestion,
       slug,
       questionImageDataUrl,
+      visibility: visibility === "public" ? "public" : "private",
       createdAt: new Date().toISOString(),
     };
     return writeStoredJson(publicQuestionStorageKey, publicQuestion)
@@ -990,11 +1001,6 @@
       const field = accountForm.elements.namedItem(name);
       if (field) field.value = account[name] || "";
     });
-    const publicConsent = accountForm.elements.namedItem(
-      "publicProfileConsent",
-    );
-    if (publicConsent)
-      publicConsent.checked = Boolean(account.publicProfileConsent);
   };
   accountEditButton?.addEventListener("click", () => {
     const account = getAccount();
@@ -1031,7 +1037,6 @@
       medications: String(values.medications || "")
         .trim()
         .slice(0, 360),
-      publicProfileConsent: values.publicProfileConsent === "on",
       petPhotoDataUrl:
         pendingPetPhotoDataUrl || previousAccount?.petPhotoDataUrl || "",
     };
@@ -1072,7 +1077,7 @@
             medications: account.medications,
             hasPetPhoto: Boolean(account.petPhotoDataUrl),
             routineNotes: "Created from the WoafMeow Care Circle profile.",
-            consent: account.publicProfileConsent,
+            consent: true,
             pageContext: window.location.href,
           }),
         });
@@ -1089,19 +1094,19 @@
       const pendingQuestion = String(accountForm.dataset.pendingQuestion || "")
         .trim()
         .slice(0, 500);
-      const slug = publishProfileQuestion(account, pendingQuestion);
-      window.location.assign(
-        slug ? `/care-circle/${slug}/?mine=1` : "/care-circle/#ask",
-      );
+      const target = new URL("/care-circle/", window.location.origin);
+      if (pendingQuestion) target.searchParams.set("q", pendingQuestion);
+      target.hash = "ask";
+      window.location.assign(target.href);
       return;
     }
     const params = new URLSearchParams(window.location.search);
     const question = (params.get("q") || "").trim().slice(0, 500);
     if (params.get("next") === "ask") {
-      const slug = publishProfileQuestion(account, question);
-      window.location.assign(
-        slug ? `/care-circle/${slug}/?mine=1` : "/care-circle/#ask",
-      );
+      const target = new URL("/care-circle/", window.location.origin);
+      if (question) target.searchParams.set("q", question);
+      target.hash = "ask";
+      window.location.assign(target.href);
       return;
     }
     if (params.get("next") === "health") {
@@ -1139,7 +1144,7 @@
       if (account) {
         const slug = publishProfileQuestion(account, question);
         if (slug) {
-          window.location.assign(`/care-circle/${slug}/?mine=1`);
+          window.location.assign(`/care-circle/${slug}/`);
           return;
         }
         form.querySelector("input, textarea")?.focus();
@@ -1218,7 +1223,6 @@
     });
   if (accountGate && askForm) {
     const account = getAccount();
-    const existingQuestion = getPublicQuestion();
     const questionField = askForm.querySelector('[name="question"]');
     const askNote = askForm.querySelector("[data-account-ask-note]");
     const askParams = new URLSearchParams(window.location.search);
@@ -1238,23 +1242,6 @@
       if (summary)
         summary.textContent =
           "Ask now. You will create your dog's one-time care profile before the lesson is published.";
-    } else if (existingQuestion && !askRequested) {
-      accountGate.hidden = false;
-      accountGate.replaceChildren();
-      const copy = document.createElement("div");
-      const heading = document.createElement("h2");
-      const paragraph = document.createElement("p");
-      const link = document.createElement("a");
-      heading.textContent = `${account.petName}'s public lesson is ready.`;
-      paragraph.textContent = existingQuestion.question;
-      link.className = "button primary";
-      link.href = `/care-circle/${existingQuestion.slug}/?mine=1`;
-      link.textContent = "Open the tailored lesson →";
-      copy.append(heading, paragraph);
-      accountGate.append(copy, link);
-      const summary = askForm.querySelector("[data-active-pet-summary]");
-      if (summary)
-        summary.textContent = `${account.petName} · ${account.petAge} · ${account.breed} · ${account.conditions}`;
     } else {
       accountGate.hidden = true;
       askForm.hidden = false;
@@ -1286,6 +1273,7 @@
         account,
         question,
         pendingQuestionImageDataUrl,
+        values.lessonVisibility,
       );
       if (!slug) {
         if (askNote)
@@ -1293,7 +1281,7 @@
             "This browser could not save the question. Please allow site storage and try again.";
         return;
       }
-      window.location.assign(`/care-circle/${slug}/?mine=1`);
+      window.location.assign(`/care-circle/${slug}/`);
     });
   }
 
@@ -2002,21 +1990,26 @@
       String(right.date || "").localeCompare(String(left.date || "")),
     );
     const lines = [
-      `${account.petName}'s health timeline`,
-      vetName ? `Prepared for ${vetName}` : "Prepared for veterinary review",
+      "WOAFMEOW VETERINARY CARE SUMMARY",
+      vetName ? `Prepared for: ${vetName}` : "Prepared for veterinary review",
+      `Prepared on: ${new Intl.DateTimeFormat("en", { dateStyle: "long" }).format(new Date())}`,
       "",
-      "OWNER",
-      `${owner} · ${account.email}`,
+      "1. PRIMARY CONCERN",
+      ownerNote || "No primary question was added.",
       "",
-      "PET PROFILE",
+      "2. PATIENT",
       `Name: ${account.petName}`,
       `Age: ${account.petAge || "Not shared"}`,
       `Breed or mix: ${account.breed || "Not shared"}`,
-      `Owner-shared conditions: ${conditions.join("; ") || "None shared"}`,
-      `Medicines or recent changes: ${medicines.join("; ") || "None shared"}`,
-      `Patterns mentioned across the timeline: ${patterns.join("; ") || "No repeated pattern identified yet"}`,
+      `Owner: ${owner}`,
+      `Owner email: ${account.email}`,
       "",
-      "DATED OBSERVATIONS",
+      "3. CONDITIONS, MEDICINES AND REPEATED PATTERNS",
+      `Known conditions: ${conditions.join("; ") || "None shared"}`,
+      `Medicines or recent changes: ${medicines.join("; ") || "None shared"}`,
+      `Patterns across the timeline: ${patterns.join("; ") || "No repeated pattern identified yet"}`,
+      "",
+      "4. RECENT DATED OBSERVATIONS",
       ...(datedLogs.length
         ? datedLogs.map((log) => {
             const details = [
@@ -2031,7 +2024,7 @@
           })
         : ["- No dated observations saved yet."]),
       "",
-      "UPLOADED RECORDS",
+      "5. ATTACHED HEALTH RECORDS",
       ...(datedRecords.length
         ? datedRecords.map(
             (record) =>
@@ -2039,10 +2032,12 @@
           )
         : ["- No records uploaded yet."]),
     ];
-    if (ownerNote) lines.push("", "OWNER'S NOTE OR QUESTIONS", ownerNote);
     lines.push(
       "",
-      "Prepared from the owner's WoafMeow Health Timeline for veterinary review.",
+      "6. REQUESTED NEXT STEP",
+      "Please review the observations and attached records and advise which findings need an appointment, testing or a change in the current care plan.",
+      "",
+      "Prepared from the owner's WoafMeow Health Timeline.",
     );
     return lines.join("\n");
   };
@@ -2060,25 +2055,93 @@
     };
   };
 
-  const openVetEmailDraft = async () => {
+  const readBlobAsBase64 = (blob) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () =>
+        resolve(String(reader.result || "").split(",").pop() || "");
+      reader.onerror = () => reject(reader.error || new Error("File could not be read."));
+      reader.readAsDataURL(blob);
+    });
+
+  const foldBase64 = (value) => String(value || "").match(/.{1,76}/g)?.join("\r\n") || "";
+  const safeEmailFileName = (value) =>
+    String(value || "health-record")
+      .replace(/[\r\n"]/g, "")
+      .replace(/[^a-zA-Z0-9._()\- ]/g, "-")
+      .slice(0, 120) || "health-record";
+
+  const downloadVetEmail = async () => {
     if (
       vetEmailField &&
       typeof vetEmailField.reportValidity === "function" &&
       !vetEmailField.reportValidity()
     )
       return;
-    setShareStatus("Preparing the veterinary email draft…");
+    setShareStatus("Preparing the veterinary email with attached records…");
     try {
-      const { title, summary } = await loadVetShare();
+      const { title, summary, records } = await loadVetShare();
       const recipient = String(vetEmailField?.value || "")
         .trim()
         .slice(0, 254);
       const subject = `${title} from ${account.ownerName || "their owner"}`;
-      window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(summary.slice(0, 7000))}`;
-      setShareStatus("Email draft opened. Review it before sending.");
+      const boundary = `woafmeow_${Date.now().toString(36)}`;
+      const lines = [
+        `To: ${recipient}`,
+        `Subject: ${subject.replace(/[\r\n]/g, " ")}`,
+        "MIME-Version: 1.0",
+        `Content-Type: multipart/mixed; boundary=\"${boundary}\"`,
+        "",
+        `--${boundary}`,
+        "Content-Type: text/plain; charset=UTF-8",
+        "Content-Transfer-Encoding: 8bit",
+        "",
+        summary,
+      ];
+      const attached = records.filter((record) => record?.blob instanceof Blob);
+      const summaryFileName = `${safeEmailFileName(account.petName)}-veterinary-care-summary.txt`;
+      const summaryBase64 = await readBlobAsBase64(new Blob([summary], { type: "text/plain;charset=utf-8" }));
+      lines.push(
+        `--${boundary}`,
+        `Content-Type: text/plain; charset=UTF-8; name="${summaryFileName}"`,
+        `Content-Disposition: attachment; filename="${summaryFileName}"`,
+        "Content-Transfer-Encoding: base64",
+        "",
+        foldBase64(summaryBase64),
+      );
+      for (const record of attached) {
+        const fileName = safeEmailFileName(record.name);
+        const mime = record.mime || record.blob.type || "application/octet-stream";
+        const base64 = await readBlobAsBase64(record.blob);
+        lines.push(
+          `--${boundary}`,
+          `Content-Type: ${mime}; name=\"${fileName}\"`,
+          `Content-Disposition: attachment; filename=\"${fileName}\"`,
+          "Content-Transfer-Encoding: base64",
+          "",
+          foldBase64(base64),
+        );
+      }
+      lines.push(`--${boundary}--`, "");
+      const emailFile = new Blob([lines.join("\r\n")], {
+        type: "message/rfc822;charset=utf-8",
+      });
+      const href = URL.createObjectURL(emailFile);
+      const link = document.createElement("a");
+      link.href = href;
+      link.download = `${safeEmailFileName(account.petName)}-veterinary-care-summary.eml`;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(href), 2000);
+      setShareStatus(
+        attached.length
+          ? `Email draft downloaded with the care summary and ${attached.length} original health record${attached.length === 1 ? "" : "s"} attached. Open it in your email app and send.`
+          : "Email draft downloaded with the care summary attached. No original health records were available. Open it in your email app and send.",
+      );
     } catch {
       setShareStatus(
-        "The email draft could not be prepared. Please try again.",
+        "The veterinary email could not be prepared. Please try again.",
         true,
       );
     }
@@ -2346,7 +2409,7 @@
   shareForm?.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!shareForm.reportValidity()) return;
-    openVetEmailDraft();
+    downloadVetEmail();
   });
   emailVetButton?.addEventListener("click", (event) => {
     if (
@@ -2356,7 +2419,7 @@
     )
       return;
     event.preventDefault();
-    openVetEmailDraft();
+    downloadVetEmail();
   });
   webShareButton?.addEventListener("click", (event) => {
     event.preventDefault();

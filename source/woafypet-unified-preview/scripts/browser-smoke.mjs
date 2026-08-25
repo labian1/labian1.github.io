@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { createRequire } from "node:module";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -443,12 +443,10 @@ async function checkHome(page, viewport, baseUrl, failures) {
     if ((await page.locator(selector).count()) !== 1)
       failures.push(`/: missing ${selector}`);
   }
-  const questionForms = page.locator("[data-home-question-form]");
-  if (
-    (await questionForms.count()) !== 1 ||
-    (await questionForms.locator('[name="question"]').count()) !== 1
-  )
-    failures.push("/: expected one homepage Care Circle question entry");
+  if ((await page.locator('[href="/care-circle/#ask"]').count()) < 1)
+    failures.push("/: direct Care Circle privacy path is missing");
+  if ((await page.locator("[data-home-question-form]").count()) !== 0)
+    failures.push("/: legacy homepage question shortcut remains");
   const heroHeight = await page
     .locator(".home-ref-hero")
     .evaluate((node) => node.getBoundingClientRect().height);
@@ -504,19 +502,6 @@ async function checkHome(page, viewport, baseUrl, failures) {
   if (new Set(homeImageSources).size !== homeImageSources.length)
     failures.push("/: homepage repeats an image");
   if (viewport.width === 1440) {
-    const questionForm = questionForms.first();
-    await questionForm
-      .locator('[name="question"]')
-      .fill("Why is my dog stiff after getting up?");
-    await questionForm.evaluate((node) => node.requestSubmit());
-    const registrationDialog = page.locator("[data-first-action-dialog]");
-    await registrationDialog.waitFor({ state: "visible" });
-    if (!(await registrationDialog.evaluate((node) => node.open)))
-      failures.push("/: first personalized action did not open registration");
-    if ((await registrationDialog.locator('[name="ownerName"]').count()) !== 1)
-      failures.push("/: first-action registration is missing owner details");
-    await registrationDialog.locator("[data-first-action-close]").click();
-
     await page.evaluate(() => {
       localStorage.setItem(
         "woafmeow-account-v1",
@@ -647,15 +632,23 @@ async function checkAccountFlow(page, viewport, baseUrl, failures) {
   await form
     .locator('[name="medications"]')
     .fill("anti-inflammatory medicine changed last week");
-  await form.locator('[name="publicProfileConsent"]').check();
   await Promise.all([
     page.waitForURL(
       (url) =>
-        url.pathname === "/care-circle/slower-after-rest/" &&
-        url.searchParams.get("mine") === "1",
+        url.pathname === "/care-circle/" &&
+        url.searchParams.get("q")?.includes("stiff"),
       { waitUntil: "domcontentloaded" },
     ),
     form.evaluate((node) => node.requestSubmit()),
+  ]);
+  const askForm = page.locator("[data-account-ask-form]");
+  await askForm.locator('[name="lessonVisibility"][value="public"]').check();
+  await Promise.all([
+    page.waitForURL(
+      (url) => url.pathname === "/care-circle/slower-after-rest/",
+      { waitUntil: "domcontentloaded" },
+    ),
+    askForm.evaluate((node) => node.requestSubmit()),
   ]);
   if (
     !normalize(
@@ -832,6 +825,36 @@ async function checkHealthTimeline(
     () =>
       document.querySelectorAll("[data-health-records] article").length >= 3,
   );
+
+  await page.locator("[data-health-vet-name]").fill("Oak Street Animal Hospital");
+  await page.locator("[data-health-vet-email]").fill("care@clinic.example");
+  await page
+    .locator("[data-health-share-note]")
+    .fill("Please review the recent weight change and stiffness after rest.");
+  const downloadPromise = page.waitForEvent("download");
+  await page.locator("[data-health-email-vet]").click();
+  const emailDownload = await downloadPromise;
+  const emailPath = await emailDownload.path();
+  const emailSource = emailPath ? readFileSync(emailPath, "utf8") : "";
+  for (const expected of [
+    'To: care@clinic.example',
+    'Content-Disposition: attachment; filename="Bailey-veterinary-care-summary.txt"',
+    'Content-Disposition: attachment; filename="bailey-vet-note.txt"',
+  ]) {
+    if (!emailSource.includes(expected))
+      failures.push(`/health-timeline/: generated email is missing ${expected}`);
+  }
+  const shareStatus = normalize(
+    await page.locator("[data-health-share-status]").innerText(),
+  );
+  if (
+    !shareStatus.includes("email draft downloaded") ||
+    !shareStatus.includes("1 original health record") ||
+    !shareStatus.includes("open it in your email app and send")
+  )
+    failures.push(
+      "/health-timeline/: downloaded-email status is not truthful or complete",
+    );
 
   if ((await page.locator("[data-health-records] article").count()) !== 3)
     failures.push("/health-timeline/: record and two changes were not added");
@@ -1043,7 +1066,7 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
       (await page.locator(".guide-topics-v6 img").count()) !== 6
     )
       failures.push("/guide/: six image-led guide topics missing");
-    if (viewport.width === 1440)
+    if (viewport.width === 1440) {
       await submitGeneric(
         page,
         "#guide-download",
@@ -1052,6 +1075,19 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
         apiCalls,
         failures,
       );
+      const fallbackForm = page.locator("#guide-download");
+      await fallbackForm.locator('[name="email"]').fill("fallback@example.com");
+      await fallbackForm.evaluate((node) => node.requestSubmit());
+      await page.waitForTimeout(100);
+      const fallbackNote = normalize(
+        await fallbackForm.locator("[data-form-note]").innerText(),
+      );
+      if (
+        !fallbackNote.includes("email was not sent") ||
+        (await fallbackForm.locator('[data-form-note] a[href="/guide/"]').count()) !== 1
+      )
+        failures.push("/guide/: fallback state did not truthfully expose the guide");
+    }
   }
   if (route === "/wednesday-introductions/") {
     if ((await page.locator("main img").count()) < 6)
@@ -1253,7 +1289,23 @@ async function main() {
           url: request.url(),
           body: request.postData() || "",
         });
-        await route.fulfill({ status: 204, body: "" });
+        const payload = request.postData() || "";
+        if (
+          request.url().endsWith("/api/newsletter") &&
+          payload.includes("fallback@example.com")
+        ) {
+          await route.fulfill({
+            status: 202,
+            contentType: "application/json",
+            body: JSON.stringify({ delivery: "fallback", guideUrl: "/guide/" }),
+          });
+        } else {
+          await route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify({ delivery: "sent", message: "Request sent." }),
+          });
+        }
       });
       for (const route of options.routes) {
         const page = await context.newPage();

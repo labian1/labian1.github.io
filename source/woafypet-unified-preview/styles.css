@@ -21,6 +21,525 @@
   --shadow: 0 18px 50px rgba(64, 53, 47, 0.1);
 }
 
+/* 2026-08-26.3 — complete product, guide, profile and private-lesson contract. */
+html body main :is(h1, h2) {
+  max-width: none;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-wrap: balance;
+}
+
+html body.home-v17 .home-contract-care-grid {
+  grid-template-columns: 1fr;
+}
+html body.home-v17 .home-contract-evidence {
+  grid-template-columns: minmax(220px, 0.35fr) minmax(0, 0.65fr);
+  width: 100%;
+  min-height: 300px;
+  border-right: 0;
+}
+html body.home-v17 .home-contract-evidence figure {
+  width: min(260px, 100%);
+  justify-self: center;
+}
+html body.home-v17 .home-contract-evidence > div {
+  padding: 44px 64px 44px 12px;
+}
+html body.home-v17 .home-contract-evidence h2 {
+  width: 100%;
+  white-space: nowrap;
+}
+
+html body.home-v17 .home-contract-guide {
+  display: grid;
+  grid-template-columns: minmax(0, 0.58fr) minmax(360px, 0.42fr);
+  align-items: center;
+  min-height: 410px;
+  padding: 34px clamp(46px, 6vw, 88px);
+  border: 1px solid var(--contract-line);
+  background: #fbf7f2;
+}
+html body.home-v17 .home-contract-guide > div {
+  width: 100%;
+  padding: 0;
+}
+html body.home-v17 .home-contract-guide :is(h2, p) {
+  width: 100%;
+  max-width: none;
+  color: var(--contract-ink);
+}
+html body.home-v17 .home-contract-guide .home-kicker {
+  color: var(--contract-clay);
+}
+html body.home-v17 .home-contract-guide h2 {
+  margin: 0 0 14px;
+  font-size: clamp(2.45rem, 3.4vw, 3.45rem);
+  line-height: 1;
+}
+html body.home-v17 .home-contract-guide p {
+  margin: 0 0 24px;
+  font-size: 1.05rem;
+}
+html body.home-v17 .home-guide-book {
+  margin: 0;
+  display: grid;
+  place-items: center;
+}
+html body.home-v17 .home-guide-book :is(picture, img) {
+  position: static;
+  display: block;
+  width: min(470px, 100%);
+  height: auto;
+}
+
+html body.home-v17 .home-contract-bed {
+  grid-template-columns: minmax(340px, 0.31fr) minmax(430px, 0.46fr) minmax(250px, 0.23fr);
+  min-height: 440px;
+  padding: 28px;
+  background: #fbf7f2;
+}
+html body.home-v17 .home-contract-bed-copy {
+  padding: 24px 12px 24px 18px;
+}
+html body.home-v17 .home-contract-bed h2 {
+  margin: 0 0 14px;
+  font-size: clamp(2.15rem, 2.75vw, 2.85rem);
+  line-height: 1.02;
+}
+html body.home-v17 .home-contract-bed-copy > p {
+  margin-bottom: 18px;
+  font-size: 0.98rem;
+}
+html body.home-v17 .home-contract-bed-copy ul {
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+html body.home-v17 .home-contract-bed-copy li {
+  min-height: 0;
+  padding: 0 0 0 22px;
+  position: relative;
+  border: 0;
+  background: transparent;
+}
+html body.home-v17 .home-contract-bed-copy li::before {
+  position: absolute;
+  left: 0;
+  color: var(--contract-clay);
+  font-weight: 850;
+  content: "✓";
+}
+html body.home-v17 .home-contract-product {
+  margin: 0;
+  padding: 0 14px;
+  display: grid;
+  place-items: center;
+}
+html body.home-v17 .home-contract-product :is(picture, img) {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+html body.home-v17 .home-bed-proof {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: center;
+  margin: 0;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(245, 237, 229, 0.82);
+}
+html body.home-v17 .home-bed-proof > div {
+  min-width: 0;
+  padding: 20px 12px;
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+html body.home-v17 .home-bed-proof > div:nth-child(odd) {
+  border-right: 1px solid #e1d4ca;
+}
+html body.home-v17 .home-bed-proof > div:nth-child(-n + 2) {
+  border-bottom: 1px solid #e1d4ca;
+}
+html body.home-v17 .home-bed-proof > div > span {
+  color: var(--contract-clay);
+  font-size: 1.55rem;
+  line-height: 1;
+}
+html body.home-v17 .home-bed-proof p {
+  margin: 0;
+  color: #62564f;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+html body.home-v17 .home-bed-proof strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--contract-ink);
+  font-size: 0.9rem;
+}
+
+html body.home-v17 .home-contract-close {
+  grid-template-columns: 1fr;
+  background: #fbf7f2;
+}
+html body.home-v17 .home-contract-insights {
+  grid-template-columns: minmax(0, 0.58fr) minmax(380px, 0.42fr);
+  min-height: 470px;
+  border-right: 0;
+  border-bottom: 1px solid var(--contract-line);
+}
+html body.home-v17 .home-contract-insights figure {
+  margin: 0;
+  padding: 34px;
+  background: #f2eadf;
+}
+html body.home-v17 .home-contract-insights figure :is(picture, img) {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+html body.home-v17 .home-contract-insights > div {
+  padding: 52px clamp(42px, 5vw, 76px);
+}
+html body.home-v17 .home-contract-insights h2 {
+  width: 100%;
+  font-size: clamp(2.55rem, 3.5vw, 3.5rem);
+}
+html body.home-v17 .home-insight-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 22px 0;
+}
+html body.home-v17 .home-insight-metrics > div {
+  padding: 12px;
+  border-top: 1px solid #d9cdc3;
+}
+html body.home-v17 .home-insight-metrics dt {
+  color: var(--contract-ink);
+  font-weight: 800;
+}
+html body.home-v17 .home-insight-metrics dd {
+  margin: 3px 0 0;
+  color: #776a62;
+}
+html body.home-v17 .home-contract-profile {
+  min-height: 0;
+  padding: 24px clamp(34px, 5vw, 72px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  background: #fffaf6;
+}
+html body.home-v17 .home-contract-profile > div {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+html body.home-v17 .home-contract-profile > div > span {
+  color: var(--contract-clay);
+  font-size: 2rem;
+}
+html body.home-v17 .home-contract-profile p {
+  margin: 0;
+}
+html body.home-v17 .home-contract-profile strong {
+  display: block;
+  color: var(--contract-ink);
+}
+html body.home-v17 .home-contract-profile > a {
+  color: var(--contract-clay);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+html body.home-v17 .home-contract-support {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--contract-line);
+  border-top: 0;
+  background: #fff;
+}
+html body.home-v17 .home-contract-support > a {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  color: inherit;
+  text-decoration: none;
+}
+html body.home-v17 .home-contract-support > a + a {
+  border-left: 1px solid var(--contract-line);
+}
+html body.home-v17 .home-contract-support figure {
+  margin: 0;
+  padding: 14px;
+}
+html body.home-v17 .home-contract-support figure :is(picture, img) {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+html body.home-v17 .home-contract-support > a > div {
+  padding: 8px 22px 28px;
+}
+html body.home-v17 .home-contract-support h2 {
+  margin: 0 0 8px;
+  color: var(--contract-ink);
+  font-size: clamp(1.42rem, 1.7vw, 1.75rem);
+  line-height: 1.08;
+}
+html body.home-v17 .home-contract-support p {
+  margin: 0 0 14px;
+  font-size: 0.9rem;
+}
+html body.home-v17 .home-contract-support span {
+  color: var(--contract-clay);
+  font-weight: 800;
+}
+
+.condition-picker > span {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--ink);
+  font-weight: 700;
+}
+.condition-picker > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.condition-picker > div > label {
+  min-width: 0;
+  padding: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+.condition-picker > div input {
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  flex: 0 0 auto;
+}
+.condition-picker > div label:has(input:checked) {
+  border-color: #8d9f89;
+  background: #eef1e8;
+}
+.condition-picker > div span {
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+.condition-picker .condition-other {
+  margin-top: 10px;
+}
+.condition-picker [data-condition-error] {
+  min-height: 1.25em;
+  display: block;
+  margin-top: 7px;
+  color: #a63225;
+}
+
+html body.account-v7 .account-scene-media {
+  justify-content: flex-start;
+  padding: 0;
+}
+html body.account-v7 .account-scene-media figure {
+  width: 100%;
+  height: auto;
+  margin: 0;
+}
+html body.account-v7 .account-scene-media figure :is(picture, img) {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto !important;
+  max-height: none;
+  border-radius: 0;
+}
+html body.account-v7 .account-scene-media > div {
+  padding: 34px;
+}
+html body.account-v7 .account-scene-media h1 {
+  width: 100%;
+  font-size: clamp(2.1rem, 3.1vw, 3.1rem);
+}
+html body.account-v7 .account-private-lessons {
+  margin: 26px 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+html body.account-v7 .account-private-lessons h2 {
+  margin: 0 0 5px;
+  font-size: 1.45rem;
+}
+html body.account-v7 .account-private-lessons header p {
+  margin: 0 0 14px;
+}
+html body.account-v7 [data-private-lessons-list] {
+  display: grid;
+  gap: 8px;
+}
+html body.account-v7 [data-private-lessons-list] a {
+  padding: 12px 14px;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  text-decoration: none;
+}
+html body.account-v7 [data-private-lessons-list] a:hover {
+  border-color: var(--clay);
+}
+html body.account-v7 [data-private-lessons-list] strong,
+html body.account-v7 [data-private-lessons-list] span {
+  display: block;
+}
+html body.account-v7 [data-private-lessons-list] span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+html body.account-v7 [data-private-lessons-empty] {
+  margin: 0;
+}
+
+@media (min-width: 901px) {
+  html body .directory-hero-v6 {
+    grid-template-columns: minmax(560px, 1.12fr) minmax(0, 0.88fr);
+  }
+  html body .directory-hero-v6 h1 {
+    width: 100%;
+    font-size: clamp(3.7rem, 5vw, 4.9rem);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 1180px) {
+  html body.home-v17 .home-contract-bed {
+    grid-template-columns: minmax(330px, 0.38fr) minmax(0, 0.62fr);
+  }
+  html body.home-v17 .home-bed-proof {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  html body.home-v17 .home-bed-proof > div {
+    border: 0 !important;
+  }
+  html body.home-v17 .home-bed-proof > div + div {
+    border-left: 1px solid #e1d4ca !important;
+  }
+  html body.home-v17 .home-contract-support {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  html body.home-v17 .home-contract-support > a:nth-child(3) {
+    border-left: 0;
+  }
+  html body.home-v17 .home-contract-support > a:nth-child(n + 3) {
+    border-top: 1px solid var(--contract-line);
+  }
+}
+
+@media (max-width: 900px) {
+  html body.home-v17 .home-contract-evidence,
+  html body.home-v17 .home-contract-guide,
+  html body.home-v17 .home-contract-bed,
+  html body.home-v17 .home-contract-insights {
+    grid-template-columns: 1fr;
+  }
+  html body.home-v17 .home-contract-evidence > div {
+    padding: 14px 28px 36px;
+  }
+  html body.home-v17 .home-contract-evidence h2 {
+    white-space: normal;
+  }
+  html body.home-v17 .home-contract-guide {
+    padding: 36px 28px;
+  }
+  html body.home-v17 .home-guide-book {
+    order: -1;
+  }
+  html body.home-v17 .home-contract-bed {
+    padding: 22px;
+  }
+  html body.home-v17 .home-contract-product {
+    order: -1;
+  }
+  html body.home-v17 .home-bed-proof {
+    grid-column: auto;
+    grid-template-columns: 1fr 1fr;
+  }
+  html body.home-v17 .home-contract-insights > div {
+    padding: 36px 28px;
+  }
+  html body.account-v7 .account-scene-v8 {
+    grid-template-columns: 1fr;
+  }
+  .condition-picker > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  html body.home-v17 .home-contract-guide h2,
+  html body.home-v17 .home-contract-insights h2 {
+    font-size: clamp(1.9rem, 8.4vw, 2.25rem);
+  }
+  html body.home-v17 .home-contract-bed h2 {
+    font-size: clamp(1.8rem, 7.8vw, 2.1rem);
+  }
+  html body.home-v17 .home-guide-book :is(picture, img) {
+    width: 84%;
+  }
+  html body.home-v17 .home-bed-proof,
+  html body.home-v17 .home-contract-support,
+  .condition-picker > div {
+    grid-template-columns: 1fr;
+  }
+  html body.home-v17 .home-bed-proof > div {
+    border: 0 !important;
+  }
+  html body.home-v17 .home-bed-proof > div + div {
+    border-top: 1px solid #e1d4ca !important;
+    border-left: 0 !important;
+  }
+  html body.home-v17 .home-contract-profile {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+  html body.home-v17 .home-contract-profile > a {
+    white-space: normal;
+  }
+  html body.home-v17 .home-contract-support > a,
+  html body.home-v17 .home-contract-support > a + a {
+    border-top: 1px solid var(--contract-line);
+    border-left: 0;
+  }
+  html body.home-v17 .home-contract-support > a:first-child {
+    border-top: 0;
+  }
+  html body.account-v7 .account-scene-v8 {
+    width: calc(100% - 20px);
+  }
+  html body.account-v7 .account-scene-panel {
+    padding: 24px 16px;
+  }
+  html body.account-v7 .account-scene-media > div {
+    padding: 28px 22px;
+  }
+}
+
 /* Bobby story and direct contact */
 .bobby-hero {
   display: grid;
@@ -21459,4 +21978,270 @@ html body.support-v6 .contact-direct form textarea {
     margin-top: 10px !important;
   }
   html body .wm-footer .wm-footer-socials a { margin: 0 !important; }
+}
+
+/* Final 2026-08-26.3 contract overrides. Keep this block last. */
+html body.home-v17 .home-contract-care-grid {
+  grid-template-columns: 1fr !important;
+}
+html body.home-v17 .home-contract-evidence {
+  grid-template-columns: minmax(220px, 0.35fr) minmax(0, 0.65fr) !important;
+  width: 100% !important;
+  min-height: 300px !important;
+  border-right: 0 !important;
+}
+html body.home-v17 .home-contract-evidence figure {
+  width: min(260px, 100%) !important;
+  justify-self: center !important;
+}
+html body.home-v17 .home-contract-evidence > div {
+  padding: 44px 64px 44px 12px !important;
+}
+html body.home-v17 .home-contract-evidence h2 {
+  width: 100% !important;
+  white-space: nowrap !important;
+}
+html body.home-v17 .home-contract-guide {
+  grid-template-columns: minmax(0, 0.58fr) minmax(360px, 0.42fr) !important;
+  min-height: 410px !important;
+  padding: 34px clamp(46px, 6vw, 88px) !important;
+  border: 1px solid var(--contract-line) !important;
+  background: #fbf7f2 !important;
+}
+html body.home-v17 .home-contract-guide > div {
+  width: 100% !important;
+  padding: 0 !important;
+}
+html body.home-v17 .home-contract-guide :is(h2, p) {
+  width: 100% !important;
+  max-width: none !important;
+  color: var(--contract-ink) !important;
+}
+html body.home-v17 .home-contract-guide .home-kicker {
+  color: var(--contract-clay) !important;
+}
+html body.home-v17 .home-contract-guide h2 {
+  font-size: clamp(2.45rem, 3.4vw, 3.45rem) !important;
+}
+html body.home-v17 .home-contract-guide p {
+  margin-bottom: 24px !important;
+  font-size: 1.05rem !important;
+}
+html body.home-v17 .home-guide-book {
+  display: grid !important;
+  place-items: center !important;
+}
+html body.home-v17 .home-guide-book :is(picture, img) {
+  position: static !important;
+  display: block !important;
+  width: min(470px, 100%) !important;
+  height: auto !important;
+}
+html body.home-v17 .home-contract-bed {
+  grid-template-columns: minmax(340px, 0.31fr) minmax(430px, 0.46fr) minmax(250px, 0.23fr) !important;
+  min-height: 440px !important;
+  padding: 28px !important;
+  background: #fbf7f2 !important;
+}
+html body.home-v17 .home-contract-bed-copy {
+  padding: 24px 12px 24px 18px !important;
+}
+html body.home-v17 .home-contract-bed h2 {
+  font-size: clamp(2.15rem, 2.75vw, 2.85rem) !important;
+  line-height: 1.02 !important;
+}
+html body.home-v17 .home-contract-bed-copy > p {
+  margin-bottom: 18px !important;
+  font-size: 0.98rem !important;
+}
+html body.home-v17 .home-contract-bed-copy ul {
+  grid-template-columns: 1fr !important;
+  gap: 8px !important;
+  margin-bottom: 20px !important;
+}
+html body.home-v17 .home-contract-bed-copy li {
+  min-height: 0 !important;
+  padding: 0 0 0 22px !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+html body.home-v17 .home-contract-product {
+  margin: 0 !important;
+  padding: 0 14px !important;
+  display: grid !important;
+  place-items: center !important;
+}
+html body.home-v17 .home-contract-product :is(picture, img) {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+}
+html body.home-v17 .home-contract-close {
+  grid-template-columns: 1fr !important;
+  background: #fbf7f2 !important;
+}
+html body.home-v17 .home-contract-insights {
+  grid-template-columns: minmax(0, 0.58fr) minmax(380px, 0.42fr) !important;
+  min-height: 470px !important;
+  border-right: 0 !important;
+  border-bottom: 1px solid var(--contract-line) !important;
+}
+html body.home-v17 .home-contract-insights figure {
+  margin: 0 !important;
+  padding: 34px !important;
+  background: #f2eadf !important;
+}
+html body.home-v17 .home-contract-insights figure :is(picture, img) {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+}
+html body.home-v17 .home-contract-insights > div {
+  padding: 52px clamp(42px, 5vw, 76px) !important;
+}
+html body.home-v17 .home-contract-insights h2 {
+  width: 100% !important;
+  font-size: clamp(2.55rem, 3.5vw, 3.5rem) !important;
+}
+html body.home-v17 .home-contract-profile {
+  min-height: 0 !important;
+  padding: 24px clamp(34px, 5vw, 72px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 30px !important;
+  background: #fffaf6 !important;
+}
+html body.home-v17 .home-contract-profile p {
+  margin: 0 !important;
+}
+html body.account-v7 .account-scene-media {
+  justify-content: flex-start !important;
+  padding: 0 !important;
+}
+html body.account-v7 .account-scene-media figure {
+  width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+}
+html body.account-v7 .account-scene-media figure :is(picture, img) {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  border-radius: 0 !important;
+}
+html body.account-v7 .account-scene-media > div {
+  padding: 34px !important;
+}
+html body.account-v7 .account-scene-media h1 {
+  width: 100% !important;
+  font-size: clamp(2.1rem, 3.1vw, 3.1rem) !important;
+}
+@media (min-width: 901px) {
+  html body .directory-hero-v6 {
+    grid-template-columns: minmax(560px, 1.12fr) minmax(0, 0.88fr) !important;
+  }
+  html body .directory-hero-v6 h1 {
+    width: 100% !important;
+    max-width: none !important;
+    font-size: clamp(3.25rem, 4.5vw, 4.5rem) !important;
+    white-space: normal !important;
+  }
+}
+@media (max-width: 1100px) and (min-width: 901px) {
+  html body.home-v17 .home-contract-guide {
+    grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr) !important;
+    padding-inline: 34px !important;
+  }
+  html body.home-v17 .home-contract-guide h2 {
+    font-size: 2.25rem !important;
+  }
+  html body .directory-hero-v6 {
+    grid-template-columns: minmax(500px, 1.08fr) minmax(0, 0.92fr) !important;
+  }
+  html body .directory-hero-v6 h1 {
+    font-size: 2.5rem !important;
+    white-space: nowrap !important;
+  }
+}
+@media (max-width: 1180px) and (min-width: 901px) {
+  html body.home-v17 .home-contract-bed {
+    grid-template-columns: minmax(330px, 0.38fr) minmax(0, 0.62fr) !important;
+  }
+  html body.home-v17 .home-bed-proof {
+    grid-column: 1 / -1 !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 900px) {
+  html body.home-v17 .home-contract-evidence,
+  html body.home-v17 .home-contract-guide,
+  html body.home-v17 .home-contract-bed,
+  html body.home-v17 .home-contract-insights {
+    grid-template-columns: 1fr !important;
+  }
+  html body.home-v17 .home-contract-evidence > div {
+    padding: 14px 28px 36px !important;
+  }
+  html body.home-v17 .home-contract-evidence h2 {
+    white-space: normal !important;
+  }
+  html body.home-v17 .home-contract-guide {
+    padding: 36px 28px !important;
+  }
+  html body.home-v17 .home-guide-book,
+  html body.home-v17 .home-contract-product {
+    order: -1 !important;
+  }
+  html body.home-v17 .home-contract-bed {
+    padding: 22px !important;
+  }
+  html body.home-v17 .home-contract-insights > div {
+    padding: 36px 28px !important;
+  }
+  html body.home-v17 .home-contract-profile {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+}
+@media (max-width: 640px) {
+  html body.home-v17 .home-contract-guide h2,
+  html body.home-v17 .home-contract-insights h2 {
+    font-size: clamp(1.9rem, 8.4vw, 2.25rem) !important;
+  }
+  html body.home-v17 .home-contract-bed h2 {
+    font-size: clamp(1.8rem, 7.8vw, 2.1rem) !important;
+  }
+  html body.home-v17 .home-guide-book :is(picture, img) {
+    width: 84% !important;
+  }
+  html body.account-v7 .account-scene-v8 {
+    width: calc(100% - 20px) !important;
+    grid-template-columns: 1fr !important;
+  }
+  html body.account-v7 .account-scene-panel {
+    padding: 24px 16px !important;
+  }
+  html body.account-v7 .account-scene-media > div {
+    padding: 28px 22px !important;
+  }
+  html body .condition-picker > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+  }
+  html body .condition-picker > div > label {
+    min-height: 54px !important;
+    padding: 8px !important;
+  }
+  html body.find-care-v7 .directory-hero-v6 h1 {
+    width: 100% !important;
+    max-width: none !important;
+    font-size: 2.05rem !important;
+    white-space: nowrap !important;
+  }
 }

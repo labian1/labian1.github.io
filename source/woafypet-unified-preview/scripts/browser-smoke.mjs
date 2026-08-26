@@ -499,7 +499,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
     [".home-contract-evidence", 1],
     [".home-contract-guide", 1],
     [".home-contract-bed", 1],
-    [".home-contract-product figure", 2],
+    [".home-contract-product", 1],
     [".home-contract-close > article", 2],
     [".profile-gate-dialog", 1],
   ]) {
@@ -509,7 +509,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
   if (
     (await page
       .locator(
-        ".home-topic-card, .home-ref-learn, .home-care-circle, .home-platform-model, .home-care-hub, .home-circle-card, .home-vet-testimonials, .home-support-paths",
+        ".home-topic-card, .home-ref-learn, .home-care-circle, .home-platform-model, .home-care-hub, .home-circle-card, .home-vet-testimonials",
       )
       .count()) !== 0
   )
@@ -531,7 +531,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
     () => document.documentElement.scrollHeight,
   );
   const maxHeight =
-    viewport.width <= 768 ? 7200 : viewport.width <= 1100 ? 5700 : 4600;
+    viewport.width <= 768 ? 7800 : viewport.width <= 1100 ? 5700 : 4600;
   if (totalHeight > maxHeight)
     failures.push(
       `/: ${viewport.name} homepage too tall (${Math.round(totalHeight)}px)`,
@@ -559,8 +559,19 @@ async function checkHome(page, viewport, baseUrl, failures) {
     .getAttribute("href");
   if (smartBedHref !== "https://www.woafy.pet/")
     failures.push("/: Smart Bed CTA does not open woafy.pet");
-  if ((await page.locator("[data-guide-delivery]").count()) !== 1)
-    failures.push("/: expected one guide delivery form");
+  if (
+    (await page.locator('.home-contract-guide img[src*="senior-dog-care-guide-book-v2.png"]').count()) !== 1 ||
+    (await page.locator('.home-contract-guide a[href="/guide/"]').count()) !== 1
+  )
+    failures.push("/: Senior Dog Care Guide book section is incomplete");
+  for (const path of [
+    "/find-care/",
+    "/wednesday-introductions/",
+    "/pet-loss-support/",
+    "/memorial-tree/",
+  ])
+    if ((await page.locator(`.home-contract-support a[href="${path}"]`).count()) !== 1)
+      failures.push(`/: missing bottom support pathway ${path}`);
   const proofSizes = await page
     .locator(".home-contract-trust article h2")
     .evaluateAll((nodes) => nodes.map((node) => parseFloat(getComputedStyle(node).fontSize)));
@@ -593,7 +604,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
       );
   if (viewport.width === 1440) {
     const productWidth = await page
-      .locator(".home-complete-bed img")
+      .locator(".home-contract-product img")
       .evaluate((node) => node.getBoundingClientRect().width);
     if (productWidth < 500)
       failures.push(`/: Smart Bed product is too small (${Math.round(productWidth)}px)`);
@@ -784,8 +795,13 @@ async function checkAccountFlow(page, viewport, baseUrl, failures) {
   await form.locator('[name="email"]').fill("caregiver@example.com");
   await form.locator('[name="petName"]').fill("Bobby");
   await form.locator('[name="petAge"]').selectOption({ label: "10–12 years" });
-  await form.locator('[name="breed"]').fill("Golden Retriever");
-  await form.locator('[name="conditions"]').fill("arthritis");
+  await form.locator('[name="breed"]').selectOption({ label: "Golden Retriever" });
+  await form.locator('[name="weightRange"]').selectOption({
+    label: "50–74 lb / 23–34 kg",
+  });
+  await form
+    .locator('[name="conditions"][value="Arthritis or joint pain"]')
+    .check();
   await form
     .locator('[name="medications"]')
     .fill("anti-inflammatory medicine changed last week");
@@ -836,7 +852,33 @@ async function checkAccountFlow(page, viewport, baseUrl, failures) {
     failures.push(
       "/account/: chapter guidance was not tailored to the dog, condition, and selected lesson",
     );
+  const privateQuestion = "Why does Bobby wake at night and pace?";
+  await page.goto(
+    `${baseUrl}/care-circle/?ask=1&q=${encodeURIComponent(privateQuestion)}`,
+    { waitUntil: "domcontentloaded" },
+  );
+  const privateAskForm = page.locator("[data-account-ask-form]");
+  if (
+    !(await privateAskForm
+      .locator('[name="lessonVisibility"][value="private"]')
+      .isChecked())
+  )
+    failures.push("/account/: a new Care Circle question did not default to Private");
+  await Promise.all([
+    page.waitForURL(
+      (url) => url.pathname === "/care-circle/restless-at-night/",
+      { waitUntil: "domcontentloaded" },
+    ),
+    privateAskForm.evaluate((node) => node.requestSubmit()),
+  ]);
   await page.goto(`${baseUrl}/account/`, { waitUntil: "domcontentloaded" });
+  const privateLessons = normalize(
+    await page.locator("[data-private-lessons-list]").innerText(),
+  );
+  if (!privateLessons.includes("wake at night and pace"))
+    failures.push("/account/: private Care Circle lesson was not saved to the profile");
+  if (privateLessons.includes("stiff after resting"))
+    failures.push("/account/: a Public Care Circle lesson appeared in the private library");
   const editButton = page.locator("[data-account-edit]");
   if (!(await editButton.isVisible()))
     return failures.push("/account/: edit profile control is not visible");
@@ -844,7 +886,11 @@ async function checkAccountFlow(page, viewport, baseUrl, failures) {
   const editForm = page.locator("[data-account-form]");
   if (
     !(await editForm.isVisible()) ||
-    (await editForm.locator('[name="petName"]').inputValue()) !== "Bobby"
+    (await editForm.locator('[name="petName"]').inputValue()) !== "Bobby" ||
+    (await editForm.locator('[name="breed"]').inputValue()) !== "Golden Retriever" ||
+    !(await editForm
+      .locator('[name="conditions"][value="Arthritis or joint pain"]')
+      .isChecked())
   )
     failures.push("/account/: edit profile did not restore saved details");
   await editForm.locator('[name="ownerName"]').fill("Taylor Updated");
@@ -895,7 +941,10 @@ async function checkHealthTimeline(
         petName: "Bailey",
         petAge: "10–12 years",
         breed: "Golden Retriever",
+        breedSelection: "Golden Retriever",
+        weightRange: "50–74 lb / 23–34 kg",
         conditions: "arthritis",
+        conditionSelections: ["Arthritis or joint pain"],
         medications: "carprofen",
         publicProfileConsent: true,
       }),
@@ -991,12 +1040,18 @@ async function checkHealthTimeline(
   const downloadPromise = page.waitForEvent("download");
   await page.locator("[data-health-email-vet]").click();
   const emailDownload = await downloadPromise;
+  await emailDownload.saveAs(
+    resolve(screenshotDir, "Bailey-veterinary-care-summary.eml"),
+  );
   const emailPath = await emailDownload.path();
   const emailSource = emailPath ? readFileSync(emailPath, "utf8") : "";
   for (const expected of [
     'To: care@clinic.example',
-    'Content-Disposition: attachment; filename="Bailey-veterinary-care-summary.txt"',
+    'From: WoafMeow Care Timeline <hello@woafmeow.com>',
+    'Subject: Bailey health timeline & veterinary records — Aug 1–20, 2026',
+    'Content-Disposition: attachment; filename="Bailey-veterinary-care-summary.html"',
     'Content-Disposition: attachment; filename="bailey-vet-note.txt"',
+    'WoafMeow helps dog families organize changes noticed at home and original health records',
   ]) {
     if (!emailSource.includes(expected))
       failures.push(`/health-timeline/: generated email is missing ${expected}`);
@@ -1302,8 +1357,9 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
       failures.push("/about/: Bobby first-person hero is missing");
     const aboutCopy = normalize(await page.locator("main").innerText());
     for (const expected of [
-      "bobby was my dog",
-      "i'm robert",
+      "bobby was eight when joint cancer took him",
+      "we did not understand bobby's health change in time",
+      "he was very good at hiding pain",
       "our mission · how we help",
       "understand the change. care for the whole bond.",
     ])
@@ -1311,6 +1367,8 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
         failures.push(`/about/: missing Bobby story message: ${expected}`);
     if ((await page.locator(".story-mission-v7, .story-build-v7, .story-values").count()) !== 0)
       failures.push("/about/: old mission/how-we-help sections remain");
+    if (/a note from robert|co-founder of woafmeow|i['’]m robert/i.test(aboutCopy))
+      failures.push("/about/: removed Robert note or signoff remains");
   }
   if (route === "/support/") {
     if ((await page.locator(".contact-direct").count()) !== 1)

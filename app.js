@@ -721,6 +721,7 @@
 
   const accountStorageKey = "woafmeow-account-v1";
   const publicQuestionStorageKey = "woafmeow-public-question-v1";
+  const privateLessonStorageKey = "woafmeow-private-lessons-v1";
   const readStoredJson = (key) => {
     try {
       return JSON.parse(localStorage.getItem(key) || "null");
@@ -738,6 +739,10 @@
   };
   const getAccount = () => readStoredJson(accountStorageKey);
   const getPublicQuestion = () => readStoredJson(publicQuestionStorageKey);
+  const getPrivateLessons = () => {
+    const lessons = readStoredJson(privateLessonStorageKey);
+    return Array.isArray(lessons) ? lessons : [];
+  };
   const safeImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
   const readImageFile = (
     file,
@@ -874,6 +879,12 @@
   const accountFormTitle = document.querySelector("[data-account-form-title]");
   const accountSubmit = document.querySelector("[data-account-submit]");
   const accountEditButton = document.querySelector("[data-account-edit]");
+  const privateLessonsList = document.querySelector(
+    "[data-private-lessons-list]",
+  );
+  const privateLessonsEmpty = document.querySelector(
+    "[data-private-lessons-empty]",
+  );
   const googleSigninButton = document.querySelector("[data-google-signin]");
   const googleSigninStatus = document.querySelector("[data-google-status]");
   const firstActionDialog = document.querySelector("[data-first-action-dialog]");
@@ -899,17 +910,32 @@
       .slice(0, 500);
     if (!account || !cleanQuestion) return "";
     const slug = selectLessonSlug(cleanQuestion);
+    const lessonId =
+      globalThis.crypto?.randomUUID?.() ||
+      `${Date.now()}-${Math.random().toString(16).slice(2)}`;
     const publicQuestion = {
       ...account,
+      id: lessonId,
       question: cleanQuestion,
       slug,
       questionImageDataUrl,
       visibility: visibility === "public" ? "public" : "private",
       createdAt: new Date().toISOString(),
     };
-    return writeStoredJson(publicQuestionStorageKey, publicQuestion)
-      ? slug
-      : "";
+    if (!writeStoredJson(publicQuestionStorageKey, publicQuestion)) return "";
+    if (publicQuestion.visibility === "private") {
+      const previous = getPrivateLessons().filter(
+        (lesson) => lesson?.id !== lessonId,
+      );
+      if (
+        !writeStoredJson(
+          privateLessonStorageKey,
+          [publicQuestion, ...previous].slice(0, 100),
+        )
+      )
+        return "";
+    }
+    return slug;
   };
   const accountNext = new URLSearchParams(window.location.search).get("next");
   if (accountSubmit && accountNext === "health")
@@ -934,6 +960,37 @@
       ),
     );
   };
+  const renderPrivateLessons = () => {
+    if (!privateLessonsList || !privateLessonsEmpty) return;
+    const lessons = getPrivateLessons().filter(
+      (lesson) => lesson?.visibility === "private" && lesson?.question,
+    );
+    privateLessonsList.replaceChildren();
+    privateLessonsEmpty.hidden = lessons.length > 0;
+    lessons.forEach((lesson) => {
+      const link = document.createElement("a");
+      link.href = `/care-circle/${lesson.slug}/`;
+      link.dataset.privateLessonId = lesson.id || "";
+      const copy = document.createElement("strong");
+      copy.textContent = lesson.question;
+      const meta = document.createElement("span");
+      const created = new Date(lesson.createdAt || "");
+      meta.textContent = Number.isNaN(created.getTime())
+        ? "Private lesson"
+        : `Private · ${new Intl.DateTimeFormat("en", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }).format(created)}`;
+      link.append(copy, meta);
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (!writeStoredJson(publicQuestionStorageKey, lesson)) return;
+        window.location.assign(link.href);
+      });
+      privateLessonsList.append(link);
+    });
+  };
   petPhotoInput?.addEventListener("change", async () => {
     const file = petPhotoInput.files?.[0];
     if (!file) return;
@@ -956,6 +1013,29 @@
           error instanceof Error ? error.message : "This image could not be read.";
     }
   });
+  accountForm
+    ?.querySelectorAll('[name="conditions"][type="checkbox"]')
+    .forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        const choices = [
+          ...accountForm.querySelectorAll(
+            '[name="conditions"][type="checkbox"]',
+          ),
+        ];
+        if (checkbox.value === "None known" && checkbox.checked) {
+          choices.forEach((choice) => {
+            if (choice !== checkbox) choice.checked = false;
+          });
+        } else if (checkbox.checked) {
+          const none = choices.find((choice) => choice.value === "None known");
+          if (none) none.checked = false;
+        }
+        const conditionError = accountForm.querySelector(
+          "[data-condition-error]",
+        );
+        if (conditionError) conditionError.textContent = "";
+      });
+    });
   const renderAccount = () => {
     const account = getAccount();
     updateAccountLinks();
@@ -968,11 +1048,13 @@
         ? "Edit your care profile"
         : "Create your care profile";
     accountSummary.replaceChildren();
+    renderPrivateLessons();
     if (!account) return;
     [
       ["Owner", account.ownerName || "Not shared"],
       ["Email", account.email],
       ["Dog", `${account.petName} · ${account.petAge} · ${account.breed}`],
+      ["Weight range", account.weightRange || "Not shared"],
       ["Owner-shared conditions", account.conditions],
       ["Medicines or recent changes", account.medications || "None shared"],
     ].forEach(([term, description]) => {
@@ -994,13 +1076,48 @@
       "email",
       "petName",
       "petAge",
-      "breed",
-      "conditions",
+      "weightRange",
+      "breedDetails",
+      "conditionDetails",
       "medications",
     ].forEach((name) => {
       const field = accountForm.elements.namedItem(name);
       if (field) field.value = account[name] || "";
     });
+    const breedField = accountForm.elements.namedItem("breed");
+    if (breedField instanceof HTMLSelectElement) {
+      const savedSelection = String(
+        account.breedSelection || account.breed || "",
+      );
+      const available = [...breedField.options].some(
+        (option) => option.value === savedSelection,
+      );
+      breedField.value = available
+        ? savedSelection
+        : "Breed not listed — describe below";
+      if (!available && !account.breedDetails) {
+        const details = accountForm.elements.namedItem("breedDetails");
+        if (details) details.value = account.breed || "";
+      }
+    }
+    const savedConditions = Array.isArray(account.conditionSelections)
+      ? account.conditionSelections
+      : String(account.conditions || "")
+          .split(/[,;\n]+/)
+          .map((item) => item.trim())
+          .filter(Boolean);
+    accountForm
+      .querySelectorAll('[name="conditions"][type="checkbox"]')
+      .forEach((checkbox) => {
+        const exact = savedConditions.includes(checkbox.value);
+        const arthritis =
+          checkbox.value === "Arthritis or joint pain" &&
+          savedConditions.some((value) => /arthritis|joint pain/i.test(value));
+        const none =
+          checkbox.value === "None known" &&
+          savedConditions.some((value) => /^(none|none known)$/i.test(value));
+        checkbox.checked = exact || arthritis || none;
+      });
   };
   accountEditButton?.addEventListener("click", () => {
     const account = getAccount();
@@ -1013,7 +1130,40 @@
   accountForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!accountForm.reportValidity()) return;
-    const values = Object.fromEntries(new FormData(accountForm).entries());
+    const formData = new FormData(accountForm);
+    const values = Object.fromEntries(formData.entries());
+    const conditionSelections = formData
+      .getAll("conditions")
+      .map((value) => String(value || "").trim())
+      .filter(Boolean);
+    if (!conditionSelections.length) {
+      const conditionError = accountForm.querySelector(
+        "[data-condition-error]",
+      );
+      if (conditionError)
+        conditionError.textContent =
+          "Choose at least one condition, or choose None known.";
+      accountForm
+        .querySelector('[name="conditions"][type="checkbox"]')
+        ?.focus();
+      return;
+    }
+    const breedSelection = String(values.breed || "")
+      .trim()
+      .slice(0, 120);
+    const breedDetails = String(values.breedDetails || "")
+      .trim()
+      .slice(0, 120);
+    const conditionDetails = String(values.conditionDetails || "")
+      .trim()
+      .slice(0, 160);
+    const conditionSummary = conditionSelections
+      .map((condition) =>
+        condition === "Other diagnosed condition" && conditionDetails
+          ? `Other diagnosed condition: ${conditionDetails}`
+          : condition,
+      )
+      .join("; ");
     const previousAccount = getAccount();
     const account = {
       ownerName: String(values.ownerName || "")
@@ -1028,12 +1178,17 @@
       petAge: String(values.petAge || "")
         .trim()
         .slice(0, 40),
-      breed: String(values.breed || "")
+      breedSelection,
+      breedDetails,
+      breed: breedDetails
+        ? `${breedSelection} — ${breedDetails}`.slice(0, 240)
+        : breedSelection,
+      weightRange: String(values.weightRange || "")
         .trim()
-        .slice(0, 120),
-      conditions: String(values.conditions || "")
-        .trim()
-        .slice(0, 240),
+        .slice(0, 80),
+      conditionSelections,
+      conditionDetails,
+      conditions: conditionSummary.slice(0, 360),
       medications: String(values.medications || "")
         .trim()
         .slice(0, 360),
@@ -1071,6 +1226,7 @@
             dogName: account.petName,
             species: "dog",
             breed: account.breed,
+            weightRange: account.weightRange,
             ageYears,
             focus: "not-sure",
             healthConditions: account.conditions,
@@ -1121,6 +1277,7 @@
       try {
         localStorage.removeItem(accountStorageKey);
         localStorage.removeItem(publicQuestionStorageKey);
+        localStorage.removeItem(privateLessonStorageKey);
       } catch {
         // The current screen still resets even if storage access changes.
       }
@@ -1995,6 +2152,7 @@
       `Name: ${account.petName}`,
       `Age: ${account.petAge || "Not shared"}`,
       `Breed or mix: ${account.breed || "Not shared"}`,
+      `Weight range: ${account.weightRange || "Not shared"}`,
       `Owner: ${owner}`,
       `Owner email: ${account.email}`,
       "",
@@ -2064,6 +2222,74 @@
       .replace(/[\r\n"]/g, "")
       .replace(/[^a-zA-Z0-9._()\- ]/g, "-")
       .slice(0, 120) || "health-record";
+  const escapeEmailHtml = (value) =>
+    String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  const emailTimelineRange = (records, logs) => {
+    const dates = [...records, ...logs]
+      .map((item) => String(item?.date || ""))
+      .filter((value) => /^\d{4}-\d{2}-\d{2}$/.test(value))
+      .sort();
+    if (!dates.length)
+      return new Intl.DateTimeFormat("en", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }).format(new Date());
+    if (dates[0] === dates.at(-1)) return formatDate(dates[0]);
+    const start = new Date(`${dates[0]}T12:00:00`);
+    const end = new Date(`${dates.at(-1)}T12:00:00`);
+    if (
+      start.getFullYear() === end.getFullYear() &&
+      start.getMonth() === end.getMonth()
+    )
+      return `${new Intl.DateTimeFormat("en", { month: "short" }).format(start)} ${start.getDate()}–${end.getDate()}, ${end.getFullYear()}`;
+    return `${formatDate(dates[0])}–${formatDate(dates.at(-1))}`;
+  };
+  const buildVetReadyHtml = (records, logs) => {
+    const owner = String(account.ownerName || "Pet owner").trim();
+    const vetName = String(vetNameField?.value || "").trim();
+    const ownerNote = String(shareNoteField?.value || "").trim();
+    const conditions = splitProfileList(account.conditions);
+    const medicines = splitProfileList(account.medications);
+    const patterns = patternRules
+      .filter(([, rule]) => rule.test(combinedText(records, logs)))
+      .map(([label]) => label);
+    const datedLogs = [...logs].sort((left, right) =>
+      String(right.date || "").localeCompare(String(left.date || "")),
+    );
+    const datedRecords = [...records].sort((left, right) =>
+      String(right.date || "").localeCompare(String(left.date || "")),
+    );
+    const observations = datedLogs.length
+      ? datedLogs
+          .map((log) => {
+            const details = [
+              log.weight
+                ? `Weight: ${escapeEmailHtml(log.weight)} ${escapeEmailHtml(log.weightUnit || "lb")}`
+                : "",
+              log.medicineChange
+                ? `Related change: ${escapeEmailHtml(log.medicineChange)}`
+                : "",
+            ].filter(Boolean);
+            return `<li style="padding:12px 0;border-bottom:1px solid #eee4dc"><strong style="display:block;margin-bottom:4px">${escapeEmailHtml(formatDate(log.date))} · ${escapeEmailHtml(log.category || "Other")}</strong><span style="display:block;line-height:1.55">${escapeEmailHtml(log.observation || "No observation entered")}</span>${details.length ? `<small style="display:block;margin-top:5px;color:#675b54;line-height:1.45">${details.join(" · ")}</small>` : ""}</li>`;
+          })
+          .join("")
+      : "<li><span>No dated observations saved yet.</span></li>";
+    const recordList = datedRecords.length
+      ? datedRecords
+          .map(
+            (record) =>
+              `<li style="padding:12px 0;border-bottom:1px solid #eee4dc"><strong style="display:block;margin-bottom:4px">${escapeEmailHtml(formatDate(record.date))} · ${escapeEmailHtml(record.type || "Record")}</strong><span style="display:block;line-height:1.55">${escapeEmailHtml(record.name)}${record.note ? ` — ${escapeEmailHtml(record.note)}` : ""}</span></li>`,
+          )
+          .join("")
+      : "<li><span>No original records were available.</span></li>";
+    return `<!doctype html><html><head><meta charset="utf-8"><title>${escapeEmailHtml(account.petName)} veterinary care summary</title></head><body style="margin:0;background:#f7f1eb;color:#342a25;font-family:Arial,sans-serif"><main style="max-width:760px;margin:0 auto;background:#fff;padding:36px"><header style="border-bottom:4px solid #bd4b2e;padding-bottom:22px"><p style="margin:0 0 8px;color:#bd4b2e;font-size:13px;font-weight:700;letter-spacing:.12em">WOAFMEOW CARE TIMELINE</p><h1 style="margin:0;font:normal 34px/1.08 Georgia,serif">${escapeEmailHtml(account.petName)}’s health timeline and records</h1><p style="margin:12px 0 0;color:#675b54">Timeline: ${escapeEmailHtml(emailTimelineRange(records, logs))}</p></header><section style="padding:24px 0;border-bottom:1px solid #e4d8cf"><p style="font-size:16px;line-height:1.65;margin:0">WoafMeow helps dog families organize changes noticed at home and original health records into a clearer veterinary timeline. ${escapeEmailHtml(owner)} prepared this summary for ${escapeEmailHtml(vetName || "the veterinary team")} and included the source records below.</p></section><section style="padding:24px 0;border-bottom:1px solid #e4d8cf"><h2 style="font:normal 24px Georgia,serif;margin:0 0 14px">Patient at a glance</h2><table role="presentation" style="width:100%;border-collapse:collapse"><tr><td style="padding:8px;border:1px solid #e4d8cf"><strong>Dog</strong><br>${escapeEmailHtml(account.petName)}</td><td style="padding:8px;border:1px solid #e4d8cf"><strong>Age</strong><br>${escapeEmailHtml(account.petAge || "Not shared")}</td></tr><tr><td style="padding:8px;border:1px solid #e4d8cf"><strong>Breed or mix</strong><br>${escapeEmailHtml(account.breed || "Not shared")}</td><td style="padding:8px;border:1px solid #e4d8cf"><strong>Weight range</strong><br>${escapeEmailHtml(account.weightRange || "Not shared")}</td></tr></table></section><section style="padding:24px 0;border-bottom:1px solid #e4d8cf"><h2 style="font:normal 24px Georgia,serif;margin:0 0 12px">Reason for sharing</h2><p style="margin:0;line-height:1.6">${escapeEmailHtml(ownerNote || "Please review the timeline and attached records and advise which findings need an appointment, testing or a change in the current care plan.")}</p></section><section style="padding:24px 0;border-bottom:1px solid #e4d8cf"><h2 style="font:normal 24px Georgia,serif;margin:0 0 12px">Known context</h2><p style="margin:6px 0"><strong>Conditions:</strong> ${escapeEmailHtml(conditions.join("; ") || "None shared")}</p><p style="margin:6px 0"><strong>Medicines or recent changes:</strong> ${escapeEmailHtml(medicines.join("; ") || "None shared")}</p><p style="margin:6px 0"><strong>Patterns mentioned:</strong> ${escapeEmailHtml(patterns.join("; ") || "No repeated pattern identified yet")}</p></section><section style="padding:24px 0;border-bottom:1px solid #e4d8cf"><h2 style="font:normal 24px Georgia,serif;margin:0 0 12px">Recent observations</h2><ul style="list-style:none;padding:0;margin:0">${observations}</ul></section><section style="padding:24px 0"><h2 style="font:normal 24px Georgia,serif;margin:0 0 12px">Original records attached</h2><ul style="list-style:none;padding:0;margin:0">${recordList}</ul></section><footer style="margin-top:18px;padding-top:18px;border-top:1px solid #e4d8cf;color:#675b54;font-size:13px;line-height:1.5">Prepared from the owner’s WoafMeow Health Timeline. This email draft was created for the owner to review and send.</footer></main></body></html>`;
+  };
 
   const downloadVetEmail = async () => {
     if (
@@ -2074,30 +2300,50 @@
       return;
     setShareStatus("Preparing the veterinary email with attached records…");
     try {
-      const { title, summary, records } = await loadVetShare();
+      const { summary, records, logs } = await loadVetShare();
       const recipient = String(vetEmailField?.value || "")
         .trim()
         .slice(0, 254);
-      const subject = `${title} from ${account.ownerName || "their owner"}`;
+      const timeline = emailTimelineRange(records, logs);
+      const subject = `${account.petName} health timeline & veterinary records — ${timeline}`;
+      const htmlSummary = buildVetReadyHtml(records, logs);
       const boundary = `woafmeow_${Date.now().toString(36)}`;
+      const alternativeBoundary = `${boundary}_alternative`;
       const lines = [
+        "From: WoafMeow Care Timeline <hello@woafmeow.com>",
+        `Reply-To: ${String(account.email || "").replace(/[\r\n]/g, "")}`,
         `To: ${recipient}`,
         `Subject: ${subject.replace(/[\r\n]/g, " ")}`,
+        `Date: ${new Date().toUTCString()}`,
+        "X-Unsent: 1",
         "MIME-Version: 1.0",
         `Content-Type: multipart/mixed; boundary=\"${boundary}\"`,
         "",
         `--${boundary}`,
+        `Content-Type: multipart/alternative; boundary=\"${alternativeBoundary}\"`,
+        "",
+        `--${alternativeBoundary}`,
         "Content-Type: text/plain; charset=UTF-8",
         "Content-Transfer-Encoding: 8bit",
         "",
+        "WoafMeow helps dog families organize changes noticed at home and original health records into a clearer veterinary timeline.",
+        "",
         summary,
+        `--${alternativeBoundary}`,
+        "Content-Type: text/html; charset=UTF-8",
+        "Content-Transfer-Encoding: 8bit",
+        "",
+        htmlSummary,
+        `--${alternativeBoundary}--`,
       ];
       const attached = records.filter((record) => record?.blob instanceof Blob);
-      const summaryFileName = `${safeEmailFileName(account.petName)}-veterinary-care-summary.txt`;
-      const summaryBase64 = await readBlobAsBase64(new Blob([summary], { type: "text/plain;charset=utf-8" }));
+      const summaryFileName = `${safeEmailFileName(account.petName)}-veterinary-care-summary.html`;
+      const summaryBase64 = await readBlobAsBase64(
+        new Blob([htmlSummary], { type: "text/html;charset=utf-8" }),
+      );
       lines.push(
         `--${boundary}`,
-        `Content-Type: text/plain; charset=UTF-8; name="${summaryFileName}"`,
+        `Content-Type: text/html; charset=UTF-8; name="${summaryFileName}"`,
         `Content-Disposition: attachment; filename="${summaryFileName}"`,
         "Content-Transfer-Encoding: base64",
         "",

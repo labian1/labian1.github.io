@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, "dist");
-const ASSET_VERSION = "20260826.2";
+const ASSET_VERSION = "20260826.3";
 const REFINEMENT_MARKER =
   "/* 2026-08-24 reference-contract refinement: natural images, compact rhythm, premium product storytelling */";
 
@@ -54,6 +54,8 @@ const imageMeta = {
   "product-prototype-akita.webp": [1084, 1451],
   "product-hero-official.png": [1600, 686],
   "product-visualization-smart-base.png": [1600, 899],
+  "bed-smart-base-system-v2.png": [1758, 895],
+  "senior-dog-care-guide-book-v2.png": [1452, 1083],
   "real-home-owner-dog.jpg": [1800, 1200],
   "real-care-circle-owner-dog.jpg": [1800, 1201],
   "real-senior-care-at-home.jpg": [1800, 1013],
@@ -2669,12 +2671,137 @@ function wmHomePageLegacy() {
 
       <section class="home-support-paths" aria-label="More ways WoafMeow can help">${supportPaths.map(([title, copy, asset, href, action]) => `<a href="${href}"><figure>${image(asset, title)}</figure><div><h2>${title}</h2><p>${copy}</p><span>${action} →</span></div></a>`).join("")}</section>
 
-      <dialog class="profile-gate-dialog" data-first-action-dialog aria-labelledby="profile-gate-title"><div class="profile-gate-shell"><button class="profile-gate-close" type="button" data-first-action-close aria-label="Close registration form">×</button><header><span>One-time care profile</span><h2 id="profile-gate-title">Tell us who you care for.</h2><p>Create your profile once. Your dog’s age, breed, known conditions and medicines make every question more relevant.</p><ul><li>Ask questions shaped around your dog</li><li>Upload records and track changes over time</li><li>Save useful lessons and care options</li></ul></header><form data-account-form data-home-account-form data-account-api="https://www.woafmeow.com/api/enroll"><div class="profile-gate-grid"><label><span>Your name</span><input name="ownerName" autocomplete="name" placeholder="e.g., Alex" required maxlength="100"></label><label><span>Email or Gmail</span><input name="email" type="email" autocomplete="email" placeholder="you@email.com" required maxlength="254"></label><label><span>Dog's name</span><input name="petName" placeholder="e.g., Bailey" required maxlength="80"></label><label><span>Age</span><select name="petAge" required><option value="">Choose age</option><option>Under 1 year</option><option>1–3 years</option><option>4–6 years</option><option>7–9 years</option><option>10–12 years</option><option>13–15 years</option><option>16+ years</option></select></label><label><span>Dog breed or mix</span><input name="breed" required maxlength="100" placeholder="Type your dog’s specific breed or mix"></label><label><span>Known conditions</span><input name="conditions" required maxlength="240" placeholder="Arthritis, kidney disease, or none known"></label><label class="profile-gate-wide profile-photo-field"><span>Dog profile photo <em>(strongly recommended)</em></span><input name="petPhoto" type="file" accept="image/jpeg,image/png,image/webp" data-pet-photo-input><small>Helps your Care Circle lesson feel personal. You decide whether it appears publicly.</small><img data-pet-photo-preview hidden alt="Dog profile photo preview"></label><label class="profile-gate-wide"><span>Medicines or recent changes</span><textarea name="medications" maxlength="360" placeholder="Names and recent changes, if any"></textarea></label></div><p class="account-privacy-note">Your care profile stays private. Choose Public or Private separately each time you ask Care Circle.</p><button class="button primary" type="submit">Create profile and ask my question →</button><div class="profile-gate-or" aria-hidden="true"><span>or</span></div><button class="home-google-button" type="button" data-google-signin aria-describedby="profile-google-note"><span class="google-g" aria-hidden="true">G</span>Continue with Google</button><p class="sr-only" id="profile-google-note">Google sign-in requires the production Google connection.</p><p class="form-note" data-account-note role="status" aria-live="polite"></p><p class="google-status" data-google-status role="status" aria-live="polite"></p></form></div></dialog>
+      <dialog class="profile-gate-dialog" data-first-action-dialog aria-labelledby="profile-gate-title"><div class="profile-gate-shell"><button class="profile-gate-close" type="button" data-first-action-close aria-label="Close registration form">×</button><header><span>One-time care profile</span><h2 id="profile-gate-title">Tell us who you care for.</h2><p>Create your profile once. Your dog’s age, breed, weight, known conditions and medicines make every question more relevant.</p><ul><li>Ask questions shaped around your dog</li><li>Upload records and track changes over time</li><li>Keep every private lesson in one place</li></ul></header><form data-account-form data-home-account-form data-account-api="https://www.woafmeow.com/api/enroll"><div class="profile-gate-grid"><label><span>Your name</span><input name="ownerName" autocomplete="name" placeholder="e.g., Alex" required maxlength="100"></label><label><span>Email or Gmail</span><input name="email" type="email" autocomplete="email" placeholder="you@email.com" required maxlength="254"></label><label><span>Dog's name</span><input name="petName" placeholder="e.g., Bailey" required maxlength="80"></label><label><span>Age</span><select name="petAge" required><option value="">Choose age</option><option>Under 1 year</option><option>1–3 years</option><option>4–6 years</option><option>7–9 years</option><option>10–12 years</option><option>13–15 years</option><option>16+ years</option></select></label>${dogProfileSelectors("home-profile", "profile-gate-wide")}<label class="profile-gate-wide profile-photo-field"><span>Dog profile photo <em>(strongly recommended)</em></span><input name="petPhoto" type="file" accept="image/jpeg,image/png,image/webp" data-pet-photo-input><small>Helps your Care Circle lesson feel personal. You decide whether it appears publicly.</small><img data-pet-photo-preview hidden alt="Dog profile photo preview"></label><label class="profile-gate-wide"><span>Medicines or recent changes</span><textarea name="medications" maxlength="360" placeholder="Names and recent changes, if any"></textarea></label></div><p class="account-privacy-note">Your care profile stays private. Choose Public or Private separately each time you ask Care Circle.</p><button class="button primary" type="submit">Create profile and ask my question →</button><div class="profile-gate-or" aria-hidden="true"><span>or</span></div><button class="home-google-button" type="button" data-google-signin aria-describedby="profile-google-note"><span class="google-g" aria-hidden="true">G</span>Continue with Google</button><p class="sr-only" id="profile-google-note">Google sign-in requires the production Google connection.</p><p class="form-note" data-account-note role="status" aria-live="polite"></p><p class="google-status" data-google-status role="status" aria-live="polite"></p></form></div></dialog>
     </div>`,
   });
 }
 
+const dogBreedOptions = [
+  "Mixed breed — known mix",
+  "Mixed breed — unknown mix",
+  "Affenpinscher",
+  "Afghan Hound",
+  "Airedale Terrier",
+  "Akita",
+  "Alaskan Malamute",
+  "American Bulldog",
+  "American Eskimo Dog",
+  "American Staffordshire Terrier",
+  "Australian Cattle Dog",
+  "Australian Shepherd",
+  "Basenji",
+  "Basset Hound",
+  "Beagle",
+  "Belgian Malinois",
+  "Bernese Mountain Dog",
+  "Bichon Frise",
+  "Bloodhound",
+  "Border Collie",
+  "Border Terrier",
+  "Boston Terrier",
+  "Boxer",
+  "Brittany",
+  "Brussels Griffon",
+  "Bull Terrier",
+  "Bulldog",
+  "Bullmastiff",
+  "Cairn Terrier",
+  "Cane Corso",
+  "Cavalier King Charles Spaniel",
+  "Chihuahua",
+  "Chinese Crested",
+  "Chow Chow",
+  "Cocker Spaniel",
+  "Collie",
+  "Corgi — Cardigan Welsh",
+  "Corgi — Pembroke Welsh",
+  "Dachshund",
+  "Dalmatian",
+  "Doberman Pinscher",
+  "English Cocker Spaniel",
+  "English Setter",
+  "English Springer Spaniel",
+  "French Bulldog",
+  "German Shepherd Dog",
+  "German Shorthaired Pointer",
+  "Giant Schnauzer",
+  "Golden Retriever",
+  "Goldendoodle",
+  "Great Dane",
+  "Great Pyrenees",
+  "Greyhound",
+  "Havanese",
+  "Irish Setter",
+  "Irish Wolfhound",
+  "Italian Greyhound",
+  "Jack Russell Terrier",
+  "Japanese Chin",
+  "Labradoodle",
+  "Labrador Retriever",
+  "Lhasa Apso",
+  "Maltese",
+  "Mastiff",
+  "Miniature Pinscher",
+  "Miniature Schnauzer",
+  "Newfoundland",
+  "Old English Sheepdog",
+  "Papillon",
+  "Pekingese",
+  "Pomeranian",
+  "Poodle — Standard",
+  "Poodle — Miniature",
+  "Poodle — Toy",
+  "Portuguese Water Dog",
+  "Pug",
+  "Rhodesian Ridgeback",
+  "Rottweiler",
+  "Saint Bernard",
+  "Samoyed",
+  "Schnauzer — Standard",
+  "Scottish Terrier",
+  "Shar-Pei",
+  "Shetland Sheepdog",
+  "Shiba Inu",
+  "Shih Tzu",
+  "Siberian Husky",
+  "Staffordshire Bull Terrier",
+  "Vizsla",
+  "Weimaraner",
+  "West Highland White Terrier",
+  "Whippet",
+  "Yorkshire Terrier",
+  "Breed not listed — describe below",
+];
+
+const dogConditionOptions = [
+  "None known",
+  "Arthritis or joint pain",
+  "Cancer",
+  "Chronic kidney disease",
+  "Cognitive or behavior change",
+  "Dental or mouth disease",
+  "Diabetes",
+  "Digestive or pancreatic disease",
+  "Eye or vision condition",
+  "Hearing loss",
+  "Heart disease",
+  "Neurologic or seizure condition",
+  "Respiratory condition",
+  "Skin disease or allergies",
+  "Other diagnosed condition",
+];
+
+function dogProfileSelectors(prefix, wideClass) {
+  return `<label><span>Dog breed or mix</span><select name="breed" required><option value="">Choose breed or mix</option>${dogBreedOptions.map((breed) => `<option>${escapeHtml(breed)}</option>`).join("")}</select></label><label><span>Weight range</span><select name="weightRange" required><option value="">Choose weight range</option><option>Under 10 lb / 4.5 kg</option><option>10–24 lb / 4.5–11 kg</option><option>25–49 lb / 11–22 kg</option><option>50–74 lb / 23–34 kg</option><option>75–99 lb / 34–45 kg</option><option>100–124 lb / 45–56 kg</option><option>125+ lb / 57+ kg</option></select></label><label class="${wideClass}"><span>Mix or breed details <em>(optional)</em></span><input name="breedDetails" maxlength="120" placeholder="e.g., Labrador × Poodle, or the breed not listed above"></label><div class="${wideClass} condition-picker" data-condition-picker role="group" aria-labelledby="${prefix}-conditions-label"><span id="${prefix}-conditions-label">Known conditions <em>(choose all that apply)</em></span><div>${dogConditionOptions.map((condition) => `<label><input type="checkbox" name="conditions" value="${escapeHtml(condition)}"><span>${escapeHtml(condition)}</span></label>`).join("")}</div><label class="condition-other"><span>Other condition details <em>(optional)</em></span><input name="conditionDetails" maxlength="160" placeholder="Diagnosis or wording your veterinarian used"></label><small data-condition-error role="status" aria-live="polite"></small></div>`;
+}
+
 function wmHomePage() {
+  const supportPaths = [
+    ["Find the right care", "Search trusted veterinary, rehabilitation and support options.", "guide-vet-care-brown-dog.jpg", "/find-care/", "Find care"],
+    ["Meet another dog parent", "Wednesday Introductions matches owners who understand the same kind of day.", "real-owner-match-walk.jpg", "/wednesday-introductions/", "See Wednesday Introductions"],
+    ["Talk through pet loss", "Find compassionate support before, during and after goodbye.", "real-pet-loss-support.jpg", "/pet-loss-support/", "Find support"],
+    ["Plant a living memorial", "Honor your dog with a tree and a place their story can keep growing.", "real-memorial-tree-planting.jpg", "/memorial-tree/", "Create a memorial"],
+  ];
   return page({
     route: "/",
     title: "Senior dog care that starts with understanding",
@@ -2692,13 +2819,17 @@ function wmHomePage() {
 
       <section class="home-contract-circle" aria-labelledby="home-circle-title"><div><span class="home-kicker">CARE CIRCLE</span><h2 id="home-circle-title"><span>Real questions.</span><span>Answers for each dog.</span></h2><p>Share your dog’s age, breed, health and the change you see. Get tailored observations, next steps and a clearer veterinary conversation.</p><ul><li>Personalized care lessons</li><li>Trackable next steps</li><li>Public only when you choose Public</li></ul><a class="button primary" href="/care-circle/#ask">Ask Care Circle →</a></div><figure>${image("real-care-circle-owner-dog.jpg", "A dog owner sharing a close, joyful moment with her dog")}</figure></section>
 
-      <section class="home-contract-care-grid" aria-label="Veterinary evidence and senior dog guide"><article class="home-contract-evidence"><figure>${image("vet-silvan-urfer.jpg", "Dr. Silvan Urfer, veterinarian and dog-aging researcher")}</figure><div><span class="home-kicker">VETERINARY EVIDENCE</span><h2>Care backed by veterinarians.</h2><p>Notice the pattern, make today safer and bring a clearer story to your veterinarian.</p><a href="/find-care/?care=senior-veterinarians">Find veterinary care →</a></div></article><article class="home-contract-guide"><div><span class="home-kicker">FREE SENIOR DOG CARE GUIDE</span><h2>Understand your dog’s aging journey.</h2><p>Clear steps for changes in movement, sleep, appetite, water and daily life.</p><form data-preview-form data-guide-delivery data-submit-api="https://www.woafmeow.com/api/newsletter" data-success-message="The guide is on its way. Please check your inbox and spam folder." data-form-title="Senior Dog Care Guide"><input type="hidden" name="requestType" value="senior-dog-guide"><input type="hidden" name="guideUrl" value="https://labian1.github.io/guide/"><input type="hidden" name="consent" value="true"><label><span class="sr-only">Email address</span><input name="email" type="email" autocomplete="email" placeholder="Your email address" required></label><button class="button primary" type="submit">Send guide →</button><p class="form-note" data-form-note role="status" aria-live="polite"></p></form></div><figure class="home-guide-cover"><div><span>THE COMPLETE</span><strong>Senior Dog<br>Care Guide</strong>${image("guide-recognize-older-golden.jpg", "Senior Dog Care Guide cover featuring an older golden retriever")}</div></figure></article></section>
+      <section class="home-contract-care-grid" aria-label="Veterinary evidence"><article class="home-contract-evidence"><figure>${image("vet-silvan-urfer.jpg", "Dr. Silvan Urfer, veterinarian and dog-aging researcher")}</figure><div><span class="home-kicker">VETERINARY EVIDENCE</span><h2>Care backed by veterinarians.</h2><p>Notice the pattern, make today safer and bring a clearer story to your veterinarian.</p><a href="/find-care/?care=senior-veterinarians">Find veterinary care →</a></div></article></section>
 
-      <section class="home-contract-bed" aria-labelledby="home-bed-title"><div class="home-contract-bed-copy"><span class="home-kicker">ORTHOPEDIC COMFORT SYSTEM</span><h2 id="home-bed-title"><span>Support stiff joints.</span><span>Track possible pain.</span></h2><p>The orthopedic bed cushions pressure points. Smart Base tracks rest, movement, bed use and weight—without a collar or camera.</p><ul><li><strong>Low entry</strong><span>Easier access for slower legs</span></li><li><strong>Pressure relief</strong><span>Layered orthopedic support</span></li><li><strong>Change tracking</strong><span>Rest and bed-use patterns</span></li><li><strong>Vet-ready context</strong><span>Trends worth sharing</span></li></ul><a class="button primary" href="https://www.woafy.pet/">Explore Bed + Smart Base →</a></div><div class="home-contract-product"><figure class="home-complete-bed">${image("product-hero-official.png", "Complete WoafyPet orthopedic bed")}</figure><figure class="home-smart-base">${image("smart-base.webp", "WoafyPet Smart Base shown separately")}</figure></div></section>
+      <section class="home-contract-guide" aria-labelledby="home-guide-title"><div><span class="home-kicker">SENIOR DOG CARE GUIDE</span><h2 id="home-guide-title">Understand your dog’s aging journey.</h2><p>Practical steps for movement, sleep, appetite, water, bathroom changes and daily connection.</p><a class="button secondary" href="/guide/">Explore the complete guide →</a></div><figure class="home-guide-book">${image("senior-dog-care-guide-book-v2.png", "Three-dimensional Senior Dog Care Guide book featuring an older golden retriever")}</figure></section>
 
-      <section class="home-contract-close" aria-label="Smart Base insights and care profile"><article class="home-contract-insights"><figure class="home-insight-screen" aria-label="Example weekly Smart Base pattern summary"><div><span>WEEKLY PATTERNS</span><dl><div><dt>Rest</dt><dd>Duration</dd></div><div><dt>Night</dt><dd>Movement</dd></div><div><dt>Bed use</dt><dd>Frequency</dd></div><div><dt>Weight</dt><dd>Trend</dd></div></dl></div></figure><div><span class="home-kicker">SMART BASE INSIGHTS</span><h2>See the pattern behind the change.</h2><p>Follow rest, night movement, bed use and weight trends. Share sustained changes with your veterinarian.</p><a href="/smart-base/">How Smart Base works →</a></div></article><article class="home-contract-profile"><div><span class="home-kicker">YOUR DOG, REMEMBERED</span><h2>Start your care journey today.</h2><p>Add your dog once. Ask questions shaped around their age, breed, conditions and medicines.</p><a class="button primary" href="/account/">Create my care profile →</a></div></article></section>
+      <section class="home-contract-bed" aria-labelledby="home-bed-title"><div class="home-contract-bed-copy"><span class="home-kicker">ORTHOPEDIC COMFORT SYSTEM</span><h2 id="home-bed-title">Bed + Smart Base for better rest.</h2><p>Orthopedic support cushions stiff joints. Smart Base follows rest, movement, bed use and weight for changes worth sharing.</p><ul><li><strong>Low entry + bolsters</strong><span>Easier access and steadier support</span></li><li><strong>Passive pattern tracking</strong><span>No collar, camera or daily charging</span></li></ul><a class="button primary" href="https://www.woafy.pet/">Explore the complete system →</a></div><figure class="home-contract-product">${image("bed-smart-base-system-v2.png", "Complete cream orthopedic dog bed and Smart Base shown together")}</figure><aside class="home-bed-proof" aria-label="Bed and Smart Base benefits"><div><span aria-hidden="true">⌁</span><p><strong>Joint-focused comfort</strong>Structured orthopedic support</p></div><div><span aria-hidden="true">▤</span><p><strong>Easy-clean covers</strong>Made for daily use</p></div><div><span aria-hidden="true">⌗</span><p><strong>Non-slip stability</strong>Steadier entry and exit</p></div><div><span aria-hidden="true">♡</span><p><strong>Built for aging dogs</strong>Comfort plus quiet insight</p></div></aside></section>
 
-      <dialog class="profile-gate-dialog" data-first-action-dialog aria-labelledby="profile-gate-title"><div class="profile-gate-shell"><button class="profile-gate-close" type="button" data-first-action-close aria-label="Close registration form">×</button><header><span>One-time care profile</span><h2 id="profile-gate-title">Tell us who you care for.</h2><p>Create your profile once. Your dog’s age, breed, known conditions and medicines make every question more relevant.</p><ul><li>Ask questions shaped around your dog</li><li>Upload records and track changes over time</li><li>Save useful lessons and care options</li></ul></header><form data-account-form data-home-account-form data-account-api="https://www.woafmeow.com/api/enroll"><div class="profile-gate-grid"><label><span>Your name</span><input name="ownerName" autocomplete="name" placeholder="e.g., Alex" required maxlength="100"></label><label><span>Email or Gmail</span><input name="email" type="email" autocomplete="email" placeholder="you@email.com" required maxlength="254"></label><label><span>Dog's name</span><input name="petName" placeholder="e.g., Bailey" required maxlength="80"></label><label><span>Age</span><select name="petAge" required><option value="">Choose age</option><option>Under 1 year</option><option>1–3 years</option><option>4–6 years</option><option>7–9 years</option><option>10–12 years</option><option>13–15 years</option><option>16+ years</option></select></label><label><span>Dog breed or mix</span><input name="breed" required maxlength="100" placeholder="Type your dog’s specific breed or mix"></label><label><span>Known conditions</span><input name="conditions" required maxlength="240" placeholder="Arthritis, kidney disease, or none known"></label><label class="profile-gate-wide profile-photo-field"><span>Dog profile photo <em>(strongly recommended)</em></span><input name="petPhoto" type="file" accept="image/jpeg,image/png,image/webp" data-pet-photo-input><small>Helps your Care Circle lesson feel personal. You decide whether it appears publicly.</small><img data-pet-photo-preview hidden alt="Dog profile photo preview"></label><label class="profile-gate-wide"><span>Medicines or recent changes</span><textarea name="medications" maxlength="360" placeholder="Names and recent changes, if any"></textarea></label></div><p class="account-privacy-note">Your care profile stays private. Choose Public or Private separately each time you ask Care Circle.</p><button class="button primary" type="submit">Create profile and ask my question →</button><div class="profile-gate-or" aria-hidden="true"><span>or</span></div><button class="home-google-button" type="button" data-google-signin aria-describedby="profile-google-note"><span class="google-g" aria-hidden="true">G</span>Continue with Google</button><p class="sr-only" id="profile-google-note">Google sign-in requires the production Google connection.</p><p class="form-note" data-account-note role="status" aria-live="polite"></p><p class="google-status" data-google-status role="status" aria-live="polite"></p></form></div></dialog>
+      <section class="home-contract-close" aria-label="Smart Base insights and care profile"><article class="home-contract-insights"><figure>${image("product-visualization-smart-base.png", "WoafyPet Smart Base shown flat and folded")}</figure><div><span class="home-kicker">SMART BASE INSIGHTS</span><h2>See changes worth sharing.</h2><p>Follow four quiet patterns without adding a wearable.</p><dl class="home-insight-metrics"><div><dt>Rest</dt><dd>Duration</dd></div><div><dt>Night</dt><dd>Movement</dd></div><div><dt>Bed use</dt><dd>Frequency</dd></div><div><dt>Weight</dt><dd>Trend</dd></div></dl><a href="/smart-base/">How Smart Base works →</a></div></article><article class="home-contract-profile"><div><span aria-hidden="true">♡</span><p><strong>Build your dog’s care profile</strong>Add your dog once. Keep private lessons and health history together.</p></div><a href="/account/">Create my care profile →</a></article></section>
+
+      <section class="home-support-paths home-contract-support" aria-label="More ways WoafMeow can help">${supportPaths.map(([title, copy, asset, href, action]) => "<a href=\"" + escapeHtml(href) + "\"><figure>" + image(asset, title) + "</figure><div><h2>" + escapeHtml(title) + "</h2><p>" + escapeHtml(copy) + "</p><span>" + escapeHtml(action) + " →</span></div></a>").join("")}</section>
+
+      <dialog class="profile-gate-dialog" data-first-action-dialog aria-labelledby="profile-gate-title"><div class="profile-gate-shell"><button class="profile-gate-close" type="button" data-first-action-close aria-label="Close registration form">×</button><header><span>One-time care profile</span><h2 id="profile-gate-title">Tell us who you care for.</h2><p>Create your profile once. Your dog’s age, breed, weight, known conditions and medicines make every question more relevant.</p><ul><li>Ask questions shaped around your dog</li><li>Upload records and track changes over time</li><li>Keep every private lesson in one place</li></ul></header><form data-account-form data-home-account-form data-account-api="https://www.woafmeow.com/api/enroll"><div class="profile-gate-grid"><label><span>Your name</span><input name="ownerName" autocomplete="name" placeholder="e.g., Alex" required maxlength="100"></label><label><span>Email or Gmail</span><input name="email" type="email" autocomplete="email" placeholder="you@email.com" required maxlength="254"></label><label><span>Dog's name</span><input name="petName" placeholder="e.g., Bailey" required maxlength="80"></label><label><span>Age</span><select name="petAge" required><option value="">Choose age</option><option>Under 1 year</option><option>1–3 years</option><option>4–6 years</option><option>7–9 years</option><option>10–12 years</option><option>13–15 years</option><option>16+ years</option></select></label>${dogProfileSelectors("home-profile", "profile-gate-wide")}<label class="profile-gate-wide profile-photo-field"><span>Dog profile photo <em>(strongly recommended)</em></span><input name="petPhoto" type="file" accept="image/jpeg,image/png,image/webp" data-pet-photo-input><small>Helps your Care Circle lesson feel personal. You decide whether it appears publicly.</small><img data-pet-photo-preview hidden alt="Dog profile photo preview"></label><label class="profile-gate-wide"><span>Medicines or recent changes</span><textarea name="medications" maxlength="360" placeholder="Names and recent changes, if any"></textarea></label></div><p class="account-privacy-note">Your care profile stays private. Choose Public or Private separately each time you ask Care Circle.</p><button class="button primary" type="submit">Create profile and ask my question →</button><div class="profile-gate-or" aria-hidden="true"><span>or</span></div><button class="home-google-button" type="button" data-google-signin aria-describedby="profile-google-note"><span class="google-g" aria-hidden="true">G</span>Continue with Google</button><p class="sr-only" id="profile-google-note">Google sign-in requires the production Google connection.</p><p class="form-note" data-account-note role="status" aria-live="polite"></p><p class="google-status" data-google-status role="status" aria-live="polite"></p></form></div></dialog>
     </div>`,
   });
 }
@@ -3286,7 +3417,7 @@ function wmAccountPage() {
       "Sign in by email, create a dog profile and ask Care Circle a tailored question.",
     bodyClass: "account-v7",
     body: `
-    <section class="account-scene-v8"><div class="account-scene-media"><figure>${image("real-holding-dog.jpg", "Dog owner holding a dog while creating a care profile", { eager: true })}</figure><div><h1>Tell us who you care for.</h1><p>Your dog's age, breed, conditions and medicines shape the lesson you receive.</p><ol><li>Create your owner account</li><li>Add your dog's profile and photo</li><li>Ask Care Circle</li></ol></div></div><div class="account-scene-panel"><form class="account-form-v8" data-account-form data-account-api="https://www.woafmeow.com/api/enroll"><header><h2 data-account-form-title>Create your care profile</h2><p>Use Gmail or any email address.</p></header><fieldset><legend>You</legend><div class="form-grid"><label><span>Your name</span><input name="ownerName" autocomplete="name" required maxlength="100"></label><label><span>Email or Gmail</span><input name="email" type="email" autocomplete="email" required maxlength="254"></label></div></fieldset><fieldset><legend>Your dog</legend><div class="form-grid"><label><span>Dog's name</span><input name="petName" autocomplete="off" required maxlength="80"></label><label><span>Age</span><select name="petAge" required><option value="">Choose one</option><option>Under 1 year</option><option>1–3 years</option><option>4–6 years</option><option>7–9 years</option><option>10–12 years</option><option>13–15 years</option><option>16+ years</option></select></label><label><span>Dog breed or mix</span><input name="breed" required maxlength="100" placeholder="Type your dog’s specific breed or mix"></label><label><span>Known conditions</span><input name="conditions" required maxlength="240" placeholder="Arthritis, kidney disease, or none known"></label><label class="field-wide"><span>Medicines or recent changes</span><textarea name="medications" maxlength="360" placeholder="Names and recent changes, if any"></textarea></label><label class="field-wide pet-photo-field"><span>Dog profile photo <em>(recommended)</em></span><input type="file" name="petPhoto" accept="image/jpeg,image/png,image/webp" data-pet-photo-input><small>A clear, recent photo helps make your profile and any public Care Circle lesson feel personal.</small><img data-pet-photo-preview alt="Selected dog profile preview" hidden></label></div></fieldset><p class="account-privacy-note">Your care profile stays private. Choose Public or Private separately each time you ask Care Circle.</p><button class="button primary" type="submit" data-account-submit>Save profile and ask my question →</button><p class="form-note" data-account-note role="status" aria-live="polite"></p></form><aside class="account-current-v7" data-account-current hidden><img class="account-pet-photo" data-account-pet-photo alt="Dog profile photo" hidden><h2>Current care profile</h2><dl data-account-profile-summary></dl><div class="account-profile-actions"><button type="button" class="button secondary" data-account-edit>Edit profile →</button><a class="button primary" href="/care-circle/#ask">Ask Care Circle →</a><a class="button secondary" href="/health-timeline/">Open Health Timeline →</a></div><button type="button" class="text-button" data-account-signout>Sign out</button></aside></div></section>`,
+    <section class="account-scene-v8"><div class="account-scene-media"><figure>${image("problem-appetite-owner-and-dogs.jpg", "Dog owner at home caring for two dogs", { eager: true })}</figure><div><h1>Tell us who you care for.</h1><p>One profile keeps their care lessons, records and changes together.</p><ol><li>Add your dog once</li><li>Ask one clear question</li><li>Keep every private lesson here</li></ol></div></div><div class="account-scene-panel"><form class="account-form-v8" data-account-form data-account-api="https://www.woafmeow.com/api/enroll"><header><h2 data-account-form-title>Create your care profile</h2><p>Use Gmail or any email address.</p></header><fieldset><legend>You</legend><div class="form-grid"><label><span>Your name</span><input name="ownerName" autocomplete="name" required maxlength="100"></label><label><span>Email or Gmail</span><input name="email" type="email" autocomplete="email" required maxlength="254"></label></div></fieldset><fieldset><legend>Your dog</legend><div class="form-grid"><label><span>Dog's name</span><input name="petName" autocomplete="off" required maxlength="80"></label><label><span>Age</span><select name="petAge" required><option value="">Choose one</option><option>Under 1 year</option><option>1–3 years</option><option>4–6 years</option><option>7–9 years</option><option>10–12 years</option><option>13–15 years</option><option>16+ years</option></select></label>${dogProfileSelectors("account-profile", "field-wide")}<label class="field-wide"><span>Medicines or recent changes</span><textarea name="medications" maxlength="360" placeholder="Names and recent changes, if any"></textarea></label><label class="field-wide pet-photo-field"><span>Dog profile photo <em>(recommended)</em></span><input type="file" name="petPhoto" accept="image/jpeg,image/png,image/webp" data-pet-photo-input><small>A clear, recent photo helps make your profile and any public Care Circle lesson feel personal.</small><img data-pet-photo-preview alt="Selected dog profile preview" hidden></label></div></fieldset><p class="account-privacy-note">Your care profile stays private. Choose Public or Private separately each time you ask Care Circle.</p><button class="button primary" type="submit" data-account-submit>Save profile and ask my question →</button><p class="form-note" data-account-note role="status" aria-live="polite"></p></form><aside class="account-current-v7" data-account-current hidden><img class="account-pet-photo" data-account-pet-photo alt="Dog profile photo" hidden><h2>Current care profile</h2><dl data-account-profile-summary></dl><section class="account-private-lessons"><header><h2>My private Care Circle lessons</h2><p>Only lessons you chose to keep Private appear here.</p></header><div data-private-lessons-list></div><p data-private-lessons-empty>No private lessons yet.</p></section><div class="account-profile-actions"><button type="button" class="button secondary" data-account-edit>Edit profile →</button><a class="button primary" href="/care-circle/#ask">Ask Care Circle →</a><a class="button secondary" href="/health-timeline/">Open Health Timeline →</a></div><button type="button" class="text-button" data-account-signout>Sign out</button></aside></div></section>`,
   });
 }
 
@@ -3560,8 +3691,8 @@ function wmAboutPage() {
       "The story of Bobby, Robert, and why WoafMeow exists for the quiet changes families can miss.",
     bodyClass: "about-v6",
     body: `
-    <section class="bobby-hero"><figure>${image("bobby.jpg", "Bobby, Robert's Alaskan Malamute and the dog who inspired WoafMeow", { eager: true })}</figure><div><span>A NOTE FROM ROBERT</span><h1><span>Bobby was my dog.</span><span>His love built WoafMeow.</span></h1><p>I’m Robert. Bobby was my Alaskan Malamute—steady, proud and always close enough to make a room feel like home.</p><p class="bobby-signoff">Robert</p></div></section>
-    <section class="bobby-letter"><div class="reading-width"><p class="drop-cap">As Bobby grew older, the changes were quiet. He took longer to rise. He shifted through the night. Some days, the cool floor seemed easier than the bed beside us.</p><p>I loved him completely, but love did not automatically tell me what every change meant. I kept wondering whether I was noticing normal aging, hidden discomfort or something that deserved help sooner.</p><blockquote>Bobby never stopped being Bobby. His body changed before our bond did.</blockquote><p>I built WoafMeow because dog parents should not have to wait until a change becomes impossible to ignore. We need a clearer way to turn the moments we see at home into useful observations, better questions and gentler next steps.</p><p>WoafyPet begins with rest for the same reason. I wanted Bobby to have real orthopedic support, with quiet tracking that could reveal a repeated change without pretending to diagnose him.</p><p>I cannot change the days I had with Bobby. I can make what I learned from loving him useful to another family while their dog is still beside them.</p></div></section>
+    <section class="bobby-hero"><figure>${image("bobby.jpg", "Bobby, Robert's Alaskan Malamute and the dog who inspired WoafMeow", { eager: true })}</figure><div><h1>Bobby was eight when joint cancer took him.</h1><p>He was my family, my shadow and the reason WoafMeow exists.</p></div></section>
+    <section class="bobby-letter"><div class="reading-width"><p class="drop-cap">The hardest truth is that we did not understand Bobby’s health change in time. Like so many dogs, he was very good at hiding pain. He kept following us, greeting us and being himself—until he could not anymore.</p><p>I still replay the small moments. A slower rise. A pause before moving. A night that did not look quite right. We loved him completely, but we did not yet know how much those quiet changes could mean.</p><blockquote>I cannot give Bobby those days back. I can help another family notice sooner.</blockquote><p>I built WoafMeow so a dog parent can bring one ordinary change and leave with clearer observations, safer next steps and a better conversation with the veterinarian who knows their dog.</p><p>WoafyPet comes from the same promise: support aging joints now, and quietly follow rest patterns that may help a family recognize when something has changed.</p><p>Bobby’s life was much bigger than the way he died. He was proud, gentle, funny and always close. Everything here is built from the love he gave us—and from the help I wish we had while he was still beside me.</p></div></section>
     <section class="bobby-purpose"><div class="wm-wrap"><header><span>OUR MISSION · HOW WE HELP</span><h2><span>Understand the change.</span><span>Care for the whole bond.</span></h2><p>WoafMeow turns quiet changes into understanding, support and a kinder next step—so dogs can be cared for as whole lives, not symptoms.</p></header><div><article><strong>01</strong><h3>Notice with less fear</h3><p>Turn “something feels different” into a clear observation and a useful question for your care team.</p></article><article><strong>02</strong><h3>Find someone who understands</h3><p>Reach professional care, practical resources and another owner who has lived this kind of day.</p></article><article><strong>03</strong><h3>Honor the whole bond</h3><p>Support comfort, connection, goodbye and remembrance without turning vulnerable moments into sales pressure.</p></article></div><a class="button primary" href="/care-circle/">See how Bobby’s story helps today →</a></div></section>
     <section class="bobby-closing"><p>I still miss Bobby.<br>I’m building the help I wish we had sooner.</p><a class="text-link" href="/support/">Tell me about your dog →</a></section>`,
   });

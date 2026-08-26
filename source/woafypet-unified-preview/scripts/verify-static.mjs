@@ -320,23 +320,35 @@ if (
   !home.includes("data-home-account-form") ||
   !home.includes("data-first-action-dialog") ||
   !home.includes("data-pet-photo-input") ||
-  !home.includes('name="breed"') ||
-  !home.includes("Type your dog’s specific breed or mix") ||
+  !home.includes('<select name="breed" required>') ||
+  !home.includes("Mixed breed — known mix") ||
+  !home.includes("Mixed breed — unknown mix") ||
+  !home.includes('name="weightRange"') ||
+  !home.includes('name="conditions"') ||
   !home.includes('name="petAge"')
 )
   fail("home: personalized account and dog profile form is incomplete");
 if (
-  !home.includes("product-hero-official.png") ||
-  !home.includes("smart-base.webp") ||
-  !home.includes("Support stiff joints.") ||
-  !home.includes("Track possible pain.")
+  !home.includes("bed-smart-base-system-v2.png") ||
+  !home.includes("Bed + Smart Base for better rest.") ||
+  !home.includes("Passive pattern tracking") ||
+  !home.includes("Joint-focused comfort")
 )
   fail("home: Bed + Smart Base system is incomplete");
 if (
-  !home.includes("data-guide-delivery") ||
-  !home.includes('data-submit-api="https://www.woafmeow.com/api/newsletter"')
+  !home.includes("senior-dog-care-guide-book-v2.png") ||
+  !home.includes('href="/guide/"') ||
+  !home.includes("Explore the complete guide")
 )
-  fail("home: active guide delivery form is missing");
+  fail("home: Senior Dog Care Guide book section is incomplete");
+for (const path of [
+  "/find-care/",
+  "/wednesday-introductions/",
+  "/pet-loss-support/",
+  "/memorial-tree/",
+])
+  if (!home.includes(`href="${path}"`))
+    fail(`home: missing bottom support pathway ${path}`);
 if (count(home, /href="https:\/\/www\.woafy\.pet\/"/g) < 1)
   fail("home: Smart Bed call to action must open woafy.pet");
 const homeImages = [...home.matchAll(/<img src="([^"]+)"/g)].map(
@@ -424,10 +436,13 @@ if (!account.includes("Choose Public or Private separately"))
   fail("account: per-question privacy explanation is missing");
 if (
   !account.includes('name="ownerName"') ||
-  !account.includes('name="breed"') ||
-  !account.includes("Type your dog’s specific breed or mix")
+  !account.includes('<select name="breed" required>') ||
+  !account.includes("Mixed breed — unknown mix") ||
+  !account.includes('name="weightRange"') ||
+  !account.includes('value="Arthritis or joint pain"') ||
+  !account.includes("data-private-lessons-list")
 )
-  fail("account: owner identity or typed breed field is incomplete");
+  fail("account: structured dog profile or private lesson library is incomplete");
 if (!account.includes('data-account-api="https://www.woafmeow.com/api/enroll"'))
   fail("account: profile API is missing");
 if (
@@ -552,12 +567,14 @@ if (/support-faq|Common questions|FAQs/i.test(support))
 
 const about = routeHtml.get("/about/") || "";
 if (
-  !about.includes("Bobby was my dog.") ||
-  !about.includes("His love built WoafMeow.") ||
-  !about.includes("I’m Robert.") ||
+  !about.includes("Bobby was eight when joint cancer took him.") ||
+  !about.includes("we did not understand Bobby’s health change in time") ||
+  !about.includes("he was very good at hiding pain") ||
   !about.includes("OUR MISSION · HOW WE HELP")
 )
-  fail("about: Robert's first-person Bobby story or combined mission is missing");
+  fail("about: Bobby's first-person story or combined mission is missing");
+if (/A NOTE FROM ROBERT|Co-Founder of WoafMeow|I[’']m Robert/i.test(about))
+  fail("about: removed Robert note or signoff remains");
 if (/story-mission-v7|story-build-v7|story-values/.test(about))
   fail("about: old split mission and values sections remain");
 if ([...routeHtml.values()].some((html) => />FAQs?</i.test(html)))

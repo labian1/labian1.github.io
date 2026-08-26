@@ -13,6 +13,7 @@ const mimeTypes = {
   ".jpg": "image/jpeg",
   ".js": "text/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
+  ".pdf": "application/pdf",
   ".png": "image/png",
   ".txt": "text/plain; charset=utf-8",
   ".webp": "image/webp",
@@ -25,7 +26,7 @@ if (!existsSync(join(ROOT, "index.html"))) {
 function sendFile(response, path, status = 200) {
   response.writeHead(status, {
     "Cache-Control": "no-store",
-    "Content-Security-Policy": "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self' https://www.woafmeow.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://www.woafmeow.com",
+    "Content-Security-Policy": "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self' https://www.woafmeow.com https://woafypet-senior-care.pages.dev; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://www.woafmeow.com https://woafypet-senior-care.pages.dev",
     "Content-Type": mimeTypes[extname(path)] || "application/octet-stream",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "X-Content-Type-Options": "nosniff",
@@ -77,7 +78,7 @@ const server = createServer((request, response) => {
   if (request.method === "HEAD") {
     response.writeHead(200, {
       "Cache-Control": "no-store",
-      "Content-Security-Policy": "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self' https://www.woafmeow.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://www.woafmeow.com",
+      "Content-Security-Policy": "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self' https://www.woafmeow.com https://woafypet-senior-care.pages.dev; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://www.woafmeow.com https://woafypet-senior-care.pages.dev",
       "Content-Type": mimeTypes[extname(filePath)] || "application/octet-stream",
       "Referrer-Policy": "strict-origin-when-cross-origin",
       "X-Content-Type-Options": "nosniff",

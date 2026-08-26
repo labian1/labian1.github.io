@@ -540,6 +540,104 @@ html body.account-v7 [data-private-lessons-empty] {
   }
 }
 
+/* 2026-08-26 — owner-controlled Care Circle posts and explicit guide consent. */
+html body.account-v7 [data-public-lessons-list] {
+  display: grid;
+  gap: 8px;
+}
+html body.account-v7 .account-public-lesson-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px 10px 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffdfb;
+}
+html body.account-v7 .account-public-lesson-row > a {
+  display: block;
+  min-width: 0;
+  padding: 2px 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+html body.account-v7 .account-public-lesson-row > a:hover strong {
+  color: var(--clay);
+}
+html body.account-v7 .account-public-lesson-row :is(strong, span) {
+  display: block;
+}
+html body.account-v7 .account-public-lesson-row span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+html body .text-button.danger {
+  color: #8f2f24;
+  font-weight: 700;
+}
+html body .lesson-owner-actions {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--wm-line, var(--line));
+  background: #fff8f3;
+}
+html body .lesson-owner-actions[hidden] {
+  display: none !important;
+}
+html body .lesson-owner-actions > .wm-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 24px;
+  align-items: center;
+}
+html body .lesson-owner-actions strong {
+  color: var(--wm-green, var(--ink));
+  font-family: var(--serif);
+  font-size: 1.18rem;
+}
+html body .lesson-owner-actions p {
+  margin: 3px 0 0;
+  color: var(--muted);
+}
+html body .lesson-owner-actions .form-note {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+body.guide-v8 .email-capture > .guide-updates-consent {
+  grid-column: 1 / -1 !important;
+  grid-row: auto !important;
+  display: flex !important;
+  gap: 9px !important;
+  align-items: flex-start !important;
+  width: 100% !important;
+  margin: 2px 0 0 !important;
+  color: #665c55 !important;
+  font-size: 0.84rem !important;
+  line-height: 1.4 !important;
+}
+body.guide-v8 .email-capture > .guide-updates-consent input {
+  width: 18px !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  margin: 1px 0 0 !important;
+}
+body.guide-v8 .email-capture > .guide-updates-consent span {
+  display: block !important;
+  min-width: 0 !important;
+}
+@media (max-width: 640px) {
+  html body.account-v7 .account-public-lesson-row,
+  html body .lesson-owner-actions > .wm-wrap {
+    grid-template-columns: 1fr;
+  }
+  html body.account-v7 .account-public-lesson-row > button,
+  html body .lesson-owner-actions button {
+    justify-self: start;
+  }
+}
+
 /* 2026-08-26.4 — coherent homepage media grid and approved product visuals. */
 html body.home-v17 .home-contract > section {
   min-width: 0 !important;
@@ -22651,5 +22749,52 @@ html body.home-v17 .home-insight-metrics {
   }
   html body.home-v17 .home-insight-metrics {
     gap: 0 12px !important;
+  }
+}
+
+/* Final guide-form mobile guard: keep every field readable at phone widths. */
+@media (max-width: 760px) {
+  html body.guide-v8 .email-capture {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  html body.guide-v8 .email-capture > :is(
+    div,
+    label,
+    button,
+    .form-note
+  ) {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  html body.guide-v8 .email-capture > .guide-email-field input,
+  html body.guide-v8 .email-capture > button {
+    width: 100% !important;
+  }
+  html body.guide-v8 .email-capture > .guide-updates-consent {
+    display: grid !important;
+    grid-template-columns: 18px minmax(0, 1fr) !important;
+    gap: 9px !important;
+  }
+  html body.guide-v8 .email-capture > .guide-updates-consent input {
+    grid-column: 1 !important;
+  }
+  html body.guide-v8 .email-capture > .guide-updates-consent span {
+    grid-column: 2 !important;
+  }
+  html body.guide-v8 .guide-hero-photo,
+  html body.guide-v8 .guide-hero-photo > picture {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  html body.guide-v8 .guide-hero-photo img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
   }
 }

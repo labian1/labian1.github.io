@@ -525,16 +525,44 @@ const guide = routeHtml.get("/guide/") || "";
 if (
   count(
     guide,
-    /data-submit-api="https:\/\/www\.woafmeow\.com\/api\/newsletter"/g,
+    /data-submit-api="https:\/\/woafypet-senior-care\.pages\.dev\/api\/newsletter"/g,
   ) !== 1 ||
   count(guide, /data-guide-delivery/g) !== 1
 )
   fail("guide: expected one active email-delivery form");
 if (
+  !guide.includes('name="guideConsent" value="true"') ||
+  !guide.includes('name="marketingConsent"') ||
+  guide.includes('name="consent" value="true"') ||
+  !guide.includes("WoafMeow_Senior_Dog_Care_Field_Guide.pdf") ||
+  !existsSync(
+    resolve(
+      dist,
+      "assets",
+      "WoafMeow_Senior_Dog_Care_Field_Guide.pdf",
+    ),
+  )
+)
+  fail("guide: PDF delivery asset or separate update consent is incomplete");
+if (
   count(guide, /class="guide-topics-v6"/g) !== 1 ||
   count(guide, /<section class="guide-/g) < 5
 )
   fail("guide: visual outcome structure incomplete");
+
+const runtime = readFileSync(resolve(dist, "app.js"), "utf8");
+if (
+  !runtime.includes("woafmeow-public-lessons-v1") ||
+  !runtime.includes("data-delete-public-lesson") ||
+  !runtime.includes('result.delivery !== "sent"')
+)
+  fail("runtime: owner deletion or truthful guide-delivery receipt is missing");
+if (
+  !lessonRoutes.every((route) =>
+    (routeHtml.get(route) || "").includes("Delete my public post"),
+  )
+)
+  fail("Care Circle lessons: owner delete control is missing");
 
 const memorial = routeHtml.get("/memorial-tree/") || "";
 const dialogIndex = memorial.indexOf("<dialog");

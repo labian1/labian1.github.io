@@ -49,6 +49,22 @@
   });
 
   document.querySelectorAll("[data-preview-form]").forEach((form) => {
+    const showGuideFallback = (note, guideUrl) => {
+      const requestedUrl = String(guideUrl || "");
+      const fallbackUrl = /WoafMeow_Senior_Dog_Care_Field_Guide\.pdf(?:$|[?#])/i.test(
+        requestedUrl,
+      )
+        ? requestedUrl
+        : "/assets/WoafMeow_Senior_Dog_Care_Field_Guide.pdf";
+      const link = document.createElement("a");
+      link.href = fallbackUrl;
+      link.textContent = "Download the complete guide PDF now →";
+      note.replaceChildren(
+        document.createTextNode("The email was not sent. "),
+        link,
+      );
+      note.classList.add("is-confirmed");
+    };
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const note = form.querySelector("[data-form-note]");
@@ -73,6 +89,11 @@
             body: JSON.stringify({
               ...stored,
               consent: stored.consent === "true" || stored.consent === "on",
+              guideConsent:
+                stored.guideConsent === "true" || stored.guideConsent === "on",
+              marketingConsent:
+                stored.marketingConsent === "true" ||
+                stored.marketingConsent === "on",
               ...(requestId
                 ? {
                     requestId,
@@ -84,10 +105,16 @@
             }),
           });
           const result = await response.json().catch(() => ({}));
-          if (!response.ok || result.delivery === "fallback") {
+          if (
+            !response.ok ||
+            (isGuideDelivery && result.delivery !== "sent") ||
+            result.delivery === "fallback"
+          ) {
             if (isGuideDelivery) {
-              note.innerHTML = `The email was not sent. <a href="${result.guideUrl || "/guide/"}">Open the complete guide now →</a>`;
-              note.classList.add("is-confirmed");
+              showGuideFallback(
+                note,
+                result.guideUrl || form.dataset.guideUrl,
+              );
               return;
             }
             throw new Error(result.error || "The request was not sent.");
@@ -97,9 +124,7 @@
           form.reset();
         } catch (error) {
           if (isGuideDelivery) {
-            note.innerHTML =
-              'Email delivery is delayed. <a href="/guide/">Open the complete guide now →</a>';
-            note.classList.add("is-confirmed");
+            showGuideFallback(note, form.dataset.guideUrl);
           } else {
             note.textContent = "We could not send this right now. Please try again.";
             note.classList.remove("is-confirmed");
@@ -721,6 +746,7 @@
 
   const accountStorageKey = "woafmeow-account-v1";
   const publicQuestionStorageKey = "woafmeow-public-question-v1";
+  const publicLessonsStorageKey = "woafmeow-public-lessons-v1";
   const privateLessonStorageKey = "woafmeow-private-lessons-v1";
   const readStoredJson = (key) => {
     try {
@@ -739,9 +765,38 @@
   };
   const getAccount = () => readStoredJson(accountStorageKey);
   const getPublicQuestion = () => readStoredJson(publicQuestionStorageKey);
+  const getPublicLessons = () => {
+    const lessons = readStoredJson(publicLessonsStorageKey);
+    return Array.isArray(lessons) ? lessons : [];
+  };
   const getPrivateLessons = () => {
     const lessons = readStoredJson(privateLessonStorageKey);
     return Array.isArray(lessons) ? lessons : [];
+  };
+  const normalizedOwnerKey = (value) =>
+    String(value || "").trim().toLocaleLowerCase();
+  const lessonBelongsToAccount = (lesson, account = getAccount()) =>
+    Boolean(
+      lesson &&
+        account?.email &&
+        normalizedOwnerKey(lesson.ownerKey || lesson.email) ===
+          normalizedOwnerKey(account.email),
+    );
+  const removePublicLesson = (lessonId) => {
+    const id = String(lessonId || "");
+    const lesson = getPublicLessons().find((item) => item?.id === id);
+    if (!lessonBelongsToAccount(lesson)) return false;
+    const remaining = getPublicLessons().filter((item) => item?.id !== id);
+    if (!writeStoredJson(publicLessonsStorageKey, remaining)) return false;
+    const current = getPublicQuestion();
+    if (current?.id === id) {
+      try {
+        localStorage.removeItem(publicQuestionStorageKey);
+      } catch {
+        return false;
+      }
+    }
+    return true;
   };
   const safeImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
   const readImageFile = (
@@ -879,12 +934,51 @@
   const accountFormTitle = document.querySelector("[data-account-form-title]");
   const accountSubmit = document.querySelector("[data-account-submit]");
   const accountEditButton = document.querySelector("[data-account-edit]");
+  const lessonLibraryStep = document.querySelector(
+    ".account-scene-media ol li:nth-child(3)",
+  );
+  if (lessonLibraryStep)
+    lessonLibraryStep.textContent = "Keep public and private lessons here";
   const privateLessonsList = document.querySelector(
     "[data-private-lessons-list]",
   );
   const privateLessonsEmpty = document.querySelector(
     "[data-private-lessons-empty]",
   );
+  let publicLessonsList = document.querySelector("[data-public-lessons-list]");
+  let publicLessonsEmpty = document.querySelector("[data-public-lessons-empty]");
+  let publicLessonsNote = document.querySelector("[data-public-lessons-note]");
+  if (accountCurrent && !publicLessonsList) {
+    const section = document.createElement("section");
+    section.className = "account-private-lessons account-public-lessons";
+    const sectionHeader = document.createElement("header");
+    const sectionHeading = document.createElement("h2");
+    sectionHeading.textContent = "My public Care Circle lessons";
+    const sectionDescription = document.createElement("p");
+    sectionDescription.textContent =
+      "Public posts created in this browser appear here. Delete any post whenever you choose.";
+    sectionHeader.append(sectionHeading, sectionDescription);
+    publicLessonsList = document.createElement("div");
+    publicLessonsList.dataset.publicLessonsList = "";
+    publicLessonsEmpty = document.createElement("p");
+    publicLessonsEmpty.dataset.publicLessonsEmpty = "";
+    publicLessonsEmpty.textContent = "No public lessons yet.";
+    publicLessonsNote = document.createElement("p");
+    publicLessonsNote.className = "form-note";
+    publicLessonsNote.dataset.publicLessonsNote = "";
+    publicLessonsNote.setAttribute("role", "status");
+    publicLessonsNote.setAttribute("aria-live", "polite");
+    section.append(
+      sectionHeader,
+      publicLessonsList,
+      publicLessonsEmpty,
+      publicLessonsNote,
+    );
+    const privateSection = accountCurrent.querySelector(
+      ".account-private-lessons",
+    );
+    accountCurrent.insertBefore(section, privateSection || null);
+  }
   const googleSigninButton = document.querySelector("[data-google-signin]");
   const googleSigninStatus = document.querySelector("[data-google-status]");
   const firstActionDialog = document.querySelector("[data-first-action-dialog]");
@@ -916,6 +1010,7 @@
     const publicQuestion = {
       ...account,
       id: lessonId,
+      ownerKey: normalizedOwnerKey(account.email),
       question: cleanQuestion,
       slug,
       questionImageDataUrl,
@@ -923,7 +1018,18 @@
       createdAt: new Date().toISOString(),
     };
     if (!writeStoredJson(publicQuestionStorageKey, publicQuestion)) return "";
-    if (publicQuestion.visibility === "private") {
+    if (publicQuestion.visibility === "public") {
+      const previous = getPublicLessons().filter(
+        (lesson) => lesson?.id !== lessonId,
+      );
+      if (
+        !writeStoredJson(
+          publicLessonsStorageKey,
+          [publicQuestion, ...previous].slice(0, 100),
+        )
+      )
+        return "";
+    } else {
       const previous = getPrivateLessons().filter(
         (lesson) => lesson?.id !== lessonId,
       );
@@ -991,6 +1097,65 @@
       privateLessonsList.append(link);
     });
   };
+  const renderPublicLessons = () => {
+    if (!publicLessonsList || !publicLessonsEmpty) return;
+    const lessons = getPublicLessons().filter(
+      (lesson) =>
+        lesson?.visibility === "public" &&
+        lesson?.question &&
+        lessonBelongsToAccount(lesson),
+    );
+    publicLessonsList.replaceChildren();
+    publicLessonsEmpty.hidden = lessons.length > 0;
+    lessons.forEach((lesson) => {
+      const row = document.createElement("div");
+      row.className = "account-public-lesson-row";
+      const link = document.createElement("a");
+      link.href = `/care-circle/${lesson.slug}/`;
+      link.dataset.publicLessonId = lesson.id || "";
+      const copy = document.createElement("strong");
+      copy.textContent = lesson.question;
+      const meta = document.createElement("span");
+      const created = new Date(lesson.createdAt || "");
+      meta.textContent = Number.isNaN(created.getTime())
+        ? "Public post"
+        : `Public · ${new Intl.DateTimeFormat("en", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }).format(created)}`;
+      link.append(copy, meta);
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (!writeStoredJson(publicQuestionStorageKey, lesson)) return;
+        window.location.assign(link.href);
+      });
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "text-button danger";
+      remove.dataset.deletePublicLesson = lesson.id || "";
+      remove.textContent = "Delete post";
+      remove.addEventListener("click", () => {
+        if (
+          !window.confirm(
+            "Delete this public Care Circle post? This removes the post and its tailored lesson from this browser.",
+          )
+        )
+          return;
+        if (!removePublicLesson(lesson.id)) {
+          if (publicLessonsNote)
+            publicLessonsNote.textContent =
+              "This post could not be deleted. Please try again.";
+          return;
+        }
+        if (publicLessonsNote)
+          publicLessonsNote.textContent = "Your public post was deleted.";
+        renderPublicLessons();
+      });
+      row.append(link, remove);
+      publicLessonsList.append(row);
+    });
+  };
   petPhotoInput?.addEventListener("change", async () => {
     const file = petPhotoInput.files?.[0];
     if (!file) return;
@@ -1048,6 +1213,7 @@
         ? "Edit your care profile"
         : "Create your care profile";
     accountSummary.replaceChildren();
+    renderPublicLessons();
     renderPrivateLessons();
     if (!account) return;
     [
@@ -1277,6 +1443,7 @@
       try {
         localStorage.removeItem(accountStorageKey);
         localStorage.removeItem(publicQuestionStorageKey);
+        localStorage.removeItem(publicLessonsStorageKey);
         localStorage.removeItem(privateLessonStorageKey);
       } catch {
         // The current screen still resets even if storage access changes.
@@ -1806,14 +1973,29 @@
 
   const storedPersonalQuestion = getPublicQuestion();
   const currentCareProfile = getAccount();
+  const currentProfileOwnsQuestion = lessonBelongsToAccount(
+    storedPersonalQuestion,
+    currentCareProfile,
+  );
+  if (
+    storedPersonalQuestion?.visibility === "public" &&
+    lessonBelongsToAccount(storedPersonalQuestion, currentCareProfile) &&
+    !getPublicLessons().some(
+      (lesson) => lesson?.id === storedPersonalQuestion.id,
+    )
+  ) {
+    writeStoredJson(publicLessonsStorageKey, [
+      storedPersonalQuestion,
+      ...getPublicLessons(),
+    ].slice(0, 100));
+  }
   const personalQuestion = storedPersonalQuestion
     ? {
         ...storedPersonalQuestion,
-        ...(currentCareProfile
+        ...(currentProfileOwnsQuestion
           ? {
               ownerName:
                 currentCareProfile.ownerName || storedPersonalQuestion.ownerName,
-              email: currentCareProfile.email || storedPersonalQuestion.email,
               petName:
                 currentCareProfile.petName || storedPersonalQuestion.petName,
               petAge: currentCareProfile.petAge || storedPersonalQuestion.petAge,
@@ -1915,6 +2097,36 @@
     [80, 240, 600].forEach((delay) =>
       window.setTimeout(applyPersonalLessonContext, delay),
     );
+    const ownerActions = document.querySelector(
+      "[data-lesson-owner-actions]",
+    );
+    const deleteButton = ownerActions?.querySelector(
+      "[data-delete-public-lesson]",
+    );
+    const deleteNote = ownerActions?.querySelector(
+      "[data-delete-public-note]",
+    );
+    const canDelete =
+      personalQuestion.visibility === "public" &&
+      lessonBelongsToAccount(personalQuestion, currentCareProfile);
+    if (ownerActions) ownerActions.hidden = !canDelete;
+    if (canDelete && deleteButton) {
+      deleteButton.addEventListener("click", () => {
+        if (
+          !window.confirm(
+            "Delete this public Care Circle post? This removes the post and its tailored lesson from this browser.",
+          )
+        )
+          return;
+        if (!removePublicLesson(personalQuestion.id)) {
+          if (deleteNote)
+            deleteNote.textContent =
+              "This post could not be deleted. Please try again.";
+          return;
+        }
+        window.location.assign("/care-circle/?deleted=1#public-lessons");
+      });
+    }
   }
 
   navigation?.querySelectorAll("a").forEach((link) => {

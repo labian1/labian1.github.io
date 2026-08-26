@@ -878,6 +878,42 @@ async function checkAccountFlow(page, viewport, baseUrl, failures) {
     failures.push(
       "/account/: chapter guidance was not tailored to the dog, condition, and selected lesson",
     );
+  if (!(await page.locator("[data-lesson-owner-actions]").isVisible()))
+    failures.push("/account/: public lesson owner delete control is not visible");
+  await page.goto(`${baseUrl}/account/`, { waitUntil: "domcontentloaded" });
+  const publicLessons = normalize(
+    await page.locator("[data-public-lessons-list]").innerText(),
+  );
+  if (!publicLessons.includes("stiff after resting"))
+    failures.push("/account/: public Care Circle lesson is missing from the profile");
+  const publicLessonLink = page
+    .locator("[data-public-lessons-list] [data-public-lesson-id]")
+    .first();
+  await Promise.all([
+    page.waitForURL(
+      (url) => url.pathname === "/care-circle/slower-after-rest/",
+      { waitUntil: "domcontentloaded" },
+    ),
+    publicLessonLink.click(),
+  ]);
+  page.once("dialog", (dialog) => dialog.accept());
+  await Promise.all([
+    page.waitForURL(
+      (url) =>
+        url.pathname === "/care-circle/" &&
+        url.searchParams.get("deleted") === "1",
+      { waitUntil: "domcontentloaded" },
+    ),
+    page.locator("[data-delete-public-lesson]").click(),
+  ]);
+  const deletedPublicState = await page.evaluate(() => ({
+    current: localStorage.getItem("woafmeow-public-question-v1"),
+    lessons: JSON.parse(
+      localStorage.getItem("woafmeow-public-lessons-v1") || "[]",
+    ),
+  }));
+  if (deletedPublicState.current !== null || deletedPublicState.lessons.length)
+    failures.push("/account/: deleting a public post did not remove its stored lesson");
   const privateQuestion = "Why does Bobby wake at night and pace?";
   await page.goto(
     `${baseUrl}/care-circle/?ask=1&q=${encodeURIComponent(privateQuestion)}`,
@@ -905,6 +941,8 @@ async function checkAccountFlow(page, viewport, baseUrl, failures) {
     failures.push("/account/: private Care Circle lesson was not saved to the profile");
   if (privateLessons.includes("stiff after resting"))
     failures.push("/account/: a Public Care Circle lesson appeared in the private library");
+  if (!(await page.locator("[data-public-lessons-empty]").isVisible()))
+    failures.push("/account/: deleted public lesson still appears in the profile");
   const editButton = page.locator("[data-account-edit]");
   if (!(await editButton.isVisible()))
     return failures.push("/account/: edit profile control is not visible");
@@ -1305,14 +1343,34 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
     )
       failures.push("/guide/: six image-led guide topics missing");
     if (viewport.width === 1440) {
-      await submitGeneric(
+      const guideForm = page.locator("#guide-download");
+      if (
+        (await guideForm.locator('[name="marketingConsent"]').count()) !== 1 ||
+        (await guideForm.locator('[name="marketingConsent"]').isChecked())
+      )
+        failures.push("/guide/: optional updates consent is missing or preselected");
+      const deliveryCall = await submitGeneric(
         page,
         "#guide-download",
         { email: "guide@example.com" },
-        "https://www.woafmeow.com/api/newsletter",
+        "https://woafypet-senior-care.pages.dev/api/newsletter",
         apiCalls,
         failures,
       );
+      const deliveryPayload = JSON.parse(deliveryCall?.body || "{}");
+      if (
+        deliveryPayload.guideConsent !== true ||
+        deliveryPayload.marketingConsent !== false ||
+        !String(deliveryPayload.guideUrl || "").includes(
+          "WoafMeow_Senior_Dog_Care_Field_Guide.pdf",
+        )
+      )
+        failures.push("/guide/: delivery request omitted the PDF or separate consent state");
+      const successNote = normalize(
+        await guideForm.locator("[data-form-note]").innerText(),
+      );
+      if (!successNote.includes("hello@woafmeow.com"))
+        failures.push("/guide/: sent state does not identify the confirmed sender");
       const fallbackForm = page.locator("#guide-download");
       await fallbackForm.locator('[name="email"]').fill("fallback@example.com");
       await fallbackForm.evaluate((node) => node.requestSubmit());
@@ -1322,7 +1380,11 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
       );
       if (
         !fallbackNote.includes("email was not sent") ||
-        (await fallbackForm.locator('[data-form-note] a[href="/guide/"]').count()) !== 1
+        (await fallbackForm
+          .locator(
+            '[data-form-note] a[href="/assets/WoafMeow_Senior_Dog_Care_Field_Guide.pdf"]',
+          )
+          .count()) !== 1
       )
         failures.push("/guide/: fallback state did not truthfully expose the guide");
     }
@@ -1561,7 +1623,7 @@ async function main() {
             reducedMotion: "reduce",
           });
       const apiCalls = [];
-      await context.route("https://www.woafmeow.com/api/**", async (route) => {
+      const mockApi = async (route) => {
         const request = route.request();
         apiCalls.push({
           method: request.method(),
@@ -1585,7 +1647,9 @@ async function main() {
             body: JSON.stringify({ delivery: "sent" }),
           });
         }
-      });
+      };
+      await context.route("https://www.woafmeow.com/api/**", mockApi);
+      await context.route("https://woafypet-senior-care.pages.dev/api/**", mockApi);
       for (const route of options.routes) {
         const page = await context.newPage();
         await page.setViewportSize({

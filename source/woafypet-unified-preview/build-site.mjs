@@ -11,7 +11,8 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, "dist");
-const ASSET_VERSION = "20260826.5";
+const ASSET_VERSION = "20260826.7";
+const GUIDE_PDF_NAME = "WoafMeow_Senior_Dog_Care_Field_Guide.pdf";
 const REFINEMENT_MARKER =
   "/* 2026-08-24 reference-contract refinement: natural images, compact rhythm, premium product storytelling */";
 
@@ -2522,7 +2523,8 @@ function emailCapture(
   id = "guide-email",
   title = "Get the complete Senior Dog Care Guide",
 ) {
-  return `<form class="email-capture" id="${escapeHtml(id)}" data-preview-form data-guide-delivery data-submit-api="https://www.woafmeow.com/api/newsletter" data-success-message="The guide is on its way. Please check your inbox and spam folder." data-form-title="Senior Dog Care Guide"><input type="hidden" name="requestType" value="senior-dog-guide"><input type="hidden" name="guideUrl" value="https://labian1.github.io/guide/"><input type="hidden" name="consent" value="true"><div><h2>${escapeHtml(title)}</h2><p>Movement, sleep, eating, drinking, bathroom changes and daily life—in one practical guide.</p></div><label><span class="sr-only">Email or Gmail address</span><input name="email" type="email" autocomplete="email" placeholder="Email or Gmail address" required></label><button class="button primary" type="submit">Email me the complete guide <span aria-hidden="true">→</span></button><p class="form-note" data-form-note role="status" aria-live="polite"></p></form>`;
+  const guideUrl = `/assets/${GUIDE_PDF_NAME}`;
+  return `<form class="email-capture" id="${escapeHtml(id)}" data-preview-form data-guide-delivery data-guide-url="${guideUrl}" data-submit-api="https://woafypet-senior-care.pages.dev/api/newsletter" data-success-message="Your guide was sent from hello@woafmeow.com. Please check your inbox and spam folder." data-form-title="Senior Dog Care Guide"><input type="hidden" name="requestType" value="senior-dog-guide"><input type="hidden" name="guideUrl" value="https://labian1.github.io${guideUrl}"><input type="hidden" name="guideConsent" value="true"><div><h2>${escapeHtml(title)}</h2><p>Movement, sleep, eating, drinking, bathroom changes and daily life—in one practical guide.</p></div><label class="guide-email-field"><span class="sr-only">Email or Gmail address</span><input name="email" type="email" autocomplete="email" placeholder="Email or Gmail address" required></label><button class="button primary" type="submit">Email me the complete guide <span aria-hidden="true">→</span></button><label class="guide-updates-consent"><input name="marketingConsent" type="checkbox" value="true"><span>Also send me occasional senior-dog care and WoafyPet updates. Optional.</span></label><p class="form-note" data-form-note role="status" aria-live="polite"></p></form>`;
 }
 
 function compactLessonCard(lesson, index = 0) {
@@ -3407,6 +3409,7 @@ function wmLessonPage(lesson) {
     body: `
     <article><header class="lesson-hero-v7"><div><a class="back-link" href="/care-circle/">← All Care Circle lessons</a><h1>${escapeHtml(lesson.title)}</h1><p>${escapeHtml(lesson.intro)}</p><dl class="public-pet-profile" data-public-pet-profile><div><dt>Dog</dt><dd data-public-dog>${escapeHtml(profile[0])} · ${escapeHtml(profile[1])} · ${escapeHtml(profile[2])}</dd></div><div><dt>Owner-shared conditions</dt><dd data-public-conditions>${escapeHtml(profile[3])}</dd></div><div><dt>What changed</dt><dd data-public-change>${escapeHtml(profile[4])}</dd></div></dl></div><figure>${image(lesson.image, lesson.imageAlt, { eager: true })}</figure></header>
     <aside class="lesson-personal-context"><div class="wm-wrap"><strong>Why this matters for <span data-tailored-pet-name>${escapeHtml(profile[0])}</span></strong><p data-tailored-context>${escapeHtml(profile[0])} is ${escapeHtml(profile[1])}, a ${escapeHtml(profile[2])}, with ${escapeHtml(profile[3])}; the owner reports ${escapeHtml(profile[4])}.</p></div></aside>
+    <section class="lesson-owner-actions" data-lesson-owner-actions hidden><div class="wm-wrap"><div><strong>Your public Care Circle post</strong><p>You can remove this post and its public lesson whenever you choose.</p></div><button class="text-button danger" type="button" data-delete-public-lesson>Delete my public post</button><p class="form-note" data-delete-public-note role="status" aria-live="polite"></p></div></section>
     <div class="lesson-chapters-v7">${lessonChapters.map((chapter, index) => `<section id="chapter-${index + 1}" data-lesson-chapter="${index + 1}" data-tailored-part="${index + 1}"><div class="wm-wrap lesson-chapter-layout"><figure>${image(imgs[index], `${chapter.title} for ${lesson.title}`)}</figure><div><h2>${escapeHtml(chapter.title)}</h2><p class="chapter-result" data-tailored-chapter-summary="${index + 1}">${escapeHtml(chapter.result)}</p><p>${escapeHtml(chapter.copy)}</p><ol data-tailored-chapter-steps="${index + 1}">${chapter.steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol><fieldset class="chapter-quiz" data-chapter-quiz data-answer="${escapeHtml(chapter.quiz.answer)}" data-correct-message="${escapeHtml(chapter.quiz.correct)}" data-retry-message="${escapeHtml(chapter.quiz.retry)}"><legend>${escapeHtml(chapter.quiz.question)}</legend>${chapter.quiz.options.map(([value, label]) => `<label><input type="radio" name="${lesson.slug}-quiz-${index + 1}" value="${escapeHtml(value)}"><span>${escapeHtml(label)}</span></label>`).join("")}<button type="button" data-check-quiz>Check answer</button><p role="status" aria-live="polite" data-quiz-feedback></p></fieldset></div></div></section>`).join("")}</div>${mobilitySupport}<section class="call-sooner-v7"><div class="wm-wrap"><h2>Call sooner when you see this</h2><p>${escapeHtml(lesson.urgent)}</p>${button("Find care now", "/find-care/")}</div></section></article>`,
   });
 }
@@ -3837,6 +3840,10 @@ const usedAssetNames = new Set(
 for (const assetName of usedAssetNames) {
   cpSync(join(ROOT, "assets", assetName), join(distAssets, assetName));
 }
+cpSync(
+  join(ROOT, "assets", GUIDE_PDF_NAME),
+  join(distAssets, GUIDE_PDF_NAME),
+);
 cpSync(
   join(ROOT, "assets", "PROVENANCE.md"),
   join(distAssets, "PROVENANCE.md"),

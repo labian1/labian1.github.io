@@ -552,8 +552,14 @@ async function checkHome(page, viewport, baseUrl, failures) {
       .count()) !== 1
   )
     failures.push("/: first-action dog profile photo upload is missing");
-  if ((await page.getByRole("heading", { name: "Care backed by veterinarians." }).count()) !== 1)
+  if ((await page.getByRole("heading", { name: "Care rooted in veterinary knowledge." }).count()) !== 1)
     failures.push("/: concise veterinary-evidence section is incomplete");
+  if (
+    (await page.locator('.home-contract-product img[src*="bed-layers.png"]').count()) !== 1 ||
+    (await page.locator('.home-contract-insights img[src*="product-visualization-smart-base.png"]').count()) !== 1 ||
+    (await page.locator('main img[src*="smart-base-weekly-trend-v1.png"]').count()) !== 0
+  )
+    failures.push("/: homepage product visuals are not grounded in the verified WoafyPet system");
   const smartBedHref = await page
     .locator('.home-contract-bed a[href="https://www.woafy.pet/"]')
     .first()

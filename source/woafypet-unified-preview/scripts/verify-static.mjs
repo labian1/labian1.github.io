@@ -291,7 +291,7 @@ for (const marker of [
 ])
   if (!home.includes(marker)) fail(`home: missing ${marker}`);
 if (
-  !home.includes("Care backed by veterinarians.") ||
+  !home.includes("Care rooted in veterinary knowledge.") ||
   !home.includes("vet-silvan-urfer.jpg")
 )
   fail("home: concise veterinary-evidence section is incomplete");
@@ -329,18 +329,23 @@ if (
 )
   fail("home: personalized account and dog profile form is incomplete");
 if (
-  !home.includes("bed-smart-base-system-branded.png") ||
-  !home.includes("Bed + Smart Base for better rest.") ||
-  !home.includes("Passive pattern tracking") ||
-  !home.includes("Joint-focused comfort")
+  !home.includes("bed-layers.png") ||
+  !home.includes("Deep rest for stiff joints.") ||
+  !home.includes("Multi-layer foam") ||
+  !home.includes("Removable cover")
 )
   fail("home: Bed + Smart Base system is incomplete");
-if (!home.includes("smart-base-weekly-trend-v1.png"))
-  fail("home: approved Smart Base weekly-trend visual is missing");
+if (
+  !home.includes("product-visualization-smart-base.png") ||
+  !home.includes("Wellness insights that connect the dots.")
+)
+  fail("home: verified Smart Base product story is missing");
+if (home.includes("smart-base-weekly-trend-v1.png"))
+  fail("home: incorrect generated Smart Base device remains");
 if (
   !home.includes("senior-dog-care-guide-book-v2.png") ||
   !home.includes('href="/guide/"') ||
-  !home.includes("Explore the complete guide")
+  !home.includes("Explore the guide")
 )
   fail("home: Senior Dog Care Guide book section is incomplete");
 for (const path of [
@@ -588,9 +593,9 @@ for (const rule of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
   const declarations = rule[2];
   if (
     /object-fit:\s*cover/.test(declarations) &&
-    !/home-contract-support/.test(selector)
+    !/home-contract-(?:support|circle)/.test(selector)
   )
-    fail("styles: cropping is only allowed for equal editorial support-card frames");
+    fail("styles: cropping is only allowed for explicit editorial media frames");
 }
 if (
   !css.includes("@media (max-width: 900px)") ||

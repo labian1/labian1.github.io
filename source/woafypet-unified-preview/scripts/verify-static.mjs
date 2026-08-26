@@ -244,16 +244,33 @@ for (const [route, html] of routeHtml) {
 const home = routeHtml.get("/") || "";
 if (!home.includes("Trusted by 10,000+ pet owners"))
   fail("/: missing the user-supplied 10,000+ pet-owner trust signal");
-if (!home.includes('class="home-trust-proof"'))
-  fail("/: missing the integrated homepage credibility proof");
+if (!home.includes('class="home-platform-model"'))
+  fail("/: missing the platform, differentiation and business-model explanation");
+if (home.includes('class="home-trust-proof"'))
+  fail("/: obsolete circular trust strip remains");
 if (home.includes('class="home-proof-strip"'))
   fail("/: obsolete standalone credibility strip remains");
 
 if (
   !home.includes("home-ref-hero") ||
-  !home.includes("Know what your aging dog needs next.")
+  !home.includes("Know what your") ||
+  !home.includes("aging dog needs next.")
 )
   fail("home: missing result-driven care hero");
+for (const message of [
+  "What it does",
+  "Why it is different",
+  "How we make money",
+  "Revenue comes from WoafyPet products",
+])
+  if (!home.includes(message)) fail(`home: missing clear platform message ${message}`);
+for (const removed of [
+  "Educational guidance—not a diagnosis. Urgent changes still need veterinary care.",
+  "Six everyday care paths",
+  "Public examples with owner consent",
+  "WoafyPet Full Smart Bed · current prototype",
+])
+  if (home.includes(removed)) fail(`home: removed copy remains ${removed}`);
 if (count(home, /class="home-care-hub"/g) !== 1)
   fail("home: expected one consolidated Care Circle topic section");
 if (count(home, /class="home-circle-card"/g) !== 6)

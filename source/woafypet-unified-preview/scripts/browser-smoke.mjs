@@ -444,6 +444,8 @@ async function checkNavigation(page, route, viewport, failures) {
 
 async function checkHome(page, viewport, baseUrl, failures) {
   for (const [selector, expected] of [
+    [".home-platform-model", 1],
+    [".home-platform-model article", 3],
     [".home-care-hub", 1],
     [".home-circle-card", 6],
     [".home-ref-guide", 1],
@@ -472,6 +474,8 @@ async function checkHome(page, viewport, baseUrl, failures) {
   }
   if ((await page.locator(".home-hero-chat").count()) !== 1)
     failures.push("/: homepage Care Circle chatbox is missing");
+  if ((await page.locator(".home-care-hub > footer").count()) !== 0)
+    failures.push("/: redundant Care Circle proof footer remains");
   if ((await page.locator("[data-home-question-form]").count()) !== 0)
     failures.push("/: legacy homepage question shortcut remains");
   const heroHeight = await page
@@ -522,10 +526,36 @@ async function checkHome(page, viewport, baseUrl, failures) {
   if ((await page.locator("[data-guide-delivery]").count()) !== 1)
     failures.push("/: expected one guide delivery form");
   const proofSizes = await page
-    .locator(".home-trust-proof strong")
+    .locator(".home-platform-model article h3")
     .evaluateAll((nodes) => nodes.map((node) => parseFloat(getComputedStyle(node).fontSize)));
   if (proofSizes.length !== 3 || proofSizes.some((size) => size < 16))
-    failures.push(`/: trust proof is missing or too small (${proofSizes.join(", ")}px)`);
+    failures.push(`/: platform explanation is missing or too small (${proofSizes.join(", ")}px)`);
+  const headingMetrics = await page
+    .locator([
+      ".home-ref-hero h1",
+      ".home-platform-model > header h2",
+      ".home-care-hub > header h2",
+      ".home-guide-intro h2",
+      ".home-vet-testimonials > header h2",
+      ".home-ref-bed > header h2",
+      ".home-bed-copy h3",
+      ".home-support-paths h2",
+    ].join(", "))
+    .evaluateAll((nodes) =>
+      nodes.map((node) => {
+        const style = getComputedStyle(node);
+        const lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2;
+        return {
+          copy: (node.textContent || "").trim(),
+          lines: node.getBoundingClientRect().height / lineHeight,
+        };
+      }),
+    );
+  for (const heading of headingMetrics)
+    if (heading.lines > 2.15)
+      failures.push(
+        `/: ${viewport.name} section title exceeds two lines (${heading.lines.toFixed(1)}: ${heading.copy})`,
+      );
   if (viewport.width === 1440) {
     const productWidth = await page
       .locator(".home-bed-comfort-story figure img")

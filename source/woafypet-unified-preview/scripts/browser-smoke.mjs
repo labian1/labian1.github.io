@@ -554,12 +554,19 @@ async function checkHome(page, viewport, baseUrl, failures) {
     failures.push("/: first-action dog profile photo upload is missing");
   if ((await page.getByRole("heading", { name: "Care rooted in veterinary knowledge." }).count()) !== 1)
     failures.push("/: concise veterinary-evidence section is incomplete");
+  if ((await page.getByText("Silvan R. Urfer, Dr. med. vet.", { exact: true }).count()) !== 1)
+    failures.push("/: Silvan Urfer credential is missing");
   if (
     (await page.locator('.home-contract-product img[src*="bed-layers.png"]').count()) !== 1 ||
     (await page.locator('.home-contract-insights img[src*="product-visualization-smart-base.png"]').count()) !== 1 ||
     (await page.locator('main img[src*="smart-base-weekly-trend-v1.png"]').count()) !== 0
   )
     failures.push("/: homepage product visuals are not grounded in the verified WoafyPet system");
+  if (
+    (await page.locator(".home-bed-proof > div").count()) !== 5 ||
+    (await page.locator(".home-insight-metrics > div").count()) !== 4
+  )
+    failures.push("/: complete five-layer bed or four-signal Smart Base explanation is missing");
   const smartBedHref = await page
     .locator('.home-contract-bed a[href="https://www.woafy.pet/"]')
     .first()
@@ -1408,7 +1415,7 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
           message: "I would like to meet someone navigating mobility changes.",
           consent: true,
         },
-        "https://www.woafmeow.com/api/contact",
+        "https://woafypet-senior-care.pages.dev/api/contact",
         apiCalls,
         failures,
       );
@@ -1434,7 +1441,7 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
             await page
               .locator("[data-form-title='Wednesday introduction'] [data-form-note]")
               .innerText(),
-          ).includes("introduction request is with the woafmeow team")
+          ).includes("introduction request is saved")
         )
           failures.push(`${route}: Wednesday confirmation message is wrong`);
       }
@@ -1483,7 +1490,7 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
         email: "taylor@example.com",
         message: "I need help choosing the right care lesson.",
       },
-      "https://www.woafmeow.com/api/contact",
+      "https://woafypet-senior-care.pages.dev/api/contact",
       apiCalls,
       failures,
     );
@@ -1498,20 +1505,24 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
         !normalize(await dialog.innerText()).includes("$10 per tree")
       )
         failures.push(`${route}: price dialog did not open`);
-      await submitGeneric(
-        page,
-        "[data-tree-purchase] form",
-        {
-          name: "Taylor",
-          email: "taylor@example.com",
-          petName: "Bobby",
-          meaning: "Always beside us.",
-        },
-        "https://www.woafmeow.com/api/memorial-interest",
-        apiCalls,
-        failures,
+      const checkoutForm = page.locator("[data-tree-purchase] form");
+      await checkoutForm.locator('[name="name"]').fill("Taylor");
+      await checkoutForm.locator('[name="email"]').fill("taylor@example.com");
+      await checkoutForm.locator('[name="petName"]').fill("Bobby");
+      await checkoutForm.locator('[name="meaning"]').fill("Always beside us.");
+      const checkoutCallsBefore = apiCalls.length;
+      await checkoutForm.evaluate((node) => node.requestSubmit());
+      await page.waitForTimeout(150);
+      const checkoutCall = apiCalls.slice(checkoutCallsBefore).find(
+        (item) => item.url === "https://woafypet-senior-care.pages.dev/api/memorial-tree-checkout",
       );
-      await page.locator("[data-tree-purchase-close]").click();
+      if (!checkoutCall || checkoutCall.method !== "POST")
+        failures.push(`${route}: memorial form did not open Stripe checkout`);
+      if (checkoutCall) {
+        const payload = JSON.parse(checkoutCall.body || "{}");
+        if (!String(payload.pageContext || "").includes("/memorial-tree/"))
+          failures.push(`${route}: checkout request omitted its return page`);
+      }
     }
   }
 }
@@ -1640,6 +1651,21 @@ async function main() {
             contentType: "application/json",
             body: JSON.stringify({ delivery: "fallback", guideUrl: "/guide/" }),
           });
+        } else if (request.url().endsWith("/api/memorial-tree-checkout")) {
+          await route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify({ checkoutUrl: "https://checkout.stripe.com/c/pay/test-session", orderId: "test-order" }),
+          });
+        } else if (request.url().endsWith("/api/contact")) {
+          const isWednesday = payload.includes('"topic":"wednesday-match"');
+          await route.fulfill({
+            status: 201,
+            contentType: "application/json",
+            body: JSON.stringify({ message: isWednesday
+              ? "Your introduction request is saved. Our team will email you if a suitable match is ready for both people to review."
+              : "Your message is with the WoafMeow team." }),
+          });
         } else {
           await route.fulfill({
             status: 200,
@@ -1650,6 +1676,13 @@ async function main() {
       };
       await context.route("https://www.woafmeow.com/api/**", mockApi);
       await context.route("https://woafypet-senior-care.pages.dev/api/**", mockApi);
+      await context.route("https://checkout.stripe.com/**", async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "text/html",
+          body: "<!doctype html><title>Stripe Checkout test</title><p>Secure checkout opened.</p>",
+        });
+      });
       for (const route of options.routes) {
         const page = await context.newPage();
         await page.setViewportSize({

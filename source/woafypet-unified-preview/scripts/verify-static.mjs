@@ -330,16 +330,29 @@ if (
   fail("home: personalized account and dog profile form is incomplete");
 if (
   !home.includes("bed-layers.png") ||
-  !home.includes("Deep rest for stiff joints.") ||
-  !home.includes("Multi-layer foam") ||
-  !home.includes("Removable cover")
+  !home.includes("Support stiff joints. Spot change sooner.") ||
+  !home.includes("Low-entry washable shell") ||
+  !home.includes("Supportive bolster foam") ||
+  !home.includes("Pressure-relief layer") ||
+  !home.includes("Stable orthopedic core") ||
+  !home.includes("Smart Base")
 )
   fail("home: Bed + Smart Base system is incomplete");
 if (
   !home.includes("product-visualization-smart-base.png") ||
-  !home.includes("Wellness insights that connect the dots.")
+  !home.includes("Spot health changes sooner.") ||
+  !home.includes("Rest duration") ||
+  !home.includes("Night-movement pattern") ||
+  !home.includes("Bed-use frequency") ||
+  !home.includes("Weight trend") ||
+  !home.includes("does not diagnose pain or disease")
 )
   fail("home: verified Smart Base product story is missing");
+if (
+  !home.includes("Silvan R. Urfer, Dr. med. vet.") ||
+  !home.includes("Dog Aging Project")
+)
+  fail("home: Silvan Urfer credential is missing");
 if (home.includes("smart-base-weekly-trend-v1.png"))
   fail("home: incorrect generated Smart Base device remains");
 if (
@@ -450,7 +463,7 @@ if (
   !account.includes("data-private-lessons-list")
 )
   fail("account: structured dog profile or private lesson library is incomplete");
-if (!account.includes('data-account-api="https://www.woafmeow.com/api/enroll"'))
+if (!account.includes('data-account-api="https://woafypet-senior-care.pages.dev/api/enroll"'))
   fail("account: profile API is missing");
 if (
   !account.includes('href="/health-timeline/"') ||
@@ -512,7 +525,7 @@ if (
   fail("find care: must use only care-type and region selectors");
 if (
   !directory.includes(
-    'data-provider-api="https://www.woafmeow.com/api/provider-inquiry"',
+    'data-provider-api="https://woafypet-senior-care.pages.dev/api/provider-inquiry"',
   )
 )
   fail("find care: provider form API missing");
@@ -568,11 +581,12 @@ const memorial = routeHtml.get("/memorial-tree/") || "";
 const dialogIndex = memorial.indexOf("<dialog");
 if (dialogIndex < 0 || !memorial.slice(dialogIndex).includes("$10 per tree"))
   fail("memorial: price must appear in the purchase dialog");
-if (dialogIndex > 0 && memorial.slice(0, dialogIndex).includes("$10"))
-  fail("memorial: price leaked before purchase click");
+if (!memorial.includes("Stripe collects the $10 payment"))
+  fail("memorial: secure-payment price disclosure is missing");
 if (
   !memorial.includes("Usambara") ||
-  !memorial.includes("api/memorial-interest")
+  !memorial.includes("api/memorial-tree-checkout") ||
+  !memorial.includes("data-checkout-form")
 )
   fail("memorial: partner or request endpoint missing");
 if (
@@ -584,7 +598,7 @@ if (
 const wednesday = routeHtml.get("/wednesday-introductions/") || "";
 if (
   !wednesday.includes(
-    'data-submit-api="https://www.woafmeow.com/api/contact"',
+    'data-submit-api="https://woafypet-senior-care.pages.dev/api/contact"',
   ) ||
   !wednesday.includes('value="wednesday-match"')
 )
@@ -593,8 +607,11 @@ if (!wednesday.includes("Under 1 year") || !wednesday.includes("16+ years"))
   fail("Wednesday: dog age range is incomplete");
 
 const support = routeHtml.get("/support/") || "";
-if (!support.includes('data-submit-api="https://www.woafmeow.com/api/contact"'))
+if (!support.includes('data-submit-api="https://woafypet-senior-care.pages.dev/api/contact"'))
   fail("support: contact endpoint missing");
+const petLoss = routeHtml.get("/pet-loss-support/") || "";
+if (!petLoss.includes('href="/memorial-tree/"') || !petLoss.includes("Plant a memorial tree"))
+  fail("pet loss: memorial-tree pathway is missing");
 if (!support.includes('class="contact-direct"') || !support.includes("Talk to a real person."))
   fail("support: direct contact page is missing");
 if (/support-faq|Common questions|FAQs/i.test(support))
@@ -612,6 +629,15 @@ if (/A NOTE FROM ROBERT|Co-Founder of WoafMeow|I[’']m Robert/i.test(about))
   fail("about: removed Robert note or signoff remains");
 if (/story-mission-v7|story-build-v7|story-values/.test(about))
   fail("about: old split mission and values sections remain");
+for (const [route, html] of routeHtml) {
+  for (const quote of html.matchAll(/<blockquote\b[\s\S]*?<\/blockquote>/gi)) {
+    const quoteEnd = (quote.index || 0) + quote[0].length;
+    const attributionWindow = `${quote[0]}${html.slice(quoteEnd, quoteEnd + 280)}`;
+    if (!/<cite\b|<\/blockquote>\s*<strong>\s*(?:Silvan|Dr\.|Robert|Annika)/i.test(attributionWindow)) {
+      fail(`${route}: quotation is missing a named speaker`);
+    }
+  }
+}
 if ([...routeHtml.values()].some((html) => />FAQs?</i.test(html)))
   fail("site: FAQ navigation remains");
 

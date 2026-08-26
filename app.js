@@ -74,6 +74,14 @@
       if (endpoint) {
         const isGuideDelivery = form.hasAttribute("data-guide-delivery");
         const isOwnerMatch = form.hasAttribute("data-owner-match-form");
+        const isCheckout = form.hasAttribute("data-checkout-form");
+        if (isOwnerMatch && String(stored.message || "").trim().length < 12) {
+          note.textContent =
+            "Tell us a little more about what you hope to talk through.";
+          note.classList.remove("is-confirmed");
+          form.querySelector("[name='message']")?.focus();
+          return;
+        }
         const requestId = isOwnerMatch
           ? `WM-${Date.now().toString(36).toUpperCase()}`
           : "";
@@ -119,6 +127,19 @@
             }
             throw new Error(result.error || "The request was not sent.");
           }
+          if (isCheckout) {
+            const checkoutUrl = new URL(String(result.checkoutUrl || ""));
+            if (
+              checkoutUrl.protocol !== "https:" ||
+              checkoutUrl.hostname !== "checkout.stripe.com"
+            ) {
+              throw new Error("Secure Stripe checkout did not open correctly.");
+            }
+            note.textContent = "Opening secure Stripe checkout…";
+            note.classList.add("is-confirmed");
+            window.location.assign(checkoutUrl.href);
+            return;
+          }
           note.textContent = result.message || form.dataset.successMessage || "Thank you. Your request was sent.";
           note.classList.add("is-confirmed");
           form.reset();
@@ -126,7 +147,10 @@
           if (isGuideDelivery) {
             showGuideFallback(note, form.dataset.guideUrl);
           } else {
-            note.textContent = "We could not send this right now. Please try again.";
+            note.textContent =
+              error instanceof Error && error.message
+                ? error.message
+                : "We could not send this right now. Please try again.";
             note.classList.remove("is-confirmed");
           }
         } finally {
@@ -732,6 +756,18 @@
     });
 
   const treeDialog = document.querySelector("[data-tree-purchase]");
+  const checkoutStatus = document.querySelector("[data-checkout-status]");
+  const checkoutState = new URLSearchParams(window.location.search).get(
+    "checkout",
+  );
+  if (checkoutStatus && checkoutState === "success") {
+    checkoutStatus.textContent =
+      "Stripe returned you after checkout. We are confirming the payment now; your memorial email will arrive after confirmation.";
+    checkoutStatus.classList.add("is-confirmed");
+  } else if (checkoutStatus && checkoutState === "cancelled") {
+    checkoutStatus.textContent =
+      "Checkout was cancelled. No payment was completed.";
+  }
   document.querySelectorAll("[data-tree-purchase-open]").forEach((button) => {
     button.addEventListener("click", () => {
       if (treeDialog?.showModal) treeDialog.showModal();

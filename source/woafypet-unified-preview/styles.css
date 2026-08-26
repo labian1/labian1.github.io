@@ -22798,3 +22798,315 @@ html body.home-v17 .home-insight-metrics {
     max-height: none !important;
   }
 }
+
+/* 2026-08-27 — complete Bed + Smart Base story and truthful care workflows. */
+html body.home-v17 .home-vet-credential {
+  display: grid;
+  gap: 3px;
+  margin: 18px 0;
+}
+html body.home-v17 .home-vet-credential strong {
+  color: var(--contract-ink);
+  font-size: 1rem;
+}
+html body.home-v17 .home-vet-credential span {
+  color: #75675f;
+  font-size: 0.92rem;
+}
+
+html body.home-v17 .home-contract-bed {
+  grid-template-columns: minmax(315px, 0.65fr) minmax(680px, 1.35fr) minmax(315px, 0.65fr) !important;
+  min-height: 560px !important;
+  padding: 0 !important;
+}
+html body.home-v17 .home-contract-bed-copy {
+  align-self: center !important;
+  padding: 48px 12px 48px 34px !important;
+}
+html body.home-v17 .home-contract-bed h2 {
+  max-width: 520px !important;
+  font-size: clamp(2.05rem, 2.35vw, 2.5rem) !important;
+  line-height: 0.98 !important;
+  text-wrap: balance !important;
+}
+html body.home-v17 .home-contract-product {
+  position: relative !important;
+  align-self: center !important;
+  justify-self: stretch !important;
+  padding: 30px 0 !important;
+}
+html body.home-v17 .home-contract-product :is(picture, img) {
+  width: 100% !important;
+  max-width: 760px !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+html body.home-v17 .home-bed-fifth-marker {
+  position: absolute;
+  right: 3.2%;
+  bottom: 11%;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: #a65a35;
+  color: #fff;
+  font: 800 0.95rem/1 Arial, sans-serif;
+  box-shadow: 0 4px 14px rgba(67, 35, 24, 0.18);
+}
+html body.home-v17 .home-bed-proof {
+  grid-column: auto !important;
+  grid-template-columns: 1fr !important;
+  align-self: stretch !important;
+  align-content: center !important;
+  padding: 22px !important;
+  border: 0 !important;
+  border-left: 1px solid #e3d5cb !important;
+  border-radius: 0 !important;
+  background: #f7efe7 !important;
+}
+html body.home-v17 .home-bed-proof > div {
+  grid-template-columns: 34px minmax(0, 1fr) !important;
+  min-height: 0 !important;
+  padding: 15px 0 !important;
+  border: 0 !important;
+}
+html body.home-v17 .home-bed-proof > div + div {
+  border-top: 1px solid #dfd0c5 !important;
+  border-left: 0 !important;
+}
+html body.home-v17 .home-bed-proof > div > span {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--contract-clay);
+  color: #fff !important;
+  font-size: 0.84rem !important;
+  font-weight: 850;
+}
+html body.home-v17 .home-bed-proof p {
+  font-size: 0.84rem !important;
+  line-height: 1.35 !important;
+}
+html body.home-v17 .home-bed-proof strong {
+  margin-bottom: 2px !important;
+  font-size: 0.9rem !important;
+}
+
+html body.home-v17 .home-contract-close {
+  grid-template-columns: 1fr !important;
+}
+html body.home-v17 .home-contract-insights {
+  grid-template-columns: minmax(340px, 0.38fr) minmax(0, 0.62fr) !important;
+  min-height: 520px !important;
+  border-right: 0 !important;
+  border-bottom: 1px solid var(--contract-line) !important;
+}
+html body.home-v17 .home-contract-insights figure {
+  align-self: stretch !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  padding: 32px !important;
+}
+html body.home-v17 .home-contract-insights figure :is(picture, img) {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+html body.home-v17 .home-contract-insights > div {
+  padding: 48px clamp(38px, 4vw, 62px) 42px !important;
+}
+html body.home-v17 .home-contract-insights h2 {
+  max-width: 760px !important;
+  font-size: clamp(2.45rem, 3.2vw, 3.35rem) !important;
+  line-height: 1 !important;
+  text-wrap: balance !important;
+}
+html body.home-v17 .home-insight-metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  margin: 22px 0 18px !important;
+}
+html body.home-v17 .home-insight-metrics > div {
+  min-height: 132px;
+  padding: 16px !important;
+  border: 1px solid #ded2c9 !important;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.7);
+}
+html body.home-v17 .home-insight-metrics dt {
+  margin-bottom: 7px;
+  font-size: 0.98rem;
+}
+html body.home-v17 .home-insight-metrics dd {
+  color: #655a54 !important;
+  font-size: 0.86rem;
+  line-height: 1.42;
+}
+html body.home-v17 .home-insight-action {
+  margin: 0 0 8px !important;
+  color: #493f39;
+  font-size: 0.93rem;
+}
+html body.home-v17 .home-contract-insights > div > small {
+  display: block;
+  margin-bottom: 16px;
+  color: #75675f;
+  font-size: 0.82rem;
+}
+
+body.loss-v7 .loss-first-days article {
+  display: flex;
+  flex-direction: column;
+}
+body.loss-v7 .loss-first-days article .text-link {
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 16px;
+}
+.loss-script-label,
+.guide-script-label,
+.memorial-words-label {
+  display: block;
+  margin: 20px 0 8px;
+  color: #b84f32;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.loss-call-script,
+.guide-visit-script,
+.memorial-wording {
+  margin: 0 0 24px;
+  padding-left: 22px;
+  border-left: 4px solid #df7b5d;
+  color: #3d322d;
+  font-family: Georgia, serif;
+  font-size: clamp(1.35rem, 2.15vw, 2rem);
+  line-height: 1.38;
+}
+body.memorial-v7 .memorial-memory-prompts .wm-wrap > div > p {
+  margin: 0;
+  padding: 24px;
+  border-radius: 12px;
+  background: #fff;
+  color: #5d3a30;
+  font-family: Georgia, serif;
+  font-size: 1.25rem;
+  line-height: 1.35;
+}
+body.memorial-v7 .memorial-checkout-status {
+  margin: 18px 0 0;
+  color: #5d3a30;
+  font-weight: 750;
+}
+.bobby-letter blockquote cite {
+  display: block;
+  margin-top: 18px;
+  color: #7b6c64;
+  font-family: Arial, sans-serif;
+  font-size: 0.95rem;
+  font-style: normal;
+  line-height: 1.45;
+}
+
+@media (max-width: 1180px) {
+  html body.home-v17 .home-contract-bed {
+    grid-template-columns: minmax(280px, 0.8fr) minmax(390px, 1.2fr) !important;
+  }
+  html body.home-v17 .home-contract-bed-copy {
+    padding: 42px 18px 42px 38px !important;
+  }
+  html body.home-v17 .home-bed-proof {
+    grid-column: 1 / -1 !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    padding: 0 24px !important;
+    border-top: 1px solid #e3d5cb !important;
+    border-left: 0 !important;
+  }
+  html body.home-v17 .home-bed-proof > div {
+    grid-template-columns: 30px minmax(0, 1fr) !important;
+    padding: 20px 12px !important;
+  }
+  html body.home-v17 .home-bed-proof > div + div {
+    border-top: 0 !important;
+    border-left: 1px solid #dfd0c5 !important;
+  }
+}
+
+@media (max-width: 900px) {
+  html body.home-v17 .home-contract-bed,
+  html body.home-v17 .home-contract-insights {
+    grid-template-columns: 1fr !important;
+  }
+  html body.home-v17 .home-contract-bed-copy,
+  html body.home-v17 .home-contract-insights > div {
+    padding: 40px 32px !important;
+  }
+  html body.home-v17 .home-contract-product {
+    padding: 10px 24px 30px !important;
+  }
+  html body.home-v17 .home-bed-proof {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    padding: 0 24px 18px !important;
+  }
+  html body.home-v17 .home-bed-proof > div,
+  html body.home-v17 .home-bed-proof > div + div {
+    border: 0 !important;
+    border-top: 1px solid #dfd0c5 !important;
+  }
+  html body.home-v17 .home-contract-insights figure {
+    min-height: 300px !important;
+    padding: 26px !important;
+  }
+}
+
+@media (max-width: 620px) {
+  html body.home-v17 .home-contract-bed-copy,
+  html body.home-v17 .home-contract-insights > div {
+    padding: 30px 22px !important;
+  }
+  html body.home-v17 .home-contract-bed h2,
+  html body.home-v17 .home-contract-insights h2 {
+    max-width: none !important;
+    font-size: clamp(2rem, 10.2vw, 2.55rem) !important;
+    line-height: 1.02 !important;
+  }
+  html body.home-v17 .home-contract-product {
+    padding: 0 12px 24px !important;
+  }
+  html body.home-v17 .home-bed-fifth-marker {
+    right: 5% !important;
+    bottom: 10% !important;
+    width: 30px !important;
+    height: 30px !important;
+  }
+  html body.home-v17 .home-bed-proof,
+  html body.home-v17 .home-insight-metrics {
+    grid-template-columns: 1fr !important;
+  }
+  html body.home-v17 .home-bed-proof {
+    padding: 0 22px 18px !important;
+  }
+  html body.home-v17 .home-bed-proof > div {
+    min-height: 0 !important;
+    padding: 14px 0 !important;
+  }
+  html body.home-v17 .home-contract-insights figure {
+    min-height: 220px !important;
+    padding: 20px !important;
+  }
+  html body.home-v17 .home-insight-metrics > div {
+    min-height: 0 !important;
+  }
+  .loss-call-script,
+  .guide-visit-script,
+  .memorial-wording {
+    padding-left: 16px;
+    font-size: 1.25rem;
+  }
+}

@@ -1,6 +1,6 @@
 # WoafMeow server source
 
-This folder contains the two server implementations retained for WoafMeow forms, accounts, care profiles, Care Circle, health tracking, directory submissions, memorial requests, and operational notifications.
+This folder contains the two server implementations retained for WoafMeow forms, accounts, care profiles, Care Circle, health tracking, directory submissions, memorial-tree checkout, and operational notifications.
 
 ## Cloudflare Pages
 
@@ -28,7 +28,7 @@ wrangler pages dev ../../woafypet-unified-preview/dist \
   --persist-to .wrangler/state
 ```
 
-The historical schema contains retired commerce tables and routes. The current public product direction does not expose a physical-product store; retired commerce endpoints return `410` or are omitted from the staged Functions bundle.
+The public site does not expose the retired physical-product store. The active commerce path is the server-priced $10 memorial-tree Stripe Checkout flow. Its signed webhook records payment idempotently and sends one confirmation from `hello@woafmeow.com` only after Stripe reports the session as paid.
 
 ## Hostinger
 
@@ -41,9 +41,10 @@ The Hostinger API requires PHP 8.1 or newer, PHP cURL for Brevo delivery, and wr
 ## Required private configuration
 
 - `BREVO_API_KEY`
-- `BREVO_SENDER_EMAIL` (a sender verified in Brevo)
+- `BREVO_SENDER_EMAIL` (`hello@woafmeow.com`, verified in Brevo)
 - `FORM_NOTIFICATION_EMAIL`
+- `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`
 - Optional Brevo list IDs used by the Cloudflare helpers
 - `ADMIN_DASHBOARD_KEY` for the private Cloudflare operations dashboard
 
-The repository intentionally excludes credentials, customer submissions, health records, uploaded files, local databases, and deployment caches.
+The repository intentionally excludes credentials, customer submissions, health records, uploaded files, local databases, and deployment caches. Stripe must send `checkout.session.completed` and `checkout.session.async_payment_succeeded` to `https://woafypet-senior-care.pages.dev/api/stripe-webhook`.

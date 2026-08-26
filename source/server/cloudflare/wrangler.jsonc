@@ -1,7 +1,7 @@
 {
   "name": "woafypet-senior-care",
-  "pages_build_output_dir": "../../woafypet-unified-preview/dist",
-  "compatibility_date": "2026-05-07",
+  "pages_build_output_dir": "../outputs/woafypet-senior-care-live",
+  "compatibility_date": "2026-08-27",
   "ai": {
     "binding": "AI"
   },

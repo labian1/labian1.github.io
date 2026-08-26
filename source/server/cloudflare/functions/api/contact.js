@@ -37,11 +37,37 @@ export async function onRequestPost(context) {
   if (message.length < 12) return json({ error: "Add enough detail for us to understand the problem." }, 400);
   if (!consent) return json({ error: "Confirm that WoafMeow may answer your request." }, 400);
 
+  let storedMessage = message;
+  let requestId = "";
+  if (topic === "wednesday-match") {
+    const zip = cleanText(body.zip, 20);
+    const dogAge = cleanText(body.dogAge, 40);
+    const issue = cleanText(body.issue, 120);
+    const availability = cleanText(body.availability, 80);
+    const firstContact = cleanText(body.contact, 100);
+    const matchGoal = cleanText(body.matchGoal, 140);
+    requestId = cleanText(body.requestId, 80) || `WM-${Date.now().toString(36).toUpperCase()}`;
+    if (!zip) return json({ error: "Add your ZIP or postal code." }, 400);
+    if (!dogAge || !issue || !availability || !firstContact || !matchGoal) {
+      return json({ error: "Complete each introduction preference so we can consider a safe, useful match." }, 400);
+    }
+    storedMessage = [
+      `Request: ${requestId}`,
+      `ZIP/postal code: ${zip}`,
+      `Dog age: ${dogAge}`,
+      `Care issue: ${issue}`,
+      `Availability: ${availability}`,
+      `Preferred first contact: ${firstContact}`,
+      `Useful match: ${matchGoal}`,
+      `Conversation goal: ${message}`,
+    ].join("\n");
+  }
+
   const now = new Date().toISOString();
   try {
     const db = context.env.WAITLIST_DB;
     await db.prepare("INSERT INTO contact_messages (id, name, email, topic, message, status, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, 'new', ?6, ?6)")
-      .bind(crypto.randomUUID(), name, email, topic, message, now)
+      .bind(crypto.randomUUID(), name, email, topic, storedMessage, now)
       .run();
     await syncBrevoContact({
       env: context.env,
@@ -49,13 +75,19 @@ export async function onRequestPost(context) {
       email,
       firstName: name.split(" ")[0] || "",
       eventType: "contact_message",
-      eventProperties: { name, topic },
-      notificationProperties: { name, topic },
+      eventProperties: { topic, ...(requestId ? { request_id: requestId } : {}) },
+      notificationProperties: { name, topic, ...(requestId ? { requestId } : {}) },
       listKeys: ["BREVO_WEBSITE_LIST_ID"],
     });
   } catch {
     return json({ error: "We could not save that message right now. Please try again." }, 503);
   }
 
+  if (topic === "wednesday-match") {
+    return json({
+      message: "Your introduction request is saved. Our team will email you if a suitable match is ready for both people to review.",
+      requestId,
+    }, 201);
+  }
   return json({ message: "Your message is with the WoafMeow team." }, 201);
 }

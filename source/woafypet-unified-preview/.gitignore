@@ -4,3 +4,5 @@
 /scripts/artifacts/
 /.DS_Store
 /baseline-home-desktop.png
+/node_modules/
+/data/cache/

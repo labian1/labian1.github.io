@@ -16,22 +16,23 @@ const recipients = (value) => [...new Set(String(value || "robert.luo@woafmeow.c
   .map((email) => email.trim().toLowerCase())
   .filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)))];
 
-export async function sendBrevoEmail({ env, to, subject, htmlContent, recipientName = "" }) {
+export async function sendBrevoEmail({ env, to, subject, htmlContent, recipientName = "", attachments = [], senderEmail = "" }) {
   const apiKey = env.BREVO_API_KEY;
-  const senderEmail = String(env.BREVO_SENDER_EMAIL || "").trim().toLowerCase();
+  const fromEmail = String(senderEmail || env.BREVO_SENDER_EMAIL || "").trim().toLowerCase();
   const recipientEmail = String(to || "").trim().toLowerCase();
   if (!apiKey) return { status: "skipped", code: "missing_api_key" };
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(senderEmail)) return { status: "skipped", code: "missing_sender_email" };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fromEmail)) return { status: "skipped", code: "missing_sender_email" };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipientEmail)) return { status: "failed", code: "invalid_recipient" };
   try {
     const response = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: { "content-type": "application/json", "api-key": apiKey },
       body: JSON.stringify({
-        sender: { email: senderEmail, name: "WoafMeow" },
+        sender: { email: fromEmail, name: "WoafMeow" },
         to: [{ email: recipientEmail, ...(recipientName ? { name: recipientName } : {}) }],
         subject,
         htmlContent,
+        ...(attachments.length ? { attachment: attachments } : {}),
       }),
     });
     return { status: response.ok ? "sent" : "failed", code: String(response.status) };

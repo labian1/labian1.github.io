@@ -36,7 +36,6 @@ export async function onRequestPost(context) {
   const routineNotes = cleanText(body.routineNotes, 700);
   const ageYears = Number(body.ageYears);
   const rawWeight = body.weightLbs === "" || body.weightLbs == null ? null : Number(body.weightLbs);
-  const consent = body.consent === true;
   const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const focusOptions = new Set(["mobility", "sleep", "appetite", "comfort", "vet-visit", "not-sure"]);
 
@@ -46,7 +45,6 @@ export async function onRequestPost(context) {
   if (!Number.isFinite(ageYears) || ageYears < 0.1 || ageYears > 30) return json({ error: "Enter your pet's age in years." }, 400);
   if (rawWeight !== null && (!Number.isFinite(rawWeight) || rawWeight < 1 || rawWeight > 250)) return json({ error: "Enter a weight between 1 and 250 lb, or leave it blank." }, 400);
   if (!focusOptions.has(focus)) return json({ error: "Choose one thing you would like to keep an eye on." }, 400);
-  if (!consent) return json({ error: "Please confirm that we can send profile and Care Circle updates." }, 400);
 
   const db = context.env.WAITLIST_DB;
   const now = new Date().toISOString();
@@ -63,7 +61,7 @@ export async function onRequestPost(context) {
 
     if (existing?.id) {
       await db
-        .prepare("UPDATE care_circle_members SET first_name = ?1, location = ?2, token_hash = ?3, consent_at = ?4, updated_at = ?4 WHERE id = ?5")
+        .prepare("UPDATE care_circle_members SET first_name = ?1, location = ?2, token_hash = ?3, updated_at = ?4 WHERE id = ?5")
         .bind(ownerName, location || null, tokenHash, now, memberId)
         .run();
     } else {

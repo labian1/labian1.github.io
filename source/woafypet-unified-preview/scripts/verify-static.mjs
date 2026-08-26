@@ -69,6 +69,13 @@ const banned = [
   /no information (?:is|was) sent or stored/i,
   /sample interface content|sample member activity/i,
   /You will leave with one repeatable mobility observation/i,
+  /How we make money/i,
+  /Revenue comes from WoafyPet products/i,
+  /Private until you choose otherwise/i,
+  /Other\s*\/\s*not sure/i,
+  /A focused answer for/i,
+  /I was Bobby/i,
+  /You will know how much the bowl changes and what happens alongside it/i,
 ];
 const exactSocialUrls = [
   "https://discord.gg/9wNjFp2dNX",
@@ -77,7 +84,7 @@ const exactSocialUrls = [
   "https://linkedin.com/company/woafmeow",
 ];
 // Generated design exports are references, never production page assets.
-const bannedLegacyImageNames = ["exec-", "codex-clipboard-"];
+const bannedLegacyImageNames = ["exec-", "codex-clipboard-", "hero-bed.webp"];
 
 function args() {
   let dist = defaultDist;
@@ -245,7 +252,7 @@ const home = routeHtml.get("/") || "";
 if (!home.includes("Trusted by 10,000+ pet owners"))
   fail("/: missing the user-supplied 10,000+ pet-owner trust signal");
 if (!home.includes('class="home-platform-model"'))
-  fail("/: missing the platform, differentiation and business-model explanation");
+  fail("/: missing the platform and differentiation explanation");
 if (home.includes('class="home-trust-proof"'))
   fail("/: obsolete circular trust strip remains");
 if (home.includes('class="home-proof-strip"'))
@@ -258,12 +265,14 @@ if (
 )
   fail("home: missing result-driven care hero");
 for (const message of [
-  "What it does",
+  "What WoafMeow does",
   "Why it is different",
-  "How we make money",
-  "Revenue comes from WoafyPet products",
 ])
   if (!home.includes(message)) fail(`home: missing clear platform message ${message}`);
+if (count(home, /<section class="home-platform-model"[\s\S]*?<article>/g) !== 1)
+  fail("home: platform explanation section is malformed");
+if (count(home.match(/<section class="home-platform-model"[\s\S]*?<\/section>/)?.[0] || "", /<article>/g) !== 2)
+  fail("home: platform explanation must contain exactly two concise points");
 for (const removed of [
   "Educational guidance—not a diagnosis. Urgent changes still need veterinary care.",
   "Six everyday care paths",
@@ -320,6 +329,7 @@ if (
   !home.includes("data-first-action-dialog") ||
   !home.includes("data-pet-photo-input") ||
   !home.includes('name="breed"') ||
+  !home.includes("Type your dog’s specific breed or mix") ||
   !home.includes('name="petAge"')
 )
   fail("home: personalized account and dog profile form is incomplete");
@@ -359,6 +369,8 @@ if (count(careCircle, /data-question-image-input\b/g) !== 1)
   fail("care circle: optional question photo upload is missing");
 if (count(careCircle, /data-circle-filter=/g) < 7)
   fail("care circle: topic filters missing");
+if (count(careCircle, /name="lessonVisibility"/g) !== 2)
+  fail("care circle: compact per-question privacy choice is incomplete");
 
 for (const route of lessonRoutes) {
   const html = routeHtml.get(route) || "";
@@ -389,6 +401,13 @@ for (const route of lessonRoutes) {
     count(html, /data-tailored-chapter-summary="[1234]"/g) !== 4
   )
     fail(`${route}: condition-tailored chapter hooks are missing`);
+  if (
+    count(html, /class="lesson-personal-context"/g) !== 1 ||
+    count(html, /data-tailored-context/g) !== 1
+  )
+    fail(`${route}: dog-specific lesson context must appear exactly once`);
+  if (/class="tailored-context"|class="lesson-result-v7"/.test(html))
+    fail(`${route}: repeated or obsolete focused-answer section remains`);
   const lessonMain = html.match(/<main\b[\s\S]*?<\/main>/)?.[0] || "";
   const lessonImages = [
     ...lessonMain.matchAll(/<img\b[^>]*\bsrc="([^"]+)"/g),
@@ -413,10 +432,9 @@ if (!account.includes("Choose Public or Private separately"))
 if (
   !account.includes('name="ownerName"') ||
   !account.includes('name="breed"') ||
-  !account.includes("Mixed breed") ||
-  !account.includes("Other / not sure")
+  !account.includes("Type your dog’s specific breed or mix")
 )
-  fail("account: owner identity or breed selection is incomplete");
+  fail("account: owner identity or typed breed field is incomplete");
 if (!account.includes('data-account-api="https://www.woafmeow.com/api/enroll"'))
   fail("account: profile API is missing");
 if (
@@ -541,10 +559,12 @@ if (/support-faq|Common questions|FAQs/i.test(support))
 
 const about = routeHtml.get("/about/") || "";
 if (
-  !about.includes("I was Bobby. This is why WoafMeow exists.") ||
+  !about.includes("Bobby was my dog.") ||
+  !about.includes("His love built WoafMeow.") ||
+  !about.includes("I’m Robert.") ||
   !about.includes("OUR MISSION · HOW WE HELP")
 )
-  fail("about: Bobby's first-person story or combined mission is missing");
+  fail("about: Robert's first-person Bobby story or combined mission is missing");
 if (/story-mission-v7|story-build-v7|story-values/.test(about))
   fail("about: old split mission and values sections remain");
 if ([...routeHtml.values()].some((html) => />FAQs?</i.test(html)))

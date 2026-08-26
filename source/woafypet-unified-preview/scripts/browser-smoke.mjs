@@ -85,6 +85,13 @@ const BANNED_COPY = [
   /no information (?:is|was) sent or stored|your information was not sent or stored/i,
   /woafypet does not perform background checks|no public profile|no swiping/i,
   /you will leave with one repeatable mobility observation/i,
+  /how we make money/i,
+  /revenue comes from woafypet products/i,
+  /private until you choose otherwise/i,
+  /other\s*\/\s*not sure/i,
+  /a focused answer for/i,
+  /i was bobby/i,
+  /you will know how much the bowl changes and what happens alongside it/i,
 ];
 
 const EXACT_SOCIAL_URLS = [
@@ -94,7 +101,7 @@ const EXACT_SOCIAL_URLS = [
   "https://linkedin.com/company/woafmeow",
 ];
 // Generated design exports are references, never production page assets.
-const BANNED_LEGACY_IMAGE_NAMES = ["exec-", "codex-clipboard-"];
+const BANNED_LEGACY_IMAGE_NAMES = ["exec-", "codex-clipboard-", "hero-bed.webp"];
 const SHARED_LOGO_PATH = "/assets/woafmeow-logo-coral.png";
 const DYNAMIC_IMAGE_PLACEHOLDERS = [
   "[data-pet-photo-preview]",
@@ -284,7 +291,26 @@ async function checkGlobal(page, route, viewport, failures) {
         };
       },
     );
-    return { overflow, controls, type, sectionPadding };
+    const headingLines = [
+      ...document.querySelectorAll("main h1, main h2"),
+    ]
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        const lineHeight =
+          parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2;
+        return {
+          copy: (element.textContent || "").trim().replace(/\s+/g, " "),
+          lines: rect.height / lineHeight,
+          shown:
+            rect.width > 0 &&
+            rect.height > 0 &&
+            style.display !== "none" &&
+            style.visibility !== "hidden",
+        };
+      })
+      .filter((item) => item.shown);
+    return { overflow, controls, type, sectionPadding, headingLines };
   });
   if (layout.overflow > 1)
     failures.push(
@@ -302,6 +328,12 @@ async function checkGlobal(page, route, viewport, failures) {
     if (["P", "BUTTON", "LABEL"].includes(item.tag) && item.size < 13)
       failures.push(
         `${route} ${viewport.name}: text too small (${item.size}px: ${item.copy})`,
+      );
+  }
+  for (const heading of layout.headingLines) {
+    if (heading.lines > 2.15)
+      failures.push(
+        `${route} ${viewport.name}: title exceeds two lines (${heading.lines.toFixed(1)}: ${heading.copy})`,
       );
   }
   const paddingLimit = viewport.width <= 768 ? 100 : 130;
@@ -445,7 +477,7 @@ async function checkNavigation(page, route, viewport, failures) {
 async function checkHome(page, viewport, baseUrl, failures) {
   for (const [selector, expected] of [
     [".home-platform-model", 1],
-    [".home-platform-model article", 3],
+    [".home-platform-model article", 2],
     [".home-care-hub", 1],
     [".home-circle-card", 6],
     [".home-ref-guide", 1],
@@ -474,6 +506,8 @@ async function checkHome(page, viewport, baseUrl, failures) {
   }
   if ((await page.locator(".home-hero-chat").count()) !== 1)
     failures.push("/: homepage Care Circle chatbox is missing");
+  if ((await page.locator(".home-chat-status").count()) !== 0)
+    failures.push("/: obsolete account-wide privacy slogan remains");
   if ((await page.locator(".home-care-hub > footer").count()) !== 0)
     failures.push("/: redundant Care Circle proof footer remains");
   if ((await page.locator("[data-home-question-form]").count()) !== 0)
@@ -528,7 +562,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
   const proofSizes = await page
     .locator(".home-platform-model article h3")
     .evaluateAll((nodes) => nodes.map((node) => parseFloat(getComputedStyle(node).fontSize)));
-  if (proofSizes.length !== 3 || proofSizes.some((size) => size < 16))
+  if (proofSizes.length !== 2 || proofSizes.some((size) => size < 16))
     failures.push(`/: platform explanation is missing or too small (${proofSizes.join(", ")}px)`);
   const headingMetrics = await page
     .locator([
@@ -664,6 +698,13 @@ async function checkCareCircle(page, viewport, failures) {
     conversationLayout.gateWidth < conversationLayout.heroWidth * 0.9
   )
     failures.push("/care-circle/: conversation form or profile gate is deformed");
+  const privacyHeights = await page
+    .locator(".lesson-visibility label")
+    .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
+  if (privacyHeights.length !== 2 || privacyHeights.some((height) => height > 86))
+    failures.push(
+      `/care-circle/ ${viewport.name}: privacy choice is oversized (${privacyHeights.map(Math.round).join(", ")}px)`,
+    );
   if (viewport.width !== 1440) return;
   await page.locator("[data-circle-filter]").nth(1).click();
   const visible = await page.locator("[data-care-post]:visible").count();
@@ -709,6 +750,10 @@ async function checkLesson(page, route, viewport, failures) {
     failures.push(`${route}: hanging chapter outline remains`);
   if ((await page.locator("[data-public-pet-profile]").count()) !== 1)
     failures.push(`${route}: public pet profile missing`);
+  if ((await page.locator(".lesson-personal-context").count()) !== 1)
+    failures.push(`${route}: dog-specific context must appear exactly once`);
+  if ((await page.locator(".tailored-context, .lesson-result-v7").count()) !== 0)
+    failures.push(`${route}: repeated dog context or focused-answer block remains`);
   if (viewport.width !== 1440 || route !== "/care-circle/slower-after-rest/")
     return;
   const quiz = page.locator("[data-chapter-quiz]").first();
@@ -738,9 +783,7 @@ async function checkAccountFlow(page, viewport, baseUrl, failures) {
   await form.locator('[name="email"]').fill("caregiver@example.com");
   await form.locator('[name="petName"]').fill("Bobby");
   await form.locator('[name="petAge"]').selectOption({ label: "10–12 years" });
-  await form
-    .locator('[name="breed"]')
-    .selectOption({ label: "Golden Retriever" });
+  await form.locator('[name="breed"]').fill("Golden Retriever");
   await form.locator('[name="conditions"]').fill("arthritis");
   await form
     .locator('[name="medications"]')
@@ -774,7 +817,7 @@ async function checkAccountFlow(page, viewport, baseUrl, failures) {
     failures.push("/account/: tailored public pet profile missing");
   if (
     !normalize(
-      await page.locator("[data-focused-result]").innerText(),
+      await page.locator("[data-tailored-chapter-summary]").first().innerText(),
     ).includes("stiff")
   )
     failures.push("/account/: tailored lesson did not use the question");
@@ -1258,9 +1301,10 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
       failures.push("/about/: Bobby first-person hero is missing");
     const aboutCopy = normalize(await page.locator("main").innerText());
     for (const expected of [
-      "i was bobby",
+      "bobby was my dog",
+      "i'm robert",
       "our mission · how we help",
-      "help families hear what their dogs are already telling them",
+      "understand the change. care for the whole bond.",
     ])
       if (!aboutCopy.includes(expected))
         failures.push(`/about/: missing Bobby story message: ${expected}`);
@@ -1272,6 +1316,16 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
       failures.push("/support/: direct contact layout is missing");
     if ((await page.locator(".support-faq-v7, .support-routes-v6, .support-expect-v7").count()) !== 0)
       failures.push("/support/: removed FAQ or support-directory content remains");
+    const contactHeight = await page
+      .locator(".contact-direct")
+      .evaluate((node) => node.getBoundingClientRect().height);
+    if (contactHeight > (viewport.width <= 768 ? 1100 : 850))
+      failures.push(`/support/ ${viewport.name}: contact layout is too tall (${Math.round(contactHeight)}px)`);
+  }
+  if (route === "/smart-bed/") {
+    const productMedia = page.locator(".bed-system-media");
+    if ((await productMedia.count()) !== 1 || (await productMedia.locator("img").count()) !== 2)
+      failures.push("/smart-bed/: complete bed and Smart Base imagery are both required");
   }
   if (route === "/support/" && viewport.width === 1440)
     await submitGeneric(

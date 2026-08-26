@@ -20555,6 +20555,302 @@ html body .wm-footer .wm-footer-brand .wm-wordmark img {
   html body .wm-footer .wm-footer-brand { grid-column: 1 / -1 !important; }
 }
 
+/* 2026-08-26.1 — user-verified compact messaging and product-system layouts. */
+html body.home-v16 .home-platform-model > div {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+html body.home-v16 .home-ref-guide {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.15fr) minmax(420px, 0.85fr) !important;
+  align-items: center !important;
+  gap: 40px !important;
+  min-height: 0 !important;
+  padding: 34px 42px !important;
+  text-align: left !important;
+}
+html body.home-v16 .home-ref-guide .home-guide-intro,
+html body.home-v16 .home-ref-guide .home-guide-intro > * {
+  width: 100% !important;
+  max-width: none !important;
+  text-align: left !important;
+}
+html body.home-v16 .home-ref-guide .home-guide-intro > span {
+  display: block !important;
+  margin-bottom: 8px !important;
+}
+html body.home-v16 .home-ref-guide h2 {
+  margin: 0 0 10px !important;
+  font-size: clamp(2.15rem, 3vw, 3.2rem) !important;
+  line-height: 1 !important;
+}
+html body.home-v16 .home-ref-guide p {
+  margin: 0 !important;
+  font-size: 1rem !important;
+  line-height: 1.55 !important;
+}
+html body.home-v16 .home-ref-guide > form {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: start !important;
+  gap: 10px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+html body.home-v16 .home-ref-guide > form label { min-width: 0 !important; }
+html body.home-v16 .home-ref-guide > form :is(input, button) {
+  min-height: 56px !important;
+  margin: 0 !important;
+}
+html body.home-v16 .home-ref-guide > form button { white-space: nowrap !important; }
+html body.home-v16 .home-ref-guide .form-note {
+  grid-column: 1 / -1 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  text-align: left !important;
+}
+
+html body.circle-v10 .circle-hero-v7 {
+  grid-template-columns: minmax(0, 1.18fr) minmax(360px, 0.82fr) !important;
+}
+html body.circle-v10 .circle-intro-v10 {
+  padding: clamp(42px, 4vw, 62px) !important;
+}
+html body.circle-v10 .circle-intro-v10 h1 {
+  width: 100% !important;
+  max-width: none !important;
+  font-size: clamp(3rem, 4vw, 4rem) !important;
+  text-wrap: balance !important;
+}
+html body.circle-v10 .circle-intro-v10 h1 > span {
+  display: block !important;
+  white-space: nowrap !important;
+}
+html body.circle-v10 .circle-intro-v10 p {
+  width: 100% !important;
+  max-width: none !important;
+}
+html body.circle-v10 .lesson-visibility {
+  gap: 8px !important;
+}
+html body.circle-v10 .lesson-visibility legend { margin-bottom: 0 !important; }
+html body.circle-v9.circle-v10 .circle-question-form .lesson-visibility label {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  min-height: 72px !important;
+  padding: 11px 14px 11px 42px !important;
+}
+html body.circle-v9.circle-v10 .circle-question-form .lesson-visibility input {
+  position: absolute !important;
+  top: 50% !important;
+  left: 14px !important;
+  width: 17px !important;
+  height: 17px !important;
+  transform: translateY(-50%) !important;
+}
+html body.circle-v9.circle-v10 .circle-question-form .lesson-visibility label > span {
+  display: block !important;
+  color: var(--wm-premium-ink) !important;
+  font-weight: 520 !important;
+  line-height: 1.3 !important;
+}
+html body.circle-v9.circle-v10 .circle-question-form .lesson-visibility label strong {
+  display: block !important;
+  margin: 0 0 2px !important;
+  font-size: 0.95rem !important;
+}
+html body.circle-v9.circle-v10 .circle-question-form .lesson-visibility label small {
+  display: block !important;
+  margin: 0 !important;
+  font-size: 0.82rem !important;
+  font-weight: 520 !important;
+  line-height: 1.3 !important;
+}
+
+html body.lesson-v9 .lesson-personal-context {
+  padding: 20px 24px !important;
+  border-bottom: 1px solid #e7d8ce !important;
+  background: #fff4ee !important;
+}
+html body.lesson-v9 .lesson-personal-context .wm-wrap {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 22px !important;
+  max-width: 1120px !important;
+}
+html body.lesson-v9 .lesson-personal-context strong {
+  font-family: Georgia, serif !important;
+  font-size: 1.14rem !important;
+  white-space: nowrap !important;
+}
+html body.lesson-v9 .lesson-personal-context p {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  font-size: 0.94rem !important;
+  line-height: 1.5 !important;
+}
+html body.lesson-v9 .mobility-bed-system {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr) !important;
+  align-items: center !important;
+  gap: 12px !important;
+  height: auto !important;
+  padding: 14px !important;
+  background: #f2ece6 !important;
+}
+html body.lesson-v9 .mobility-bed-system picture,
+html body.lesson-v9 .mobility-bed-system img {
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  object-fit: contain !important;
+}
+
+html body.bed-v6.bed-v7 .bed-system-media {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr) !important;
+  align-items: stretch !important;
+  gap: 12px !important;
+  width: 100% !important;
+  height: auto !important;
+  padding: 16px !important;
+  overflow: visible !important;
+  background: #f2ece6 !important;
+}
+html body.bed-v6.bed-v7 .bed-hero-v6 > figure.bed-system-media {
+  aspect-ratio: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+html body.bed-v6.bed-v7 .bed-system-media > div {
+  display: grid !important;
+  grid-template-rows: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  min-width: 0 !important;
+  padding: 10px !important;
+  border: 1px solid #e2d4ca !important;
+  background: #fffdf9 !important;
+}
+html body.bed-v6.bed-v7 .bed-system-media :is(picture, img) {
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  object-fit: contain !important;
+}
+html body.bed-v6.bed-v7 .bed-system-media strong {
+  padding-top: 8px !important;
+  color: #5d4f48 !important;
+  font-size: 0.86rem !important;
+  text-align: center !important;
+}
+
+html body.about-v6 .bobby-hero h1,
+html body.about-v6 .bobby-purpose h2 {
+  width: 100% !important;
+  max-width: none !important;
+}
+html body.about-v6 :is(.bobby-hero h1, .bobby-purpose h2) > span {
+  display: block !important;
+  white-space: nowrap !important;
+}
+
+html body.support-v6 .contact-direct {
+  display: grid !important;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr) !important;
+  align-items: stretch !important;
+  width: min(1180px, calc(100% - 48px)) !important;
+  min-height: 0 !important;
+  margin: 36px auto 48px !important;
+  overflow: hidden !important;
+  border: 1px solid #ead9cf !important;
+  border-radius: 18px !important;
+  background: #fffdf9 !important;
+  box-shadow: 0 18px 50px rgba(64, 53, 47, 0.1) !important;
+}
+html body.support-v6 .contact-direct figure {
+  align-self: stretch !important;
+  display: grid !important;
+  place-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #edf0e7 !important;
+}
+html body.support-v6 .contact-direct figure img {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: 720px !important;
+  border-radius: 0 !important;
+  object-fit: contain !important;
+}
+html body.support-v6 .contact-direct > div {
+  align-self: center !important;
+  width: 100% !important;
+  max-width: none !important;
+  padding: clamp(36px, 5vw, 64px) !important;
+}
+html body.support-v6 .contact-direct h1 {
+  width: 100% !important;
+  max-width: none !important;
+  margin-bottom: 12px !important;
+  font-size: clamp(2.7rem, 4vw, 3.7rem) !important;
+}
+html body.support-v6 .contact-direct > div > p { margin-bottom: 24px !important; }
+html body.support-v6 .contact-direct form { gap: 14px !important; }
+html body.support-v6 .contact-direct form textarea { min-height: 140px !important; }
+
+@media (max-width: 900px) {
+  html body.home-v16 .home-ref-guide {
+    grid-template-columns: 1fr !important;
+    gap: 22px !important;
+  }
+  html body.circle-v10 .circle-hero-v7,
+  html body.bed-v6.bed-v7 .bed-system-media,
+  html body.support-v6 .contact-direct {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html body.home-v16 .home-ref-guide { padding: 26px 18px !important; }
+  html body.home-v16 .home-ref-guide > form { grid-template-columns: 1fr !important; }
+  html body.home-v16 .home-ref-guide .form-note { grid-column: 1 !important; }
+  html body.circle-v10 .circle-intro-v10 h1 {
+    font-size: clamp(2rem, 9vw, 2.2rem) !important;
+  }
+  html body.circle-v9.circle-v10 .circle-question-form .lesson-visibility label { min-height: 66px !important; }
+  html body.lesson-v9 .lesson-personal-context { padding: 18px 14px !important; }
+  html body.lesson-v9 .lesson-personal-context .wm-wrap {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+  html body.lesson-v9 .lesson-personal-context strong { white-space: normal !important; }
+  html body.lesson-v9 .mobility-bed-system { grid-template-columns: 1fr !important; }
+  html body.about-v6 .bobby-hero h1 { font-size: clamp(1.75rem, 8vw, 1.92rem) !important; }
+  html body.about-v6 .bobby-purpose h2 { font-size: clamp(1.6rem, 7vw, 1.78rem) !important; }
+  html body.support-v6 .contact-direct {
+    width: calc(100% - 20px) !important;
+    margin: 10px auto 30px !important;
+  }
+  html body.support-v6 .contact-direct > div { padding: 30px 20px 36px !important; }
+  html body.support-v6 .contact-direct h1 { font-size: clamp(2.35rem, 11vw, 2.75rem) !important; }
+  html body.support-v6 .contact-direct form .button { width: 100% !important; }
+}
+
 @media (max-width: 640px) {
   html body.home-v16 .home-reference { width: calc(100% - 20px) !important; padding-top: 10px !important; }
   html body.home-v16 .home-ref-hero { min-height: 0 !important; }
@@ -20575,7 +20871,7 @@ html body .wm-footer .wm-footer-brand .wm-wordmark img {
   html body.home-v16 .home-bed-comfort-story figure { min-height: 0 !important; padding: 18px !important; }
   html body.circle-v10 .circle-hero-v7 { width: calc(100% - 20px) !important; margin-top: 10px !important; }
   html body.circle-v10 .circle-intro-v10 { padding: 34px 22px !important; }
-  html body.circle-v10 .circle-intro-v10 h1 { font-size: clamp(2.7rem, 12vw, 3.35rem) !important; }
+  html body.circle-v10 .circle-intro-v10 h1 { font-size: clamp(2rem, 9vw, 2.2rem) !important; }
   html body.circle-v10 .circle-question-form { grid-template-columns: 1fr !important; padding: 28px 18px !important; }
   html body.circle-v10 .circle-question-form > * { grid-column: 1 !important; }
   html body.circle-v10 .lesson-visibility { grid-template-columns: 1fr !important; }

@@ -1696,17 +1696,11 @@
       document.querySelectorAll("[data-public-change]").forEach((node) => {
         node.textContent = question;
       });
-      document.querySelectorAll("[data-focused-pet]").forEach((node) => {
-        node.textContent = petName;
-      });
       document.querySelectorAll("[data-tailored-pet-name]").forEach((node) => {
         node.textContent = petName;
       });
       document.querySelectorAll("[data-tailored-context]").forEach((node) => {
-        node.textContent = `${petName} is ${petAge.toLocaleLowerCase()}, a ${breed}, with ${conditions}; the owner reports ${question}. This part prioritizes the safest observation and next step for that exact pattern.`;
-      });
-      document.querySelectorAll("[data-focused-result]").forEach((node) => {
-        node.textContent = `This public answer focuses on ${petName}'s ${petAge.toLocaleLowerCase()} profile, ${conditions}, and the change you described: ${question}`;
+        node.textContent = `${petName} is ${petAge.toLocaleLowerCase()}, a ${breed}, with ${conditions}; the owner reports ${question}.`;
       });
       renderQuestionImage(
         personalQuestion.questionImageDataUrl || "",

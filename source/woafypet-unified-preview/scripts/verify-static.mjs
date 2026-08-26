@@ -329,12 +329,14 @@ if (
 )
   fail("home: personalized account and dog profile form is incomplete");
 if (
-  !home.includes("bed-smart-base-system-v2.png") ||
+  !home.includes("bed-smart-base-system-branded.png") ||
   !home.includes("Bed + Smart Base for better rest.") ||
   !home.includes("Passive pattern tracking") ||
   !home.includes("Joint-focused comfort")
 )
   fail("home: Bed + Smart Base system is incomplete");
+if (!home.includes("smart-base-weekly-trend-v1.png"))
+  fail("home: approved Smart Base weekly-trend visual is missing");
 if (
   !home.includes("senior-dog-care-guide-book-v2.png") ||
   !home.includes('href="/guide/"') ||
@@ -581,8 +583,15 @@ if ([...routeHtml.values()].some((html) => />FAQs?</i.test(html)))
   fail("site: FAQ navigation remains");
 
 const css = readFileSync(resolve(dist, "styles.css"), "utf8");
-if (/object-fit:\s*cover/.test(css))
-  fail("styles: cropped image treatment remains");
+for (const rule of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+  const selector = rule[1];
+  const declarations = rule[2];
+  if (
+    /object-fit:\s*cover/.test(declarations) &&
+    !/home-contract-support/.test(selector)
+  )
+    fail("styles: cropping is only allowed for equal editorial support-card frames");
+}
 if (
   !css.includes("@media (max-width: 900px)") ||
   !css.includes("@media (max-width: 640px)")

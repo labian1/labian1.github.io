@@ -379,6 +379,7 @@ async function checkGlobal(page, route, viewport, failures) {
         width: rect.width,
         height: rect.height,
         fit: style.objectFit,
+        editorialCrop: Boolean(image.closest(".home-contract-support")),
         visible,
         intentionalDynamicPlaceholder:
           !visible && image.matches(dynamicSelector),
@@ -413,7 +414,7 @@ async function checkGlobal(page, route, viewport, failures) {
       failures.push(
         `${route} ${viewport.name}: image overflows its frame ${image.src}`,
       );
-    if (image.fit === "cover")
+    if (image.fit === "cover" && !image.editorialCrop)
       failures.push(`${route} ${viewport.name}: cropped image ${image.src}`);
     const naturalRatio = image.naturalWidth / image.naturalHeight;
     const renderedRatio = image.width / image.height;
@@ -606,8 +607,27 @@ async function checkHome(page, viewport, baseUrl, failures) {
     const productWidth = await page
       .locator(".home-contract-product img")
       .evaluate((node) => node.getBoundingClientRect().width);
-    if (productWidth < 500)
+    if (productWidth < 680)
       failures.push(`/: Smart Bed product is too small (${Math.round(productWidth)}px)`);
+  }
+  const supportMediaHeights = await page
+    .locator(".home-contract-support figure")
+    .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
+  if (
+    supportMediaHeights.length !== 4 ||
+    Math.max(...supportMediaHeights) - Math.min(...supportMediaHeights) > 2
+  )
+    failures.push(
+      `/: ${viewport.name} support images are uneven (${supportMediaHeights.map((height) => Math.round(height)).join(", ")}px)`,
+    );
+  if (viewport.width >= 1024) {
+    const supportCardHeights = await page
+      .locator(".home-contract-support > a")
+      .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
+    if (Math.max(...supportCardHeights) - Math.min(...supportCardHeights) > 2)
+      failures.push(
+        `/: ${viewport.name} support cards are uneven (${supportCardHeights.map((height) => Math.round(height)).join(", ")}px)`,
+      );
   }
   const homeImageSources = await page
     .locator("main img")

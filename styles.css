@@ -540,6 +540,174 @@ html body.account-v7 [data-private-lessons-empty] {
   }
 }
 
+/* 2026-08-26.4 — coherent homepage media grid and approved product visuals. */
+html body.home-v17 .home-contract > section {
+  min-width: 0 !important;
+}
+
+html body.home-v17 .home-contract-bed {
+  grid-template-columns: minmax(320px, 0.34fr) minmax(0, 0.66fr) !important;
+  align-items: center !important;
+  gap: 0 !important;
+  min-height: 0 !important;
+  padding: 28px 32px 0 !important;
+}
+html body.home-v17 .home-contract-bed-copy {
+  padding: 28px 20px 34px 12px !important;
+}
+html body.home-v17 .home-contract-product {
+  min-width: 0 !important;
+  padding: 0 0 0 18px !important;
+  overflow: visible !important;
+}
+html body.home-v17 .home-contract-product :is(picture, img) {
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+html body.home-v17 .home-bed-proof {
+  grid-column: 1 / -1 !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid #e3d5cb !important;
+  border-bottom: 0 !important;
+  border-radius: 14px 14px 0 0 !important;
+  background: #f7efe7 !important;
+}
+html body.home-v17 .home-bed-proof > div {
+  min-height: 112px !important;
+  padding: 22px 20px !important;
+  border: 0 !important;
+}
+html body.home-v17 .home-bed-proof > div + div {
+  border-left: 1px solid #e1d4ca !important;
+}
+
+html body.home-v17 .home-contract-insights {
+  grid-template-columns: minmax(0, 0.58fr) minmax(360px, 0.42fr) !important;
+  align-items: stretch !important;
+  min-height: 0 !important;
+}
+html body.home-v17 .home-contract-insights figure {
+  display: grid !important;
+  align-items: stretch !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #f2eadf !important;
+}
+html body.home-v17 .home-contract-insights figure :is(picture, img) {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+html body.home-v17 .home-contract-insights > div {
+  align-self: center !important;
+  padding: 46px clamp(38px, 4vw, 64px) !important;
+}
+
+html body.home-v17 .home-contract-support {
+  grid-auto-rows: 1fr !important;
+  align-items: stretch !important;
+  border-top: 1px solid var(--contract-line) !important;
+}
+html body.home-v17 .home-contract-support > a {
+  height: 100% !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  background: #fffdf9 !important;
+}
+html body.home-v17 .home-contract-support figure {
+  aspect-ratio: 4 / 3 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 12px 12px 0 !important;
+  overflow: hidden !important;
+}
+html body.home-v17 .home-contract-support figure picture {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+html body.home-v17 .home-contract-support figure img {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+html body.home-v17 .home-contract-support > a > div {
+  min-height: 0 !important;
+  padding: 20px 22px 26px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+html body.home-v17 .home-contract-support p {
+  margin-bottom: 18px !important;
+}
+html body.home-v17 .home-contract-support span {
+  margin-top: auto !important;
+}
+
+@media (max-width: 1180px) and (min-width: 901px) {
+  html body.home-v17 .home-contract-bed {
+    grid-template-columns: minmax(330px, 0.38fr) minmax(0, 0.62fr) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  html body.home-v17 .home-contract-bed,
+  html body.home-v17 .home-contract-insights {
+    grid-template-columns: 1fr !important;
+  }
+  html body.home-v17 .home-contract-bed {
+    padding: 24px 24px 0 !important;
+  }
+  html body.home-v17 .home-contract-product {
+    padding: 0 8px !important;
+  }
+  html body.home-v17 .home-contract-insights > div {
+    padding: 36px 28px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html body.home-v17 .home-contract-bed {
+    padding: 18px 18px 0 !important;
+  }
+  html body.home-v17 .home-contract-bed-copy {
+    padding: 26px 4px 30px !important;
+  }
+  html body.home-v17 .home-bed-proof {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  html body.home-v17 .home-bed-proof > div {
+    min-height: 104px !important;
+    padding: 18px 14px !important;
+  }
+  html body.home-v17 .home-bed-proof > div + div {
+    border-left: 0 !important;
+  }
+  html body.home-v17 .home-bed-proof > div:nth-child(even) {
+    border-left: 1px solid #e1d4ca !important;
+  }
+  html body.home-v17 .home-bed-proof > div:nth-child(n + 3) {
+    border-top: 1px solid #e1d4ca !important;
+  }
+  html body.home-v17 .home-contract-support {
+    grid-auto-rows: auto !important;
+  }
+  html body.home-v17 .home-contract-support > a > div {
+    padding: 18px 18px 24px !important;
+  }
+}
+
 /* Bobby story and direct contact */
 .bobby-hero {
   display: grid;
@@ -22038,13 +22206,13 @@ html body.home-v17 .home-guide-book :is(picture, img) {
   height: auto !important;
 }
 html body.home-v17 .home-contract-bed {
-  grid-template-columns: minmax(340px, 0.31fr) minmax(430px, 0.46fr) minmax(250px, 0.23fr) !important;
-  min-height: 440px !important;
-  padding: 28px !important;
+  grid-template-columns: minmax(320px, 0.34fr) minmax(0, 0.66fr) !important;
+  min-height: 0 !important;
+  padding: 28px 32px 0 !important;
   background: #fbf7f2 !important;
 }
 html body.home-v17 .home-contract-bed-copy {
-  padding: 24px 12px 24px 18px !important;
+  padding: 28px 20px 34px 12px !important;
 }
 html body.home-v17 .home-contract-bed h2 {
   font-size: clamp(2.15rem, 2.75vw, 2.85rem) !important;
@@ -22067,7 +22235,7 @@ html body.home-v17 .home-contract-bed-copy li {
 }
 html body.home-v17 .home-contract-product {
   margin: 0 !important;
-  padding: 0 14px !important;
+  padding: 0 0 0 18px !important;
   display: grid !important;
   place-items: center !important;
 }
@@ -22083,13 +22251,17 @@ html body.home-v17 .home-contract-close {
 }
 html body.home-v17 .home-contract-insights {
   grid-template-columns: minmax(0, 0.58fr) minmax(380px, 0.42fr) !important;
-  min-height: 470px !important;
+  align-items: stretch !important;
+  min-height: 0 !important;
   border-right: 0 !important;
   border-bottom: 1px solid var(--contract-line) !important;
 }
 html body.home-v17 .home-contract-insights figure {
   margin: 0 !important;
-  padding: 34px !important;
+  padding: 0 !important;
+  display: grid !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
   background: #f2eadf !important;
 }
 html body.home-v17 .home-contract-insights figure :is(picture, img) {
@@ -22097,9 +22269,11 @@ html body.home-v17 .home-contract-insights figure :is(picture, img) {
   display: block !important;
   width: 100% !important;
   height: auto !important;
+  object-fit: contain !important;
 }
 html body.home-v17 .home-contract-insights > div {
-  padding: 52px clamp(42px, 5vw, 76px) !important;
+  align-self: center !important;
+  padding: 46px clamp(38px, 4vw, 64px) !important;
 }
 html body.home-v17 .home-contract-insights h2 {
   width: 100% !important;
@@ -22198,7 +22372,10 @@ html body.account-v7 .account-scene-media h1 {
     order: -1 !important;
   }
   html body.home-v17 .home-contract-bed {
-    padding: 22px !important;
+    padding: 24px 24px 0 !important;
+  }
+  html body.home-v17 .home-contract-product {
+    padding: 0 8px !important;
   }
   html body.home-v17 .home-contract-insights > div {
     padding: 36px 28px !important;

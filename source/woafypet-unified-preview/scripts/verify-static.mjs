@@ -251,58 +251,50 @@ for (const [route, html] of routeHtml) {
 const home = routeHtml.get("/") || "";
 if (!home.includes("Trusted by 10,000+ pet owners"))
   fail("/: missing the user-supplied 10,000+ pet-owner trust signal");
-if (!home.includes('class="home-platform-model"'))
-  fail("/: missing the platform and differentiation explanation");
+if (!home.includes('class="home-contract-trust"'))
+  fail("/: missing the approved trust and differentiation strip");
 if (home.includes('class="home-trust-proof"'))
   fail("/: obsolete circular trust strip remains");
 if (home.includes('class="home-proof-strip"'))
   fail("/: obsolete standalone credibility strip remains");
 
 if (
-  !home.includes("home-ref-hero") ||
-  !home.includes("Know what your") ||
-  !home.includes("aging dog needs next.")
+  !home.includes("home-contract-hero") ||
+  !home.includes("Senior dog care.") ||
+  !home.includes("Start with understanding.")
 )
   fail("home: missing result-driven care hero");
-for (const message of [
-  "What WoafMeow does",
-  "Why it is different",
-])
-  if (!home.includes(message)) fail(`home: missing clear platform message ${message}`);
-if (count(home, /<section class="home-platform-model"[\s\S]*?<article>/g) !== 1)
-  fail("home: platform explanation section is malformed");
-if (count(home.match(/<section class="home-platform-model"[\s\S]*?<\/section>/)?.[0] || "", /<article>/g) !== 2)
-  fail("home: platform explanation must contain exactly two concise points");
 for (const removed of [
   "Educational guidance—not a diagnosis. Urgent changes still need veterinary care.",
   "Six everyday care paths",
   "Public examples with owner consent",
   "WoafyPet Full Smart Bed · current prototype",
+  "What WoafMeow does",
+  "Why it is different",
 ])
   if (home.includes(removed)) fail(`home: removed copy remains ${removed}`);
-if (count(home, /class="home-care-hub"/g) !== 1)
-  fail("home: expected one consolidated Care Circle topic section");
-if (count(home, /class="home-circle-card"/g) !== 6)
-  fail("home: expected six public Care Circle lesson cards");
-if (/class="home-topic-card"|class="home-ref-learn"|class="home-care-circle"/.test(home))
-  fail("home: duplicate legacy topic or Care Circle section remains");
-if (count(home, /class="home-ref-guide"/g) !== 1)
+if (/class="home-topic-card"|class="home-ref-learn"|class="home-care-circle"|class="home-care-hub"|class="home-circle-card"|class="home-vet-testimonials"|class="home-support-paths"/.test(home))
+  fail("home: obsolete or duplicate homepage section remains");
+if (count(home, /class="home-contract-guide"/g) !== 1)
   fail("home: expected exactly one Senior Dog Care Guide section");
 for (const marker of [
-  "home-care-hub",
+  "home-contract-hero",
+  "home-contract-trust",
+  "home-contract-circle",
+  "home-contract-care-grid",
+  "home-contract-evidence",
+  "home-contract-guide",
+  "home-contract-bed",
+  "home-contract-product",
+  "home-contract-close",
   "profile-gate-dialog",
-  "home-ref-guide",
-  "home-vet-testimonials",
-  "home-ref-bed",
-  "home-support-paths",
 ])
   if (!home.includes(marker)) fail(`home: missing ${marker}`);
 if (
-  !home.includes("Veterinarian support you can trust.") ||
-  !home.includes("vet-silvan-urfer.jpg") ||
-  !home.includes("vet-annika-bremhorst-official.jpg")
+  !home.includes("Care backed by veterinarians.") ||
+  !home.includes("vet-silvan-urfer.jpg")
 )
-  fail("home: veterinarian testimonial section is incomplete");
+  fail("home: concise veterinary-evidence section is incomplete");
 if (home.includes('<section class="home-care-account"'))
   fail("home: permanent registration section should not be visible");
 if (
@@ -333,8 +325,13 @@ if (
   !home.includes('name="petAge"')
 )
   fail("home: personalized account and dog profile form is incomplete");
-if (count(home, /class="home-bed-story /g) !== 3)
-  fail("home: Smart Bed story must include comfort, layers and tracking");
+if (
+  !home.includes("product-hero-official.png") ||
+  !home.includes("smart-base.webp") ||
+  !home.includes("Support stiff joints.") ||
+  !home.includes("Track possible pain.")
+)
+  fail("home: Bed + Smart Base system is incomplete");
 if (
   !home.includes("data-guide-delivery") ||
   !home.includes('data-submit-api="https://www.woafmeow.com/api/newsletter"')
@@ -342,10 +339,6 @@ if (
   fail("home: active guide delivery form is missing");
 if (count(home, /href="https:\/\/www\.woafy\.pet\/"/g) < 1)
   fail("home: Smart Bed call to action must open woafy.pet");
-if (count(home, /<section class="home-support-paths"[\s\S]*?<\/section>/g) !== 1)
-  fail("home: expected one compact four-path support section");
-if (count(home, /<a href="\/(?:find-care|wednesday-introductions|pet-loss-support|memorial-tree)\/"/g) < 4)
-  fail("home: the four support pathways are incomplete");
 const homeImages = [...home.matchAll(/<img src="([^"]+)"/g)].map(
   (match) => match[1],
 ).filter((source) => source !== "/assets/woafmeow-logo-coral.png");

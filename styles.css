@@ -20555,6 +20555,498 @@ html body .wm-footer .wm-footer-brand .wm-wordmark img {
   html body .wm-footer .wm-footer-brand { grid-column: 1 / -1 !important; }
 }
 
+/* 2026-08-26.2 — approved reference layouts implemented as the page structure. */
+html body.home-v17 {
+  --contract-ink: #332923;
+  --contract-forest: #244e42;
+  --contract-clay: #bb4a2d;
+  --contract-paper: #fffdf9;
+  --contract-wash: #fbf6f1;
+  --contract-line: #ead9cf;
+  background: #fffaf6;
+}
+
+html body.home-v17 .home-contract {
+  display: grid;
+  width: min(1360px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 28px 0 48px;
+  color: var(--contract-ink);
+}
+html body.home-v17 .home-contract,
+html body.home-v17 .home-contract * { box-sizing: border-box; }
+
+html body.home-v17 .home-contract :is(h1, h2, h3, p, ul, figure) { margin-top: 0; }
+html body.home-v17 .home-contract :is(h1, h2) {
+  color: var(--contract-forest);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+html body.home-v17 .home-contract :is(h1, h2) > span { display: block; }
+html body.home-v17 .home-contract p { color: #5f544e; line-height: 1.58; }
+html body.home-v17 .home-kicker {
+  display: block;
+  margin-bottom: 14px;
+  color: var(--contract-clay);
+  font-size: 0.76rem;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+}
+
+html body.home-v17 .home-contract-hero {
+  display: grid;
+  grid-template-columns: minmax(470px, 0.86fr) minmax(0, 1.14fr);
+  align-items: stretch;
+  min-height: 510px;
+  overflow: hidden;
+  border: 1px solid var(--contract-line);
+  border-radius: 18px 18px 0 0;
+  background: var(--contract-paper);
+}
+html body.home-v17 .home-contract-hero-copy {
+  align-self: center;
+  padding: clamp(44px, 5vw, 72px);
+}
+html body.home-v17 .home-contract-hero h1 {
+  width: 100%;
+  margin: 0 0 20px;
+  font-size: clamp(2.75rem, 3.4vw, 3.45rem);
+  line-height: 0.98;
+}
+html body.home-v17 .home-contract-hero h1 > span { white-space: nowrap; }
+html body.home-v17 .home-contract-hero-copy > p {
+  width: 100%;
+  max-width: none;
+  margin-bottom: 26px;
+  font-size: 1.12rem;
+}
+html body.home-v17 .home-contract-hero > figure {
+  align-self: center;
+  margin: 0;
+  background: #eef1f1;
+}
+html body.home-v17 .home-contract-hero > figure :is(picture, img) {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+html body.home-v17 .home-hero-chat {
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid #ddcec5;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(63, 45, 35, 0.06);
+}
+html body.home-v17 .home-hero-chat label {
+  color: var(--contract-ink);
+  font-size: 0.92rem;
+  font-weight: 760;
+}
+html body.home-v17 .home-hero-chat > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 8px;
+}
+html body.home-v17 .home-hero-chat input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  margin: 0;
+  border: 1px solid #d9c9bf;
+  border-radius: 7px;
+  background: #fffdfa;
+  font-size: 0.92rem;
+}
+html body.home-v17 .home-hero-chat button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--contract-clay);
+  color: #fff;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+html body.home-v17 .home-hero-chat small { color: #72665f; font-size: 0.78rem; }
+
+html body.home-v17 .home-contract-trust {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--contract-line);
+  border-top: 0;
+  background: #fff;
+}
+html body.home-v17 .home-contract-trust article {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+  padding: 30px clamp(24px, 3vw, 44px);
+}
+html body.home-v17 .home-contract-trust article + article { border-left: 1px solid var(--contract-line); }
+html body.home-v17 .home-trust-icon {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border: 1px solid #9cae9d;
+  border-radius: 50%;
+  color: #657a66;
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 750;
+}
+html body.home-v17 .home-contract-trust h2 {
+  margin: 0 0 5px;
+  color: var(--contract-ink);
+  font-size: clamp(1.2rem, 1.65vw, 1.48rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+html body.home-v17 .home-contract-trust p { margin: 0; font-size: 0.9rem; }
+
+html body.home-v17 .home-contract-circle {
+  display: grid;
+  grid-template-columns: minmax(420px, 0.82fr) minmax(0, 1.18fr);
+  align-items: stretch;
+  min-height: 560px;
+  border: 1px solid var(--contract-line);
+  border-top: 0;
+  background: var(--contract-paper);
+}
+html body.home-v17 .home-contract-circle > div {
+  align-self: center;
+  padding: clamp(44px, 5vw, 74px);
+}
+html body.home-v17 .home-contract-circle h2 {
+  width: 100%;
+  margin: 0 0 20px;
+  font-size: clamp(2.65rem, 3.3vw, 3.35rem);
+  line-height: 1;
+}
+html body.home-v17 .home-contract-circle h2 > span { white-space: nowrap; }
+html body.home-v17 .home-contract-circle p { width: 100%; max-width: none; margin-bottom: 18px; font-size: 1rem; }
+html body.home-v17 .home-contract-circle ul {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 26px;
+  padding: 0;
+  list-style: none;
+}
+html body.home-v17 .home-contract-circle li { position: relative; padding-left: 22px; color: #5d514b; }
+html body.home-v17 .home-contract-circle li::before { position: absolute; left: 0; color: var(--contract-clay); content: "✓"; }
+html body.home-v17 .home-contract-circle > figure { align-self: center; margin: 0; background: #edf0f0; }
+html body.home-v17 .home-contract-circle > figure :is(picture, img) { position: static; display: block; width: 100%; height: auto; }
+
+html body.home-v17 .home-contract-care-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  border-inline: 1px solid var(--contract-line);
+  background: #fff;
+}
+html body.home-v17 .home-contract-care-grid > article { min-width: 0; }
+html body.home-v17 .home-contract-evidence {
+  display: grid;
+  grid-template-columns: minmax(200px, 0.82fr) minmax(0, 1.18fr);
+  align-items: center;
+  min-height: 360px;
+  border-right: 1px solid var(--contract-line);
+}
+html body.home-v17 .home-contract-evidence figure { margin: 0; padding: 30px; }
+html body.home-v17 .home-contract-evidence figure :is(picture, img) { position: static; display: block; width: 100%; height: auto; border-radius: 50%; }
+html body.home-v17 .home-contract-evidence > div { padding: 38px 38px 38px 0; }
+html body.home-v17 .home-contract-evidence h2,
+html body.home-v17 .home-contract-guide h2 {
+  margin: 0 0 13px;
+  font-size: clamp(2rem, 2.5vw, 2.65rem);
+  line-height: 1;
+}
+html body.home-v17 .home-contract-evidence p { margin-bottom: 18px; }
+html body.home-v17 .home-contract-evidence a,
+html body.home-v17 .home-contract-insights a {
+  color: var(--contract-clay);
+  font-weight: 780;
+  text-decoration: none;
+}
+html body.home-v17 .home-contract-guide {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) 180px;
+  align-items: center;
+  min-height: 360px;
+  padding: 34px;
+  background: linear-gradient(135deg, #4d2e25, #744034);
+}
+html body.home-v17 .home-contract-guide > div { min-width: 0; padding-right: 24px; }
+html body.home-v17 .home-contract-guide :is(h2, p) { color: #fffaf6; }
+html body.home-v17 .home-contract-guide .home-kicker { color: #f1b19c; }
+html body.home-v17 .home-contract-guide form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  margin-top: 20px;
+}
+html body.home-v17 .home-contract-guide form input {
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+  margin: 0;
+  border: 0;
+  border-radius: 7px;
+  background: #fff;
+}
+html body.home-v17 .home-contract-guide form button { min-height: 50px; margin: 0; white-space: nowrap; }
+html body.home-v17 .home-contract-guide .form-note { grid-column: 1 / -1; margin: 0; color: #fff; }
+html body.home-v17 .home-guide-cover { margin: 0; }
+html body.home-v17 .home-guide-cover > div {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  min-height: 265px;
+  padding: 18px;
+  border-radius: 8px;
+  background: #fff5ee;
+  box-shadow: 0 18px 36px rgba(31, 16, 11, 0.22);
+}
+html body.home-v17 .home-guide-cover span { font-size: 0.64rem; font-weight: 850; letter-spacing: 0.14em; }
+html body.home-v17 .home-guide-cover strong { margin: 8px 0 14px; font-family: Georgia, serif; font-size: 1.3rem; line-height: 0.9; }
+html body.home-v17 .home-guide-cover :is(picture, img) { position: static; display: block; width: 100%; height: auto; }
+
+html body.home-v17 .home-contract-bed {
+  display: grid;
+  grid-template-columns: minmax(420px, 0.82fr) minmax(0, 1.18fr);
+  align-items: center;
+  min-height: 700px;
+  overflow: hidden;
+  border: 1px solid var(--contract-line);
+  background: var(--contract-wash);
+}
+html body.home-v17 .home-contract-bed-copy { padding: clamp(44px, 5vw, 74px); }
+html body.home-v17 .home-contract-bed h2 {
+  width: 100%;
+  margin: 0 0 20px;
+  font-size: clamp(2.7rem, 3.35vw, 3.45rem);
+  line-height: 0.98;
+}
+html body.home-v17 .home-contract-bed h2 > span { white-space: nowrap; }
+html body.home-v17 .home-contract-bed-copy > p { width: 100%; max-width: none; margin-bottom: 24px; font-size: 1.05rem; }
+html body.home-v17 .home-contract-bed-copy ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+}
+html body.home-v17 .home-contract-bed-copy li {
+  min-height: 72px;
+  padding: 14px;
+  border: 1px solid #e5d6cc;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.72);
+}
+html body.home-v17 .home-contract-bed-copy li :is(strong, span) { display: block; }
+html body.home-v17 .home-contract-bed-copy li strong { margin-bottom: 3px; color: var(--contract-ink); }
+html body.home-v17 .home-contract-bed-copy li span { color: #70635c; font-size: 0.86rem; line-height: 1.35; }
+html body.home-v17 .home-contract-product {
+  display: grid;
+  grid-template-rows: auto auto;
+  align-content: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 42px 46px 42px 10px;
+}
+html body.home-v17 .home-contract-product figure { margin: 0; }
+html body.home-v17 .home-contract-product :is(picture, img) { position: static; display: block; width: 100%; height: auto; }
+html body.home-v17 .home-complete-bed { width: 100%; }
+html body.home-v17 .home-smart-base { width: 78%; justify-self: center; }
+
+html body.home-v17 .home-contract-close {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(330px, 0.8fr);
+  border: 1px solid var(--contract-line);
+  border-top: 0;
+  background: #fff;
+}
+html body.home-v17 .home-contract-insights {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.15fr);
+  align-items: center;
+  min-height: 310px;
+  border-right: 1px solid var(--contract-line);
+}
+html body.home-v17 .home-contract-insights figure { margin: 0; padding: 24px; }
+html body.home-v17 .home-insight-screen {
+  display: grid;
+  place-items: center;
+  min-height: 260px;
+  background: linear-gradient(145deg, #f4eee7, #e8ede7);
+}
+html body.home-v17 .home-insight-screen > div {
+  width: min(230px, 100%);
+  padding: 22px;
+  border: 8px solid #2f3833;
+  border-radius: 28px;
+  background: #fffdf9;
+  box-shadow: 0 16px 30px rgba(44, 39, 35, 0.17);
+}
+html body.home-v17 .home-insight-screen > div > span {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--contract-clay);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+}
+html body.home-v17 .home-insight-screen dl { display: grid; gap: 6px; margin: 0; }
+html body.home-v17 .home-insight-screen dl > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eadfd7;
+}
+html body.home-v17 .home-insight-screen dl > div:last-child { border-bottom: 0; }
+html body.home-v17 .home-insight-screen dt { color: var(--contract-ink); font-weight: 760; }
+html body.home-v17 .home-insight-screen dd { margin: 0; color: #746861; font-size: 0.78rem; }
+html body.home-v17 .home-contract-insights > div { padding: 38px 38px 38px 10px; }
+html body.home-v17 .home-contract-insights h2,
+html body.home-v17 .home-contract-profile h2 {
+  margin: 0 0 12px;
+  font-size: clamp(2rem, 2.5vw, 2.65rem);
+  line-height: 1;
+}
+html body.home-v17 .home-contract-insights p { margin-bottom: 16px; }
+html body.home-v17 .home-contract-profile {
+  display: grid;
+  align-items: center;
+  min-height: 310px;
+  padding: 42px;
+  background: linear-gradient(135deg, #eef0e6, #f9f3e8);
+}
+html body.home-v17 .home-contract-profile p { margin-bottom: 22px; }
+
+/* The Care Circle privacy selector is one compact, question-level choice. */
+html body.circle-v10 .circle-question-form .lesson-visibility {
+  grid-column: 1 / -1 !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #b9b4aa !important;
+  border-radius: 12px !important;
+}
+html body.circle-v10 .circle-question-form .lesson-visibility legend {
+  width: 100% !important;
+  padding: 0 0 10px !important;
+  border: 0 !important;
+  color: #2f2926 !important;
+  font-family: Georgia, serif !important;
+  font-size: 1.25rem !important;
+}
+html body.circle-v9.circle-v10 .circle-question-form .lesson-visibility label {
+  min-height: 78px !important;
+  padding: 14px 18px 14px 54px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+}
+html body.circle-v9.circle-v10 .circle-question-form .lesson-visibility label + label { border-left: 1px solid #cfc7be !important; }
+html body.circle-v9.circle-v10 .circle-question-form .lesson-visibility label:has(input:checked) { background: #edf0e7 !important; }
+html body.circle-v9.circle-v10 .circle-question-form .lesson-visibility input { left: 20px !important; width: 20px !important; height: 20px !important; }
+html body.circle-v10 .circle-question-result {
+  grid-column: 1 / -1 !important;
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding-top: 4px !important;
+}
+
+/* The direct contact page uses a true portrait image rather than a letterboxed landscape. */
+html body.support-v6 .contact-direct { grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr) !important; }
+html body.support-v6 .contact-direct figure { background: #f5f0e9 !important; }
+html body.support-v6 .contact-direct figure :is(picture, img) {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  border-radius: 0 !important;
+}
+html body.support-v6 .contact-direct h1 > span { display: block !important; white-space: nowrap !important; }
+
+@media (max-width: 1050px) {
+  html body.home-v17 .home-contract-hero { grid-template-columns: minmax(430px, 0.95fr) minmax(0, 1.05fr); }
+  html body.home-v17 .home-contract-trust article { grid-template-columns: 54px minmax(0, 1fr); gap: 12px; padding-inline: 22px; }
+  html body.home-v17 .home-trust-icon { width: 52px; height: 52px; }
+  html body.home-v17 .home-contract-circle { grid-template-columns: minmax(380px, 0.9fr) minmax(0, 1.1fr); }
+  html body.home-v17 .home-contract-care-grid { grid-template-columns: 1fr; }
+  html body.home-v17 .home-contract-evidence { border-right: 0; border-bottom: 1px solid var(--contract-line); }
+  html body.home-v17 .home-contract-bed { grid-template-columns: minmax(390px, 0.92fr) minmax(0, 1.08fr); }
+  html body.home-v17 .home-contract-close { grid-template-columns: 1fr; }
+  html body.home-v17 .home-contract-insights { border-right: 0; border-bottom: 1px solid var(--contract-line); }
+}
+
+@media (max-width: 760px) {
+  html body.home-v17 .home-contract { width: calc(100% - 20px); padding: 10px 0 28px; }
+  html body.home-v17 .home-contract-hero,
+  html body.home-v17 .home-contract-circle,
+  html body.home-v17 .home-contract-bed { grid-template-columns: 1fr; min-height: 0; }
+  html body.home-v17 .home-contract-hero-copy,
+  html body.home-v17 .home-contract-circle > div,
+  html body.home-v17 .home-contract-bed-copy { padding: 34px 22px 30px; }
+  html body.home-v17 .home-contract-hero h1,
+  html body.home-v17 .home-contract-circle h2,
+  html body.home-v17 .home-contract-bed h2 { font-size: clamp(1.75rem, 8.1vw, 2.1rem); }
+  html body.home-v17 .home-contract :is(.home-contract-hero h1, .home-contract-circle h2, .home-contract-bed h2) > span { white-space: nowrap; }
+  html body.home-v17 .home-contract-hero > figure { order: -1; }
+  html body.home-v17 .home-contract-trust { grid-template-columns: 1fr; }
+  html body.home-v17 .home-contract-trust article { grid-template-columns: 52px minmax(0, 1fr); padding: 20px 22px; }
+  html body.home-v17 .home-contract-trust article + article { border-top: 1px solid var(--contract-line); border-left: 0; }
+  html body.home-v17 .home-contract-circle h2 { font-size: clamp(1.72rem, 7.7vw, 2rem); }
+  html body.home-v17 .home-contract-evidence { grid-template-columns: 120px minmax(0, 1fr); min-height: 0; }
+  html body.home-v17 .home-contract-evidence figure { padding: 20px 10px 20px 20px; }
+  html body.home-v17 .home-contract-evidence > div { padding: 28px 20px; }
+  html body.home-v17 .home-contract-evidence h2,
+  html body.home-v17 .home-contract-guide h2,
+  html body.home-v17 .home-contract-insights h2,
+  html body.home-v17 .home-contract-profile h2 { font-size: clamp(1.72rem, 7.5vw, 2rem); }
+  html body.home-v17 .home-contract-guide { grid-template-columns: 1fr; padding: 30px 22px; }
+  html body.home-v17 .home-contract-guide > div { padding-right: 0; }
+  html body.home-v17 .home-contract-guide form { grid-template-columns: 1fr; }
+  html body.home-v17 .home-contract-guide .form-note { grid-column: 1; }
+  html body.home-v17 .home-guide-cover { display: none; }
+  html body.home-v17 .home-contract-bed-copy ul { grid-template-columns: 1fr 1fr; }
+  html body.home-v17 .home-contract-product { padding: 24px 18px 30px; }
+  html body.home-v17 .home-contract-insights { grid-template-columns: 1fr; }
+  html body.home-v17 .home-contract-insights figure { padding: 22px; }
+  html body.home-v17 .home-contract-insights > div,
+  html body.home-v17 .home-contract-profile { padding: 30px 22px; }
+  html body.circle-v10 .circle-question-result { grid-template-columns: 1fr !important; align-items: stretch !important; }
+  html body.circle-v10 .circle-question-result .button { width: 100% !important; }
+  html body.support-v6 .contact-direct { grid-template-columns: 1fr !important; }
+  html body.support-v6 .contact-direct h1 { font-size: clamp(2rem, 9vw, 2.7rem) !important; }
+}
+
+@media (max-width: 430px) {
+  html body.home-v17 .home-contract-hero h1 { font-size: 1.7rem; }
+  html body.home-v17 .home-contract-circle h2 { font-size: 1.58rem; }
+  html body.home-v17 .home-contract-bed h2 { font-size: 1.58rem; }
+  html body.home-v17 .home-contract-bed-copy ul { grid-template-columns: 1fr; }
+  html body.circle-v10 .circle-question-form .lesson-visibility { grid-template-columns: 1fr !important; }
+  html body.circle-v9.circle-v10 .circle-question-form .lesson-visibility label + label { border-top: 1px solid #cfc7be !important; border-left: 0 !important; }
+}
+
 /* 2026-08-26.1 — user-verified compact messaging and product-system layouts. */
 html body.home-v16 .home-platform-model > div {
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -20882,4 +21374,89 @@ html body.support-v6 .contact-direct form textarea { min-height: 140px !importan
     gap: 30px 22px !important;
   }
   html body .wm-footer .wm-footer-brand { grid-column: 1 / -1 !important; }
+}
+
+/* Final measured-title and contact-size guard. Keep this block last. */
+html body.home-v17 .home-contract-hero,
+html body.home-v17 .home-contract-circle {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr) !important;
+}
+html body.home-v17 .home-contract-hero h1 {
+  font-size: clamp(2.75rem, 3.3vw, 3.45rem) !important;
+}
+html body.home-v17 .home-contract-hero-copy,
+html body.home-v17 .home-hero-chat,
+html body.home-v17 .home-hero-chat > div,
+html body.home-v17 .home-hero-chat input {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+html body.about-v6 .bobby-hero h1 {
+  font-size: clamp(2.5rem, 4.1vw, 3.6rem) !important;
+}
+html body.support-v6 .contact-direct {
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr) !important;
+}
+html body.support-v6 .contact-direct :is(figure, figure img, form, label),
+html body.support-v6 .contact-direct > div {
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+html body.support-v6 .contact-direct > div {
+  padding: 40px !important;
+}
+html body.support-v6 .contact-direct form {
+  gap: 12px !important;
+}
+html body.support-v6 .contact-direct form :is(input, textarea) {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+html body.support-v6 .contact-direct form textarea {
+  min-height: 120px !important;
+}
+
+@media (max-width: 1050px) and (min-width: 761px) {
+  html body.home-v17 .home-contract-hero,
+  html body.home-v17 .home-contract-circle {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr) !important;
+  }
+  html body.support-v6 .contact-direct > div { padding: 34px !important; }
+}
+
+@media (max-width: 900px) {
+  html body.support-v6 .contact-direct { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 760px) {
+  html body.home-v17 .home-contract-hero,
+  html body.home-v17 .home-contract-circle { grid-template-columns: 1fr !important; }
+  html body.home-v17 .home-contract-hero h1 { font-size: 1.7rem !important; }
+  html body.about-v6 .bobby-hero h1 { font-size: clamp(1.75rem, 8vw, 1.92rem) !important; }
+  html body.support-v6 .contact-direct > div { padding: 26px 18px 30px !important; }
+  html body.support-v6 .contact-direct h1 { font-size: 1.72rem !important; }
+  html body.support-v6 .contact-direct form textarea { min-height: 105px !important; }
+  html body.support-v6 .contact-direct figure img {
+    width: 63% !important;
+    max-width: 63% !important;
+  }
+  html body .wm-footer .wm-footer-grid {
+    padding: 32px 0 24px !important;
+    gap: 20px 18px !important;
+  }
+  html body .wm-footer .wm-footer-brand .wm-wordmark,
+  html body .wm-footer .wm-footer-brand .wm-wordmark img {
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px !important;
+    margin-bottom: 12px !important;
+  }
+  html body .wm-footer .wm-footer-brand p { margin-bottom: 12px !important; }
+  html body .wm-footer .wm-footer-socials {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px 14px !important;
+    margin-top: 10px !important;
+  }
+  html body .wm-footer .wm-footer-socials a { margin: 0 !important; }
 }

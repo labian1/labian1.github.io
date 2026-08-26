@@ -255,7 +255,9 @@ async function checkGlobal(page, route, viewport, failures) {
             rect.width > 0 &&
             rect.height > 0 &&
             style.display !== "none" &&
-            style.visibility !== "hidden",
+            style.visibility !== "hidden" &&
+            !element.classList.contains("sr-only") &&
+            !element.closest("[hidden]"),
         };
       })
       .filter(
@@ -277,7 +279,9 @@ async function checkGlobal(page, route, viewport, failures) {
             rect.width > 0 &&
             rect.height > 0 &&
             style.display !== "none" &&
-            style.visibility !== "hidden",
+            style.visibility !== "hidden" &&
+            !element.classList.contains("sr-only") &&
+            !element.closest("[hidden]"),
         };
       })
       .filter((item) => item.shown);
@@ -302,11 +306,18 @@ async function checkGlobal(page, route, viewport, failures) {
         return {
           copy: (element.textContent || "").trim().replace(/\s+/g, " "),
           lines: rect.height / lineHeight,
+          clipped:
+            element.scrollWidth > element.clientWidth + 1 ||
+            [...element.children].some(
+              (child) => child.scrollWidth > element.clientWidth + 1,
+            ),
           shown:
             rect.width > 0 &&
             rect.height > 0 &&
             style.display !== "none" &&
-            style.visibility !== "hidden",
+            style.visibility !== "hidden" &&
+            !element.classList.contains("sr-only") &&
+            !element.closest("[hidden]"),
         };
       })
       .filter((item) => item.shown);
@@ -334,6 +345,10 @@ async function checkGlobal(page, route, viewport, failures) {
     if (heading.lines > 2.15)
       failures.push(
         `${route} ${viewport.name}: title exceeds two lines (${heading.lines.toFixed(1)}: ${heading.copy})`,
+      );
+    if (heading.clipped)
+      failures.push(
+        `${route} ${viewport.name}: title is clipped (${heading.copy})`,
       );
   }
   const paddingLimit = viewport.width <= 768 ? 100 : 130;
@@ -476,46 +491,39 @@ async function checkNavigation(page, route, viewport, failures) {
 
 async function checkHome(page, viewport, baseUrl, failures) {
   for (const [selector, expected] of [
-    [".home-platform-model", 1],
-    [".home-platform-model article", 2],
-    [".home-care-hub", 1],
-    [".home-circle-card", 6],
-    [".home-ref-guide", 1],
-    [".home-support-paths > a", 4],
+    [".home-contract", 1],
+    [".home-contract-hero", 1],
+    [".home-contract-trust article", 3],
+    [".home-contract-circle", 1],
+    [".home-contract-care-grid", 1],
+    [".home-contract-evidence", 1],
+    [".home-contract-guide", 1],
+    [".home-contract-bed", 1],
+    [".home-contract-product figure", 2],
+    [".home-contract-close > article", 2],
+    [".profile-gate-dialog", 1],
   ]) {
     if ((await page.locator(selector).count()) !== expected)
       failures.push(`/: expected ${expected} ${selector}`);
   }
   if (
     (await page
-      .locator(".home-topic-card, .home-ref-learn, .home-care-circle")
+      .locator(
+        ".home-topic-card, .home-ref-learn, .home-care-circle, .home-platform-model, .home-care-hub, .home-circle-card, .home-vet-testimonials, .home-support-paths",
+      )
       .count()) !== 0
   )
-    failures.push("/: duplicate legacy topic or Care Circle section remains");
-  for (const selector of [
-    ".home-ref-hero",
-    ".home-care-hub",
-    ".profile-gate-dialog",
-    ".home-ref-guide",
-    ".home-vet-testimonials",
-    ".home-ref-bed",
-    ".home-support-paths",
-  ]) {
-    if ((await page.locator(selector).count()) !== 1)
-      failures.push(`/: missing ${selector}`);
-  }
+    failures.push("/: obsolete or duplicate homepage section remains");
   if ((await page.locator(".home-hero-chat").count()) !== 1)
     failures.push("/: homepage Care Circle chatbox is missing");
   if ((await page.locator(".home-chat-status").count()) !== 0)
     failures.push("/: obsolete account-wide privacy slogan remains");
-  if ((await page.locator(".home-care-hub > footer").count()) !== 0)
-    failures.push("/: redundant Care Circle proof footer remains");
   if ((await page.locator("[data-home-question-form]").count()) !== 0)
     failures.push("/: legacy homepage question shortcut remains");
   const heroHeight = await page
-    .locator(".home-ref-hero")
+    .locator(".home-contract-hero")
     .evaluate((node) => node.getBoundingClientRect().height);
-  if (heroHeight > (viewport.width <= 768 ? 1050 : 650))
+  if (heroHeight > (viewport.width <= 768 ? 900 : 650))
     failures.push(
       `/: ${viewport.name} hero too tall (${Math.round(heroHeight)}px)`,
     );
@@ -523,7 +531,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
     () => document.documentElement.scrollHeight,
   );
   const maxHeight =
-    viewport.width <= 768 ? 11400 : viewport.width <= 1100 ? 9000 : 6400;
+    viewport.width <= 768 ? 7200 : viewport.width <= 1100 ? 5700 : 4600;
   if (totalHeight > maxHeight)
     failures.push(
       `/: ${viewport.name} homepage too tall (${Math.round(totalHeight)}px)`,
@@ -543,16 +551,10 @@ async function checkHome(page, viewport, baseUrl, failures) {
       .count()) !== 1
   )
     failures.push("/: first-action dog profile photo upload is missing");
-  if (
-    (await page
-      .getByRole("heading", {
-        name: "Veterinarian support you can trust.",
-      })
-      .count()) !== 1
-  )
-    failures.push("/: veterinarian testimonial section is incomplete");
+  if ((await page.getByRole("heading", { name: "Care backed by veterinarians." }).count()) !== 1)
+    failures.push("/: concise veterinary-evidence section is incomplete");
   const smartBedHref = await page
-    .locator('.home-ref-bed a[href="https://www.woafy.pet/"]')
+    .locator('.home-contract-bed a[href="https://www.woafy.pet/"]')
     .first()
     .getAttribute("href");
   if (smartBedHref !== "https://www.woafy.pet/")
@@ -560,20 +562,19 @@ async function checkHome(page, viewport, baseUrl, failures) {
   if ((await page.locator("[data-guide-delivery]").count()) !== 1)
     failures.push("/: expected one guide delivery form");
   const proofSizes = await page
-    .locator(".home-platform-model article h3")
+    .locator(".home-contract-trust article h2")
     .evaluateAll((nodes) => nodes.map((node) => parseFloat(getComputedStyle(node).fontSize)));
-  if (proofSizes.length !== 2 || proofSizes.some((size) => size < 16))
-    failures.push(`/: platform explanation is missing or too small (${proofSizes.join(", ")}px)`);
+  if (proofSizes.length !== 3 || proofSizes.some((size) => size < 18))
+    failures.push(`/: trust messaging is missing or too small (${proofSizes.join(", ")}px)`);
   const headingMetrics = await page
     .locator([
-      ".home-ref-hero h1",
-      ".home-platform-model > header h2",
-      ".home-care-hub > header h2",
-      ".home-guide-intro h2",
-      ".home-vet-testimonials > header h2",
-      ".home-ref-bed > header h2",
-      ".home-bed-copy h3",
-      ".home-support-paths h2",
+      ".home-contract-hero h1",
+      ".home-contract-circle h2",
+      ".home-contract-evidence h2",
+      ".home-contract-guide h2",
+      ".home-contract-bed h2",
+      ".home-contract-insights h2",
+      ".home-contract-profile h2",
     ].join(", "))
     .evaluateAll((nodes) =>
       nodes.map((node) => {
@@ -592,9 +593,9 @@ async function checkHome(page, viewport, baseUrl, failures) {
       );
   if (viewport.width === 1440) {
     const productWidth = await page
-      .locator(".home-bed-comfort-story figure img")
+      .locator(".home-complete-bed img")
       .evaluate((node) => node.getBoundingClientRect().width);
-    if (productWidth < 480)
+    if (productWidth < 500)
       failures.push(`/: Smart Bed product is too small (${Math.round(productWidth)}px)`);
   }
   const homeImageSources = await page

@@ -22815,29 +22815,130 @@ html body.home-v17 .home-vet-credential span {
 }
 
 html body.home-v17 .home-contract-bed {
-  grid-template-columns: minmax(315px, 0.65fr) minmax(680px, 1.35fr) minmax(315px, 0.65fr) !important;
-  min-height: 560px !important;
+  display: block !important;
+  grid-template-columns: none !important;
+  min-height: 0 !important;
   padding: 0 !important;
+  background: #fbf7f2 !important;
+}
+html body.home-v17 .home-bed-system {
+  display: grid;
+  grid-template-columns: minmax(440px, 0.82fr) minmax(0, 1.18fr);
+  align-items: stretch;
+  min-height: 500px;
+  border-bottom: 1px solid #e3d5cb;
+  background: linear-gradient(135deg, #fffdf9 0%, #f7efe7 100%);
 }
 html body.home-v17 .home-contract-bed-copy {
   align-self: center !important;
-  padding: 48px 12px 48px 34px !important;
+  padding: 54px 24px 54px clamp(42px, 5vw, 76px) !important;
 }
 html body.home-v17 .home-contract-bed h2 {
-  max-width: 520px !important;
-  font-size: clamp(2.05rem, 2.35vw, 2.5rem) !important;
-  line-height: 0.98 !important;
+  max-width: 690px !important;
+  font-size: clamp(2.55rem, 3vw, 3.2rem) !important;
+  line-height: 1 !important;
   text-wrap: balance !important;
+}
+html body.home-v17 .home-bed-lead {
+  max-width: 650px !important;
+  margin: 0 0 24px !important;
+  color: #5f534c !important;
+  font-size: 1.03rem !important;
+  line-height: 1.58 !important;
+}
+html body.home-v17 .home-bed-results {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  margin: 0 0 26px !important;
+  padding: 0 !important;
+  border-top: 1px solid #dfd0c5;
+  list-style: none !important;
+}
+html body.home-v17 .home-bed-results li {
+  min-height: 98px;
+  padding: 17px 18px 15px 0;
+  border-bottom: 1px solid #dfd0c5;
+}
+html body.home-v17 .home-bed-results li:nth-child(even) {
+  padding-left: 18px;
+  border-left: 1px solid #dfd0c5;
+}
+html body.home-v17 .home-bed-results :is(strong, span) {
+  display: block;
+}
+html body.home-v17 .home-bed-results strong {
+  margin-bottom: 5px;
+  color: var(--contract-ink);
+  font-size: 0.96rem;
+}
+html body.home-v17 .home-bed-results span {
+  color: #70635c;
+  font-size: 0.88rem;
+  line-height: 1.42;
+}
+html body.home-v17 .home-contract-complete {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  margin: 0;
+  padding: 30px clamp(28px, 4vw, 64px) 26px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.35);
+}
+html body.home-v17 .home-contract-complete :is(picture, img) {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: 880px !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+html body.home-v17 .home-contract-complete figcaption {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: min(720px, 92%);
+  margin-top: -34px;
+  color: #51443e;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-align: center;
+}
+html body.home-v17 .home-bed-construction {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.58fr) minmax(560px, 1.12fr) minmax(310px, 0.62fr);
+  align-items: stretch;
+  min-height: 470px;
+  background: #fffdf9;
+}
+html body.home-v17 .home-bed-construction-copy {
+  align-self: center;
+  padding: 44px 14px 44px clamp(38px, 4vw, 62px);
+}
+html body.home-v17 .home-bed-construction-copy h3 {
+  max-width: 380px;
+  margin: 8px 0 16px;
+  color: var(--contract-green);
+  font: 500 clamp(2.05rem, 2.55vw, 2.7rem)/1.02 Georgia, serif;
+  text-wrap: balance;
+}
+html body.home-v17 .home-bed-construction-copy p {
+  max-width: 360px;
+  margin: 0;
+  color: #675b54;
+  font-size: 0.96rem;
+  line-height: 1.55;
 }
 html body.home-v17 .home-contract-product {
   position: relative !important;
   align-self: center !important;
   justify-self: stretch !important;
-  padding: 30px 0 !important;
+  margin: 0 !important;
+  padding: 30px 18px !important;
 }
 html body.home-v17 .home-contract-product :is(picture, img) {
   width: 100% !important;
-  max-width: 760px !important;
+  max-width: 680px !important;
   height: auto !important;
   object-fit: contain !important;
 }
@@ -22860,7 +22961,7 @@ html body.home-v17 .home-bed-proof {
   grid-template-columns: 1fr !important;
   align-self: stretch !important;
   align-content: center !important;
-  padding: 22px !important;
+  padding: 24px 28px !important;
   border: 0 !important;
   border-left: 1px solid #e3d5cb !important;
   border-radius: 0 !important;
@@ -23015,11 +23116,17 @@ body.memorial-v7 .memorial-checkout-status {
 }
 
 @media (max-width: 1180px) {
-  html body.home-v17 .home-contract-bed {
-    grid-template-columns: minmax(280px, 0.8fr) minmax(390px, 1.2fr) !important;
+  html body.home-v17 .home-bed-system {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   html body.home-v17 .home-contract-bed-copy {
     padding: 42px 18px 42px 38px !important;
+  }
+  html body.home-v17 .home-bed-construction {
+    grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+  }
+  html body.home-v17 .home-bed-construction-copy {
+    padding-left: 38px;
   }
   html body.home-v17 .home-bed-proof {
     grid-column: 1 / -1 !important;
@@ -23039,13 +23146,35 @@ body.memorial-v7 .memorial-checkout-status {
 }
 
 @media (max-width: 900px) {
-  html body.home-v17 .home-contract-bed,
+  html body.home-v17 .home-bed-system,
+  html body.home-v17 .home-bed-construction,
   html body.home-v17 .home-contract-insights {
     grid-template-columns: 1fr !important;
   }
   html body.home-v17 .home-contract-bed-copy,
+  html body.home-v17 .home-bed-construction-copy,
   html body.home-v17 .home-contract-insights > div {
     padding: 40px 32px !important;
+  }
+  html body.home-v17 .home-bed-system {
+    min-height: 0;
+  }
+  html body.home-v17 .home-bed-results {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  html body.home-v17 .home-bed-results li {
+    min-height: 106px;
+    padding: 15px 16px 14px 0;
+  }
+  html body.home-v17 .home-bed-results li:nth-child(even) {
+    padding-left: 16px;
+    border-left: 1px solid #dfd0c5;
+  }
+  html body.home-v17 .home-contract-complete {
+    padding: 12px 26px 30px;
+  }
+  html body.home-v17 .home-contract-complete figcaption {
+    margin-top: -24px;
   }
   html body.home-v17 .home-contract-product {
     padding: 10px 24px 30px !important;
@@ -23067,14 +23196,33 @@ body.memorial-v7 .memorial-checkout-status {
 
 @media (max-width: 620px) {
   html body.home-v17 .home-contract-bed-copy,
+  html body.home-v17 .home-bed-construction-copy,
   html body.home-v17 .home-contract-insights > div {
     padding: 30px 22px !important;
   }
   html body.home-v17 .home-contract-bed h2,
+  html body.home-v17 .home-bed-construction-copy h3,
   html body.home-v17 .home-contract-insights h2 {
     max-width: none !important;
-    font-size: clamp(2rem, 10.2vw, 2.55rem) !important;
+    font-size: clamp(1.92rem, 9.1vw, 2.22rem) !important;
     line-height: 1.02 !important;
+  }
+  html body.home-v17 .home-bed-results {
+    grid-template-columns: 1fr !important;
+  }
+  html body.home-v17 .home-bed-results li,
+  html body.home-v17 .home-bed-results li:nth-child(even) {
+    min-height: 0;
+    padding: 13px 0;
+    border-left: 0;
+  }
+  html body.home-v17 .home-contract-complete {
+    padding: 0 10px 26px;
+  }
+  html body.home-v17 .home-contract-complete figcaption {
+    width: 94%;
+    margin-top: -16px;
+    font-size: 0.78rem;
   }
   html body.home-v17 .home-contract-product {
     padding: 0 12px 24px !important;

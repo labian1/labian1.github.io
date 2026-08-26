@@ -329,8 +329,10 @@ if (
 )
   fail("home: personalized account and dog profile form is incomplete");
 if (
+  !home.includes("bed-smart-base-system-branded.png") ||
   !home.includes("bed-layers.png") ||
-  !home.includes("Support stiff joints. Spot change sooner.") ||
+  !home.includes("Support stiff joints. See change sooner.") ||
+  !home.includes("Five layers with five clear jobs.") ||
   !home.includes("Low-entry washable shell") ||
   !home.includes("Supportive bolster foam") ||
   !home.includes("Pressure-relief layer") ||
@@ -340,11 +342,11 @@ if (
   fail("home: Bed + Smart Base system is incomplete");
 if (
   !home.includes("product-visualization-smart-base.png") ||
-  !home.includes("Spot health changes sooner.") ||
-  !home.includes("Rest duration") ||
-  !home.includes("Night-movement pattern") ||
-  !home.includes("Bed-use frequency") ||
-  !home.includes("Weight trend") ||
+  !home.includes("See meaningful changes sooner.") ||
+  !home.includes("Broken or shorter rest") ||
+  !home.includes("More night movement") ||
+  !home.includes("Less frequent bed use") ||
+  !home.includes("Weight gain or loss") ||
   !home.includes("does not diagnose pain or disease")
 )
   fail("home: verified Smart Base product story is missing");

@@ -500,6 +500,8 @@ async function checkHome(page, viewport, baseUrl, failures) {
     [".home-contract-evidence", 1],
     [".home-contract-guide", 1],
     [".home-contract-bed", 1],
+    [".home-contract-complete", 1],
+    [".home-bed-construction", 1],
     [".home-contract-product", 1],
     [".home-contract-close > article", 2],
     [".profile-gate-dialog", 1],
@@ -532,7 +534,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
     () => document.documentElement.scrollHeight,
   );
   const maxHeight =
-    viewport.width <= 768 ? 7800 : viewport.width <= 1100 ? 5700 : 4600;
+    viewport.width <= 768 ? 9000 : viewport.width <= 1100 ? 6200 : 5000;
   if (totalHeight > maxHeight)
     failures.push(
       `/: ${viewport.name} homepage too tall (${Math.round(totalHeight)}px)`,
@@ -557,6 +559,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
   if ((await page.getByText("Silvan R. Urfer, Dr. med. vet.", { exact: true }).count()) !== 1)
     failures.push("/: Silvan Urfer credential is missing");
   if (
+    (await page.locator('.home-contract-complete img[src*="bed-smart-base-system-branded.png"]').count()) !== 1 ||
     (await page.locator('.home-contract-product img[src*="bed-layers.png"]').count()) !== 1 ||
     (await page.locator('.home-contract-insights img[src*="product-visualization-smart-base.png"]').count()) !== 1 ||
     (await page.locator('main img[src*="smart-base-weekly-trend-v1.png"]').count()) !== 0
@@ -598,6 +601,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
       ".home-contract-evidence h2",
       ".home-contract-guide h2",
       ".home-contract-bed h2",
+      ".home-bed-construction-copy h3",
       ".home-contract-insights h2",
       ".home-contract-profile h2",
     ].join(", "))
@@ -617,11 +621,16 @@ async function checkHome(page, viewport, baseUrl, failures) {
         `/: ${viewport.name} section title exceeds two lines (${heading.lines.toFixed(1)}: ${heading.copy})`,
       );
   if (viewport.width === 1440) {
-    const productWidth = await page
+    const completeSystemWidth = await page
+      .locator(".home-contract-complete img")
+      .evaluate((node) => node.getBoundingClientRect().width);
+    const layerSystemWidth = await page
       .locator(".home-contract-product img")
       .evaluate((node) => node.getBoundingClientRect().width);
-    if (productWidth < 680)
-      failures.push(`/: Smart Bed product is too small (${Math.round(productWidth)}px)`);
+    if (completeSystemWidth < 650)
+      failures.push(`/: complete Bed + Smart Base image is too small (${Math.round(completeSystemWidth)}px)`);
+    if (layerSystemWidth < 500)
+      failures.push(`/: exploded Bed + Smart Base layers are too small (${Math.round(layerSystemWidth)}px)`);
   }
   const supportMediaHeights = await page
     .locator(".home-contract-support figure")

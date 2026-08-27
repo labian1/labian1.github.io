@@ -291,8 +291,9 @@ for (const marker of [
 ])
   if (!home.includes(marker)) fail(`home: missing ${marker}`);
 if (
-  !home.includes("Care rooted in veterinary knowledge.") ||
-  !home.includes("vet-silvan-urfer.jpg")
+  !home.includes("Dog-aging expertise. Clear next steps.") ||
+  !home.includes("vet-silvan-urfer.jpg") ||
+  !home.includes('<figcaption class="home-vet-credential">')
 )
   fail("home: concise veterinary-evidence section is incomplete");
 if (home.includes('<section class="home-care-account"'))
@@ -331,23 +332,26 @@ if (
 if (
   !home.includes("product-prototype-golden.webp") ||
   !home.includes("bed-layers.png") ||
-  !home.includes("Support stiff joints. Spot change sooner.") ||
-  !home.includes("Five layers. Five clear jobs.") ||
-  !home.includes("Washable low-entry shell") ||
+  !home.includes("Ultra-premium rest. Earlier alerts.") ||
+  !home.includes("The bed dogs want to rest in.") ||
+  !home.includes("Low-entry washable shell") ||
   !home.includes("Supportive bolsters") ||
   !home.includes("Pressure-relief foam") ||
-  !home.includes("Stable core") ||
+  !home.includes("Stable orthopedic core") ||
+  !home.includes("Machine-washable") ||
+  !home.includes("scratch-resistant") ||
   !home.includes("Smart Base")
 )
   fail("home: Bed + Smart Base system is incomplete");
 if (
   !home.includes("product-visualization-smart-base.png") ||
-  !home.includes("Spot changes earlier.") ||
+  !home.includes("Detect meaningful changes earlier.") ||
+  !home.includes("almost any existing dog bed") ||
   !home.includes("Shorter or broken") ||
   !home.includes("More restless") ||
   !home.includes("Less frequent") ||
   !home.includes("Gain or loss") ||
-  !home.includes("Pattern tracking—not diagnosis")
+  !home.includes("It does not diagnose a condition")
 )
   fail("home: verified Smart Base product story is missing");
 if (
@@ -622,13 +626,14 @@ if (/support-faq|Common questions|FAQs/i.test(support))
 const about = routeHtml.get("/about/") || "";
 if (
   !about.includes("Bobby was eight when joint cancer took him.") ||
+  !about.includes("I’m Robert Luo—Bobby’s person") ||
   !about.includes("we did not understand Bobby’s health change in time") ||
   !about.includes("he was very good at hiding pain") ||
   !about.includes("OUR MISSION · HOW WE HELP")
 )
   fail("about: Bobby's first-person story or combined mission is missing");
-if (/A NOTE FROM ROBERT|Co-Founder of WoafMeow|I[’']m Robert/i.test(about))
-  fail("about: removed Robert note or signoff remains");
+if (/A NOTE FROM ROBERT|Robert, Co-Founder of WoafMeow/i.test(about))
+  fail("about: removed generic Robert note remains");
 if (/story-mission-v7|story-build-v7|story-values/.test(about))
   fail("about: old split mission and values sections remain");
 for (const [route, html] of routeHtml) {
@@ -649,7 +654,7 @@ for (const rule of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
   const declarations = rule[2];
   if (
     /object-fit:\s*cover/.test(declarations) &&
-    !/home-contract-(?:support|circle|complete)|loss-first-days/.test(selector)
+    !/home-contract-(?:support|circle|complete)|loss-first-days|directory-hero-v6|practice-band-v6|health-hero/.test(selector)
   )
     fail("styles: cropping is only allowed for explicit editorial media frames");
 }

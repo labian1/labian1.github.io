@@ -23321,6 +23321,185 @@ body.memorial-v7 .memorial-checkout-status {
   }
 }
 
+/* 2026-08-27.5 — compact live workflows: remove empty split-panel space. */
+html body.find-care-v7 .directory-hero-v6 {
+  gap: 18px 30px !important;
+  margin-block: 18px 26px !important;
+  padding: 26px 30px !important;
+}
+html body.find-care-v7 .directory-hero-heading > span {
+  margin-bottom: 6px !important;
+}
+html body.find-care-v7 .directory-hero-v6 .directory-hero-heading h1 {
+  margin-bottom: 9px !important;
+  font-size: clamp(2.45rem, 3.8vw, 3.65rem) !important;
+}
+html body.find-care-v7 .directory-hero-v6 > .directory-selectors {
+  align-content: start !important;
+  align-self: start !important;
+  padding: 0 !important;
+}
+html body.find-care-v7 .directory-hero-v6 > figure {
+  position: relative !important;
+  align-self: start !important;
+  min-height: 0 !important;
+  aspect-ratio: 16 / 9 !important;
+}
+html body.find-care-v7 .directory-results-v6 {
+  padding-block: 38px !important;
+}
+html body.find-care-v7 .practice-band-v6 {
+  padding-block: 40px !important;
+}
+html body.find-care-v7 .practice-band-v6 > .wm-wrap {
+  grid-template-columns: minmax(320px, 0.86fr) minmax(0, 1.14fr) !important;
+  align-items: stretch !important;
+  min-height: 0 !important;
+}
+html body.find-care-v7 .practice-band-v6 figure {
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+html body.find-care-v7 .practice-band-v6 figure :is(picture, img) {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+html body.find-care-v7 .provider-form-v6 {
+  align-content: start !important;
+  min-height: 0 !important;
+  padding: 34px !important;
+}
+html body.find-care-v7 .provider-form-v6 textarea {
+  min-height: 126px !important;
+}
+
+html body.health-v1 .health-shell {
+  padding: 22px clamp(18px, 3vw, 40px) 46px !important;
+}
+html body.health-v1 .health-hero {
+  grid-template-columns: minmax(340px, 0.88fr) minmax(0, 1.12fr) !important;
+  align-items: stretch !important;
+  min-height: 0 !important;
+  margin: 0 auto 28px !important;
+}
+html body.health-v1 .health-hero > figure {
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+html body.health-v1 .health-hero > figure :is(picture, img) {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+html body.health-v1 .health-hero-copy {
+  align-content: center !important;
+  min-height: 0 !important;
+  padding: 38px 44px !important;
+}
+html body.health-v1 .health-hero-copy > h2 {
+  margin-bottom: 15px !important;
+  font-size: clamp(2.35rem, 4vw, 3.8rem) !important;
+}
+html body.health-v1 .health-tools,
+html body.health-v1 .health-insights,
+html body.health-v1 .health-share,
+html body.health-v1 .health-timeline-section {
+  margin-top: 28px !important;
+}
+
+html body.match-v6 .match-form-section {
+  padding-block: 42px !important;
+}
+html body.match-v6 .match-form-section > .wm-wrap {
+  display: block !important;
+  width: min(1120px, calc(100% - 40px)) !important;
+}
+html body.match-v6 .match-form-section > .wm-wrap > div {
+  margin: 0 auto 22px !important;
+  text-align: center !important;
+}
+html body.match-v6 .match-form-section > .wm-wrap > div h2 {
+  max-width: none !important;
+  margin: 0 !important;
+  font-size: clamp(2.2rem, 3.6vw, 3.25rem) !important;
+}
+html body.match-v6 .match-form-v6 {
+  width: 100% !important;
+  padding: 30px !important;
+}
+html body.match-v6 .match-form-v6 textarea {
+  min-height: 118px !important;
+}
+
+html body.memorial-v7 .tree-purchase-dialog {
+  width: min(880px, calc(100% - 30px)) !important;
+  max-height: calc(100dvh - 28px) !important;
+  padding: 0 !important;
+}
+html body.memorial-v7 .tree-purchase-dialog > div {
+  padding: 30px 34px 34px !important;
+}
+html body.memorial-v7 .tree-purchase-dialog h2 {
+  margin: 0 54px 8px 0 !important;
+  font-size: clamp(2.25rem, 4vw, 3.35rem) !important;
+  line-height: 1 !important;
+}
+html body.memorial-v7 .tree-purchase-dialog .tree-price {
+  margin: 0 0 22px !important;
+  font-size: 1.5rem !important;
+}
+html body.memorial-v7 .tree-purchase-dialog form {
+  padding: 24px !important;
+}
+html body.memorial-v7 .tree-purchase-dialog textarea {
+  min-height: 118px !important;
+}
+
+html body.guide-v8 .email-capture {
+  padding: 24px !important;
+}
+
+@media (max-width: 820px) {
+  html body.find-care-v7 .practice-band-v6 > .wm-wrap,
+  html body.health-v1 .health-hero {
+    grid-template-columns: 1fr !important;
+  }
+  html body.find-care-v7 .practice-band-v6 figure {
+    aspect-ratio: 16 / 10 !important;
+  }
+  html body.health-v1 .health-hero > figure {
+    aspect-ratio: 16 / 10 !important;
+  }
+  html body.match-v6 .match-form-section > .wm-wrap {
+    width: min(100% - 24px, 720px) !important;
+  }
+}
+
+@media (max-width: 620px) {
+  html body.find-care-v7 .directory-hero-v6 {
+    padding: 22px 16px !important;
+  }
+  html body.find-care-v7 .provider-form-v6,
+  html body.health-v1 .health-hero-copy,
+  html body.match-v6 .match-form-v6,
+  html body.memorial-v7 .tree-purchase-dialog > div,
+  html body.memorial-v7 .tree-purchase-dialog form {
+    padding: 22px 18px !important;
+  }
+  html body.health-v1 .health-shell {
+    padding-inline: 10px !important;
+  }
+}
+
 /* 2026-08-27.4 — compact, outcome-led product, care, story and footer corrections. */
 html body .editorial-heading {
   align-items: center !important;
@@ -23751,5 +23930,45 @@ html body .wm-footer .wm-footer-socials a {
   }
   html body .wm-footer .wm-footer-bottom > :is(span, nav) {
     grid-column: 1 !important;
+  }
+}
+
+/* Final find-care density pass; this intentionally follows the shared footer rules. */
+html body.find-care-v7 .directory-hero-v6 {
+  gap: 18px 30px !important;
+  margin: 18px auto 26px !important;
+  padding: 26px 30px !important;
+}
+html body.find-care-v7 .directory-hero-v6 > .directory-selectors {
+  align-content: start !important;
+  align-self: start !important;
+  padding: 0 !important;
+}
+html body.find-care-v7 .directory-hero-v6 > figure {
+  align-self: start !important;
+  box-sizing: border-box !important;
+  height: 238px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  aspect-ratio: auto !important;
+}
+html body.find-care-v7 .directory-hero-v6 > figure img {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+@media (max-width: 620px) {
+  html body.find-care-v7 .directory-hero-v6 {
+    width: calc(100% - 20px) !important;
+    margin: 10px auto 22px !important;
+    padding: 22px 16px !important;
+  }
+  html body.find-care-v7 .directory-hero-v6 > figure {
+    height: 210px !important;
   }
 }

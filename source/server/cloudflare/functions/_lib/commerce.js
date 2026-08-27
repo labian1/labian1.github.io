@@ -15,9 +15,33 @@ export const MEMBERSHIP_PLANS = Object.freeze({
   annual: { title: "WoafMeow Care+ Annual", priceCents: 13500, interval: "year" },
 });
 
-export const json = (payload, status = 200) => new Response(JSON.stringify(payload), {
+const allowedOrigins = new Set([
+  "https://labian1.github.io",
+  "https://woafmeow.com",
+  "https://www.woafmeow.com",
+]);
+
+export const corsHeaders = (request) => {
+  const origin = request?.headers?.get("origin") || "";
+  const localOrigin = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+  return {
+    ...(allowedOrigins.has(origin) || localOrigin
+      ? { "access-control-allow-origin": origin }
+      : {}),
+    "access-control-allow-methods": "POST, OPTIONS",
+    "access-control-allow-headers": "content-type",
+    "access-control-max-age": "86400",
+    vary: "Origin",
+  };
+};
+
+export const json = (payload, status = 200, request) => new Response(JSON.stringify(payload), {
   status,
-  headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
+  headers: {
+    "content-type": "application/json; charset=utf-8",
+    "cache-control": "no-store",
+    ...corsHeaders(request),
+  },
 });
 
 export const cleanText = (value, maxLength) => String(value || "").trim().replace(/\s+/g, " ").slice(0, maxLength);

@@ -1,9 +1,33 @@
 import { syncBrevoContact } from "../_lib/brevo.js";
 
-const json = (payload, status = 200) =>
+const allowedOrigins = new Set([
+  "https://labian1.github.io",
+  "https://woafmeow.com",
+  "https://www.woafmeow.com",
+]);
+
+const corsHeaders = (request) => {
+  const origin = request?.headers?.get("origin") || "";
+  const localOrigin = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+  return {
+    ...(allowedOrigins.has(origin) || localOrigin
+      ? { "access-control-allow-origin": origin }
+      : {}),
+    "access-control-allow-methods": "POST, OPTIONS",
+    "access-control-allow-headers": "content-type",
+    "access-control-max-age": "86400",
+    vary: "Origin",
+  };
+};
+
+const json = (payload, status = 200, request) =>
   new Response(JSON.stringify(payload), {
     status,
-    headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+      ...corsHeaders(request),
+    },
   });
 
 const cleanText = (value, maxLength) => String(value || "").trim().replace(/\s+/g, " ").slice(0, maxLength);
@@ -20,19 +44,23 @@ const validWebsite = (value) => {
   }
 };
 
-export async function onRequestOptions() {
-  return new Response(null, { status: 204, headers: { allow: "POST, OPTIONS" } });
+export async function onRequestOptions(context) {
+  return new Response(null, {
+    status: 204,
+    headers: { allow: "POST, OPTIONS", ...corsHeaders(context.request) },
+  });
 }
 
 export async function onRequestPost(context) {
+  const respond = (payload, status = 200) => json(payload, status, context.request);
   const contentType = context.request.headers.get("content-type") || "";
-  if (!contentType.includes("application/json")) return json({ error: "Use a JSON request." }, 415);
+  if (!contentType.includes("application/json")) return respond({ error: "Use a JSON request." }, 415);
 
   let body;
   try {
     body = await context.request.json();
   } catch {
-    return json({ error: "We could not read that listing request." }, 400);
+    return respond({ error: "We could not read that listing request." }, 400);
   }
 
   const organization = cleanText(body.organization, 180);
@@ -45,11 +73,11 @@ export async function onRequestPost(context) {
   const message = cleanText(body.message, 1000);
   const consent = body.consent === true;
 
-  if (!organization || !contactName || !serviceType || !coverage) return json({ error: "Add the organization, contact name, care area, and service area." }, 400);
-  if (!validEmail(email)) return json({ error: "Enter a valid work email address." }, 400);
-  if (!validRequestTypes.has(requestType)) return json({ error: "Choose how you would like to take part." }, 400);
-  if (!validWebsite(website)) return json({ error: "Enter a complete official website address, including https://." }, 400);
-  if (!consent) return json({ error: "Confirm that we may contact you about this request." }, 400);
+  if (!organization || !contactName || !serviceType || !coverage) return respond({ error: "Add the organization, contact name, care area, and service area." }, 400);
+  if (!validEmail(email)) return respond({ error: "Enter a valid work email address." }, 400);
+  if (!validRequestTypes.has(requestType)) return respond({ error: "Choose how you would like to take part." }, 400);
+  if (!validWebsite(website)) return respond({ error: "Enter a complete official website address, including https://." }, 400);
+  if (!consent) return respond({ error: "Confirm that we may contact you about this request." }, 400);
 
   const now = new Date().toISOString();
   try {
@@ -69,8 +97,8 @@ export async function onRequestPost(context) {
       listKeys: ["BREVO_PROVIDER_LIST_ID"],
     });
   } catch {
-    return json({ error: "We could not save that request right now. Please try again." }, 503);
+    return respond({ error: "We could not save that request right now. Please try again." }, 503);
   }
 
-  return json({ message: "Your request is saved. We will review the official information before contacting you about the next step." });
+  return respond({ message: "Your request is saved. We will review the official information before contacting you about the next step." });
 }

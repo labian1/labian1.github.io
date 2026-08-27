@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { onRequestPost as sendVetSummary } from "../functions/api/vet-summary.js";
+import { onRequestOptions as vetOptions, onRequestPost as sendVetSummary } from "../functions/api/vet-summary.js";
 import { onRequestPost as sendGuide } from "../functions/api/newsletter.js";
 import { hashToken } from "../functions/_lib/members.js";
 
@@ -36,19 +36,44 @@ globalThis.fetch = async (url, options = {}) => {
   return new Response("{}", { status: 201 });
 };
 
+const vetCorsResponse = await vetOptions({
+  request: new Request("https://example.test/api/vet-summary", {
+    method: "OPTIONS",
+    headers: { origin: "https://labian1.github.io" },
+  }),
+});
+assert.equal(vetCorsResponse.status, 204);
+assert.equal(vetCorsResponse.headers.get("access-control-allow-origin"), "https://labian1.github.io");
+
 const vetResponse = await sendVetSummary({
   env: { WAITLIST_DB: db, BREVO_API_KEY: "test-key", BREVO_SENDER_EMAIL: "care@woafmeow.com" },
-  request: new Request("https://example.test/api/vet-summary", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ memberId: member.id, memberToken: token, dogId: pet.id, email: "vet@example.com" }) }),
+  request: new Request("https://example.test/api/vet-summary", { method: "POST", headers: { "content-type": "application/json", origin: "https://labian1.github.io" }, body: JSON.stringify({ memberId: member.id, memberToken: token, dogId: pet.id, email: "vet@example.com" }) }),
 });
 const vetResult = await vetResponse.json();
 assert.equal(vetResponse.status, 200);
 assert.equal(vetResult.delivery, "sent");
+assert.equal(vetResult.sender, "hello@woafmeow.com");
+assert.equal(capturedEmail.sender.email, "hello@woafmeow.com");
+assert.match(capturedEmail.subject, /Luna's health timeline and original records/);
+assert.match(capturedEmail.subject, /Aug 24, 2026/);
+assert.match(capturedEmail.htmlContent, /WoafMeow helps dog families organize changes noticed at home/);
+assert.match(capturedEmail.htmlContent, /Please review the attached records/);
 assert.equal(capturedEmail.attachment.length, 2);
 assert.match(Buffer.from(capturedEmail.attachment[0].content, "base64").toString(), /WOAFMEOW HEALTH SUMMARY/);
 assert.match(Buffer.from(capturedEmail.attachment[1].content, "base64").toString(), /known_health_conditions/);
 assert.match(Buffer.from(capturedEmail.attachment[1].content, "base64").toString(), /Needed help after rest/);
 
 globalThis.fetch = async () => new Response("service unavailable", { status: 503 });
+const failedVetResponse = await sendVetSummary({
+  env: { WAITLIST_DB: db, BREVO_API_KEY: "test-key", BREVO_SENDER_EMAIL: "care@woafmeow.com" },
+  request: new Request("https://example.test/api/vet-summary", { method: "POST", headers: { "content-type": "application/json", origin: "https://labian1.github.io" }, body: JSON.stringify({ memberId: member.id, memberToken: token, dogId: pet.id, email: "vet@example.com" }) }),
+});
+const failedVetResult = await failedVetResponse.json();
+assert.equal(failedVetResponse.status, 503);
+assert.equal(failedVetResult.delivery, "failed");
+assert.match(failedVetResult.error, /was not sent/i);
+assert.doesNotMatch(failedVetResult.error, /successfully sent|successfully delivered/i);
+
 const guideResponse = await sendGuide({
   env: { WAITLIST_DB: db, BREVO_API_KEY: "test-key", BREVO_SENDER_EMAIL: "care@woafmeow.com" },
   request: new Request("https://example.test/api/newsletter", { method: "POST", headers: { "content-type": "application/json", origin: "https://labian1.github.io" }, body: JSON.stringify({ email: "owner@example.com", guideConsent: true, marketingConsent: false }) }),
@@ -60,4 +85,4 @@ assert.match(guideResult.guideUrl, /^https:\/\//);
 assert.doesNotMatch(guideResult.message, /emailed to you/i);
 
 globalThis.fetch = originalFetch;
-console.log(JSON.stringify({ vetEmail: { status: vetResponse.status, attachments: capturedEmail.attachment.map((item) => item.name) }, guideFallback: { status: guideResponse.status, delivery: guideResult.delivery, guideUrl: guideResult.guideUrl } }, null, 2));
+console.log(JSON.stringify({ vetEmail: { status: vetResponse.status, sender: vetResult.sender, subject: vetResult.subject, attachments: capturedEmail.attachment.map((item) => item.name), truthfulFailureStatus: failedVetResponse.status }, guideFallback: { status: guideResponse.status, delivery: guideResult.delivery, guideUrl: guideResult.guideUrl } }, null, 2));

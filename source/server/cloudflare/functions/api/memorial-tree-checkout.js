@@ -1,5 +1,5 @@
 import { syncBrevoContact } from "../_lib/brevo.js";
-import { cleanText, createStripeCheckout, json, validEmail } from "../_lib/commerce.js";
+import { cleanText, corsHeaders, createStripeCheckout, json, validEmail } from "../_lib/commerce.js";
 
 const amountCents = 1000;
 const publicOrigins = new Set([
@@ -19,25 +19,26 @@ const returnOrigin = (value) => {
 };
 
 export async function onRequestPost(context) {
+  const respond = (payload, status = 200) => json(payload, status, context.request);
   if (!(context.request.headers.get("content-type") || "").includes("application/json")) {
-    return json({ error: "Use a JSON request." }, 415);
+    return respond({ error: "Use a JSON request." }, 415);
   }
 
   let body;
   try {
     body = await context.request.json();
   } catch {
-    return json({ error: "We could not read that memorial request." }, 400);
+    return respond({ error: "We could not read that memorial request." }, 400);
   }
 
   const customerName = cleanText(body.name, 100);
   const email = cleanText(body.email, 254).toLowerCase();
   const petName = cleanText(body.petName, 80);
   const memory = cleanText(body.meaning, 600);
-  if (customerName.length < 2) return json({ error: "Add your name." }, 400);
-  if (!validEmail(email)) return json({ error: "Enter a valid email address." }, 400);
-  if (!petName) return json({ error: "Add your dog's name." }, 400);
-  if (memory.length < 12) return json({ error: "Share one short memory to carry forward." }, 400);
+  if (customerName.length < 2) return respond({ error: "Add your name." }, 400);
+  if (!validEmail(email)) return respond({ error: "Enter a valid email address." }, 400);
+  if (!petName) return respond({ error: "Add your dog's name." }, 400);
+  if (memory.length < 12) return respond({ error: "Share one short memory to carry forward." }, 400);
 
   const db = context.env.WAITLIST_DB;
   const orderId = crypto.randomUUID();
@@ -50,7 +51,7 @@ export async function onRequestPost(context) {
     if (!context.env.STRIPE_SECRET_KEY) {
       await db.prepare("UPDATE memorial_tree_orders SET status = 'stripe_not_configured', updated_at = ?1 WHERE id = ?2")
         .bind(new Date().toISOString(), orderId).run();
-      return json({ error: "Secure payment is temporarily unavailable. No payment was taken. Please try again later.", orderId }, 503);
+      return respond({ error: "Secure payment is temporarily unavailable. No payment was taken. Please try again later.", orderId }, 503);
     }
 
     const origin = returnOrigin(body.pageContext);
@@ -84,8 +85,15 @@ export async function onRequestPost(context) {
       listKeys: ["BREVO_MEMORIAL_LIST_ID"],
       sendOwnerNotification: false,
     });
-    return json({ checkoutUrl: session.url, orderId });
+    return respond({ checkoutUrl: session.url, orderId });
   } catch (error) {
-    return json({ error: error?.message || "Secure Stripe checkout could not be opened. No payment was taken." }, 503);
+    return respond({ error: error?.message || "Secure Stripe checkout could not be opened. No payment was taken." }, 503);
   }
+}
+
+export async function onRequestOptions(context) {
+  return new Response(null, {
+    status: 204,
+    headers: { allow: "POST, OPTIONS", ...corsHeaders(context.request) },
+  });
 }

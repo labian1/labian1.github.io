@@ -96,9 +96,19 @@
             },
             body: JSON.stringify({
               ...stored,
-              consent: stored.consent === "true" || stored.consent === "on",
+              topic:
+                stored.topic ||
+                (!isOwnerMatch && endpoint.endsWith("/api/contact")
+                  ? "other"
+                  : stored.topic),
+              consent:
+                stored.consent === "true" ||
+                stored.consent === "on" ||
+                (!isOwnerMatch && endpoint.endsWith("/api/contact")),
               guideConsent:
-                stored.guideConsent === "true" || stored.guideConsent === "on",
+                isGuideDelivery ||
+                stored.guideConsent === "true" ||
+                stored.guideConsent === "on",
               marketingConsent:
                 stored.marketingConsent === "true" ||
                 stored.marketingConsent === "on",
@@ -212,22 +222,29 @@
       if (button) button.disabled = true;
       if (note) note.textContent = "Submitting…";
       try {
-        await fetch(endpoint, {
+        const response = await fetch(endpoint, {
           method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain;charset=UTF-8" },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(
+            result.error || "We could not submit the practice right now.",
+          );
+        }
         form.reset();
         if (note) {
           note.textContent =
-            "Thank you. Your practice was submitted for review.";
+            result.message || "Thank you. Your practice was submitted for review.";
           note.classList.add("is-confirmed");
         }
-      } catch {
+      } catch (error) {
         if (note) {
           note.textContent =
-            "We could not submit the practice right now. Please try again.";
+            error instanceof Error && error.message
+              ? error.message
+              : "We could not submit the practice right now. Please try again.";
           note.classList.remove("is-confirmed");
         }
       } finally {

@@ -381,7 +381,7 @@ async function checkGlobal(page, route, viewport, failures) {
         fit: style.objectFit,
         editorialCrop: Boolean(
           image.closest(
-            ".home-contract-support, .home-contract-complete, .loss-first-days",
+            ".home-contract-support, .home-contract-complete, .loss-first-days, .directory-hero-v6, .practice-band-v6, .health-hero",
           ),
         ),
         visible,
@@ -558,8 +558,10 @@ async function checkHome(page, viewport, baseUrl, failures) {
       .count()) !== 1
   )
     failures.push("/: first-action dog profile photo upload is missing");
-  if ((await page.getByRole("heading", { name: "Care rooted in veterinary knowledge." }).count()) !== 1)
+  if ((await page.getByRole("heading", { name: "Dog-aging expertise. Clear next steps." }).count()) !== 1)
     failures.push("/: concise veterinary-evidence section is incomplete");
+  if ((await page.locator(".home-contract-evidence figure .home-vet-credential").count()) !== 1)
+    failures.push("/: Silvan Urfer credential is not attached to his portrait");
   if ((await page.getByText("Silvan R. Urfer, Dr. med. vet.", { exact: true }).count()) !== 1)
     failures.push("/: Silvan Urfer credential is missing");
   if (
@@ -1206,9 +1208,10 @@ async function checkDirectory(page, viewport, apiCalls, failures) {
     );
   if (
     (await page.locator("[data-directory-category]").count()) !== 1 ||
-    (await page.locator("[data-directory-region]").count()) !== 1
+    (await page.locator("[data-directory-region]").count()) !== 1 ||
+    (await page.locator("[data-directory-apply]").count()) !== 1
   )
-    failures.push("/find-care/: selectors missing");
+    failures.push("/find-care/: selectors or apply button missing");
   const initialProfiles = await page
     .locator("[data-directory-profile]:visible")
     .count();
@@ -1240,6 +1243,17 @@ async function checkDirectory(page, viewport, apiCalls, failures) {
   }
   if (viewport.width !== 1440) return;
   const category = page.locator("[data-directory-category]");
+  const emergencyButton = page.locator('[data-directory-filter="emergency-vets"]');
+  const filterStarted = Date.now();
+  await emergencyButton.click();
+  await page.waitForFunction(
+    () =>
+      document.querySelector("[data-directory-category]")?.value ===
+        "emergency-vets" &&
+      document.querySelectorAll("[data-directory-item]:not([hidden])").length > 0,
+  );
+  if (Date.now() - filterStarted > 1200)
+    failures.push("/find-care/: emergency filter response is too slow");
   for (const value of [
     "senior-veterinarians",
     "pain-mobility-rehab",
@@ -1475,8 +1489,10 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
         failures.push(`/about/: missing Bobby story message: ${expected}`);
     if ((await page.locator(".story-mission-v7, .story-build-v7, .story-values").count()) !== 0)
       failures.push("/about/: old mission/how-we-help sections remain");
-    if (/a note from robert|co-founder of woafmeow|i['’]m robert/i.test(aboutCopy))
-      failures.push("/about/: removed Robert note or signoff remains");
+    if (!aboutCopy.includes("i'm robert luo-bobby's person"))
+      failures.push("/about/: Robert Luo is not identified as Bobby's person");
+    if (/a note from robert|robert, co-founder of woafmeow/i.test(aboutCopy))
+      failures.push("/about/: removed generic Robert note remains");
   }
   if (route === "/support/") {
     if ((await page.locator(".contact-direct").count()) !== 1)

@@ -1,41 +1,69 @@
 import { syncBrevoContact } from "../_lib/brevo.js";
 
-const json = (payload, status = 200) =>
+const allowedOrigins = new Set([
+  "https://labian1.github.io",
+  "https://woafmeow.com",
+  "https://www.woafmeow.com",
+]);
+
+const corsHeaders = (request) => {
+  const origin = request?.headers?.get("origin") || "";
+  const localOrigin = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+  return {
+    ...(allowedOrigins.has(origin) || localOrigin
+      ? { "access-control-allow-origin": origin }
+      : {}),
+    "access-control-allow-methods": "POST, OPTIONS",
+    "access-control-allow-headers": "content-type",
+    "access-control-max-age": "86400",
+    vary: "Origin",
+  };
+};
+
+const json = (payload, status = 200, request) =>
   new Response(JSON.stringify(payload), {
     status,
-    headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+      ...corsHeaders(request),
+    },
   });
 
 const cleanText = (value, maxLength) => String(value || "").trim().replace(/\s+/g, " ").slice(0, maxLength);
 const validEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 const validTopics = new Set(["account", "care-circle", "directory", "professional-listing", "wednesday-match", "memorial-tree", "other"]);
 
-export async function onRequestOptions() {
-  return new Response(null, { status: 204, headers: { allow: "POST, OPTIONS" } });
+export async function onRequestOptions(context) {
+  return new Response(null, {
+    status: 204,
+    headers: { allow: "POST, OPTIONS", ...corsHeaders(context.request) },
+  });
 }
 
 export async function onRequestPost(context) {
+  const respond = (payload, status = 200) => json(payload, status, context.request);
   if (!(context.request.headers.get("content-type") || "").includes("application/json")) {
-    return json({ error: "Use a JSON request." }, 415);
+    return respond({ error: "Use a JSON request." }, 415);
   }
 
   let body;
   try {
     body = await context.request.json();
   } catch {
-    return json({ error: "We could not read that message." }, 400);
+    return respond({ error: "We could not read that message." }, 400);
   }
 
-  const name = cleanText(body.name, 100);
-  const email = cleanText(body.email, 254).toLowerCase();
   const topic = cleanText(body.topic, 60);
+  const name = cleanText(body.name, 100) || (topic === "wednesday-match" ? "" : "Website visitor");
+  const email = cleanText(body.email, 254).toLowerCase();
   const message = cleanText(body.message, 1500);
   const consent = body.consent === true;
-  if (!name) return json({ error: "Add your name." }, 400);
-  if (!validEmail(email)) return json({ error: "Enter a valid email address." }, 400);
-  if (!validTopics.has(topic)) return json({ error: "Choose what you need help with." }, 400);
-  if (message.length < 12) return json({ error: "Add enough detail for us to understand the problem." }, 400);
-  if (!consent) return json({ error: "Confirm that WoafMeow may answer your request." }, 400);
+  if (!name) return respond({ error: "Add your name." }, 400);
+  if (!validEmail(email)) return respond({ error: "Enter a valid email address." }, 400);
+  if (!validTopics.has(topic)) return respond({ error: "Choose what you need help with." }, 400);
+  if (message.length < 12) return respond({ error: "Add enough detail for us to understand the problem." }, 400);
+  if (!consent) return respond({ error: "Confirm that WoafMeow may answer your request." }, 400);
 
   let storedMessage = message;
   let requestId = "";
@@ -47,9 +75,9 @@ export async function onRequestPost(context) {
     const firstContact = cleanText(body.contact, 100);
     const matchGoal = cleanText(body.matchGoal, 140);
     requestId = cleanText(body.requestId, 80) || `WM-${Date.now().toString(36).toUpperCase()}`;
-    if (!zip) return json({ error: "Add your ZIP or postal code." }, 400);
+    if (!zip) return respond({ error: "Add your ZIP or postal code." }, 400);
     if (!dogAge || !issue || !availability || !firstContact || !matchGoal) {
-      return json({ error: "Complete each introduction preference so we can consider a safe, useful match." }, 400);
+      return respond({ error: "Complete each introduction preference so we can consider a safe, useful match." }, 400);
     }
     storedMessage = [
       `Request: ${requestId}`,
@@ -80,14 +108,14 @@ export async function onRequestPost(context) {
       listKeys: ["BREVO_WEBSITE_LIST_ID"],
     });
   } catch {
-    return json({ error: "We could not save that message right now. Please try again." }, 503);
+    return respond({ error: "We could not save that message right now. Please try again." }, 503);
   }
 
   if (topic === "wednesday-match") {
-    return json({
+    return respond({
       message: "Your introduction request is saved. Our team will email you if a suitable match is ready for both people to review.",
       requestId,
     }, 201);
   }
-  return json({ message: "Your message is with the WoafMeow team." }, 201);
+  return respond({ message: "Your message is with the WoafMeow team." }, 201);
 }

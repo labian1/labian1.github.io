@@ -75,7 +75,7 @@ globalThis.fetch = async (url, options = {}) => {
 
 try {
   const corsResponse = await corsMiddleware({
-    request: new Request("https://woafypet-senior-care.pages.dev/api/contact", {
+    request: new Request("https://woafypet-senior-care-8kt.pages.dev/api/contact", {
       method: "OPTIONS",
       headers: { origin: "https://labian1.github.io" },
     }),
@@ -86,7 +86,7 @@ try {
   assert.match(corsResponse.headers.get("access-control-allow-methods"), /POST/);
 
   const checkoutResponse = await createMemorialCheckout({
-    request: new Request("https://woafypet-senior-care.pages.dev/api/memorial-tree-checkout", {
+    request: new Request("https://woafypet-senior-care-8kt.pages.dev/api/memorial-tree-checkout", {
       method: "POST",
       headers: { "content-type": "application/json", origin: "https://labian1.github.io" },
       body: JSON.stringify({
@@ -125,7 +125,7 @@ try {
   const timestamp = Math.floor(Date.now() / 1000);
   const webhookSecret = "whsec_test_not_real";
   const signature = createHmac("sha256", webhookSecret).update(`${timestamp}.${rawEvent}`).digest("hex");
-  const webhookRequest = () => new Request("https://woafypet-senior-care.pages.dev/api/stripe-webhook", {
+  const webhookRequest = () => new Request("https://woafypet-senior-care-8kt.pages.dev/api/stripe-webhook", {
     method: "POST",
     headers: { "stripe-signature": `t=${timestamp},v1=${signature}`, "content-type": "application/json" },
     body: rawEvent,
@@ -152,7 +152,7 @@ try {
 
   const contactRunCount = state.runs.length;
   const contactResponse = await submitContact({
-    request: new Request("https://woafypet-senior-care.pages.dev/api/contact", {
+    request: new Request("https://woafypet-senior-care-8kt.pages.dev/api/contact", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({

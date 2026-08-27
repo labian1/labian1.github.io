@@ -331,10 +331,8 @@ if (
   fail("home: personalized account and dog profile form is incomplete");
 if (
   !home.includes("product-prototype-golden-full-v2.png") ||
-  !home.includes("bed-smart-base-system-branded.png") ||
   !home.includes("bed-layers.png") ||
   !home.includes("Better rest. Earlier health alerts.") ||
-  !home.includes("Full orthopedic bed + Smart Base") ||
   !home.includes('aria-label="Layer 5: Smart Base"') ||
   !home.includes("Step in with less effort") ||
   !home.includes("Reduce joint pressure") ||
@@ -344,6 +342,8 @@ if (
   !home.includes("Smart Base")
 )
   fail("home: Bed + Smart Base system is incomplete");
+if (home.includes('class="home-bed-pair-card"'))
+  fail("home: nested product image remains over the dog-in-bed image");
 if (
   !home.includes("product-visualization-smart-base.png") ||
   !home.includes("Get health-change alerts sooner.") ||
@@ -470,7 +470,7 @@ if (
   !account.includes("data-private-lessons-list")
 )
   fail("account: structured dog profile or private lesson library is incomplete");
-if (!account.includes('data-account-api="https://woafypet-senior-care.pages.dev/api/enroll"'))
+if (!account.includes('data-account-api="https://woafypet-senior-care-8kt.pages.dev/api/enroll"'))
   fail("account: profile API is missing");
 if (
   !account.includes('href="/health-timeline/"') ||
@@ -532,7 +532,7 @@ if (
   fail("find care: must use only care-type and region selectors");
 if (
   !directory.includes(
-    'data-provider-api="https://woafypet-senior-care.pages.dev/api/provider-inquiry"',
+    'data-provider-api="https://woafypet-senior-care-8kt.pages.dev/api/provider-inquiry"',
   )
 )
   fail("find care: provider form API missing");
@@ -545,14 +545,14 @@ const guide = routeHtml.get("/guide/") || "";
 if (
   count(
     guide,
-    /data-submit-api="https:\/\/woafypet-senior-care\.pages\.dev\/api\/newsletter"/g,
+    /data-submit-api="https:\/\/woafypet-senior-care-8kt\.pages\.dev\/api\/newsletter"/g,
   ) !== 1 ||
   count(guide, /data-guide-delivery/g) !== 1
 )
   fail("guide: expected one active email-delivery form");
 if (
   !guide.includes('name="guideConsent" value="true"') ||
-  !guide.includes('name="marketingConsent"') ||
+  guide.includes('name="marketingConsent"') ||
   guide.includes('name="consent" value="true"') ||
   !guide.includes("WoafMeow_Senior_Dog_Care_Field_Guide.pdf") ||
   !existsSync(
@@ -563,7 +563,7 @@ if (
     ),
   )
 )
-  fail("guide: PDF delivery asset or separate update consent is incomplete");
+  fail("guide: PDF delivery asset or guide-only consent is incomplete");
 if (
   count(guide, /class="guide-topics-v6"/g) !== 1 ||
   count(guide, /<section class="guide-/g) < 5
@@ -605,7 +605,7 @@ if (
 const wednesday = routeHtml.get("/wednesday-introductions/") || "";
 if (
   !wednesday.includes(
-    'data-submit-api="https://woafypet-senior-care.pages.dev/api/contact"',
+    'data-submit-api="https://woafypet-senior-care-8kt.pages.dev/api/contact"',
   ) ||
   !wednesday.includes('value="wednesday-match"')
 )
@@ -614,7 +614,7 @@ if (!wednesday.includes("Under 1 year") || !wednesday.includes("16+ years"))
   fail("Wednesday: dog age range is incomplete");
 
 const support = routeHtml.get("/support/") || "";
-if (!support.includes('data-submit-api="https://woafypet-senior-care.pages.dev/api/contact"'))
+if (!support.includes('data-submit-api="https://woafypet-senior-care-8kt.pages.dev/api/contact"'))
   fail("support: contact endpoint missing");
 const petLoss = routeHtml.get("/pet-loss-support/") || "";
 if (!petLoss.includes('href="/memorial-tree/"') || !petLoss.includes("Plant a memorial tree"))
@@ -655,7 +655,7 @@ for (const rule of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
   const declarations = rule[2];
   if (
     /object-fit:\s*cover/.test(declarations) &&
-    !/home-contract-(?:support|circle|complete)|loss-first-days|directory-hero-v6|practice-band-v6|health-hero/.test(selector)
+    !/home-contract-(?:support|circle|complete)|circle-public-card|match-issues|loss-first-days|directory-hero-v6|practice-band-v6|health-hero/.test(selector)
   )
     fail("styles: cropping is only allowed for explicit editorial media frames");
 }

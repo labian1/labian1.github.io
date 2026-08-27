@@ -24,6 +24,6 @@ Without `STRIPE_SECRET_KEY`, the site records the request and clearly says secur
 
 Create a Stripe webhook for:
 
-`https://woafypet-senior-care.pages.dev/api/stripe-webhook`
+`https://woafypet-senior-care-8kt.pages.dev/api/stripe-webhook`
 
 Subscribe it to `checkout.session.completed` and `checkout.session.async_payment_succeeded`. The handler verifies the Stripe signature, records every event ID for idempotency, and changes D1 status only when `payment_status` is `paid`. A memorial confirmation email is then sent once from `hello@woafmeow.com`; a failed email returns a retryable error to Stripe. Do not fulfill or send payment confirmation from the browser success URL alone.

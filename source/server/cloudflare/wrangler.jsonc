@@ -9,13 +9,7 @@
     {
       "binding": "WAITLIST_DB",
       "database_name": "woafypet-senior-care-waitlist",
-      "database_id": "cca91b1d-01b9-4c3e-9712-ec3e3afc5a5f"
-    }
-  ],
-  "r2_buckets": [
-    {
-      "binding": "CARE_CIRCLE_MEDIA",
-      "bucket_name": "woafypet-care-circle-media"
+      "database_id": "89a5fdad-d06d-4d6c-bedc-efaa470d2aea"
     }
   ]
 }

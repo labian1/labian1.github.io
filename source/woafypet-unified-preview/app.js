@@ -109,9 +109,6 @@
                 isGuideDelivery ||
                 stored.guideConsent === "true" ||
                 stored.guideConsent === "on",
-              marketingConsent:
-                stored.marketingConsent === "true" ||
-                stored.marketingConsent === "on",
               ...(requestId
                 ? {
                     requestId,
@@ -157,8 +154,12 @@
           if (isGuideDelivery) {
             showGuideFallback(note, form.dataset.guideUrl);
           } else {
-            note.textContent =
-              error instanceof Error && error.message
+            const networkFailure =
+              error instanceof TypeError ||
+              (error instanceof Error && /failed to fetch|network/i.test(error.message));
+            note.textContent = networkFailure
+              ? "We could not reach the WoafMeow service. Your request was not sent. Please try again shortly."
+              : error instanceof Error && error.message
                 ? error.message
                 : "We could not send this right now. Please try again.";
             note.classList.remove("is-confirmed");

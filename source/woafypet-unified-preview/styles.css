@@ -24099,3 +24099,65 @@ html body.home-v17 .home-bed-layer-figure .home-bed-fifth-marker {
     aspect-ratio: auto !important;
   }
 }
+
+/* 2026-08-27.7 — one complete product image and consistent editorial media. */
+html body.home-v17 .home-contract-complete {
+  aspect-ratio: 16 / 9 !important;
+  min-height: 0 !important;
+}
+html body.home-v17 .home-bed-lifestyle,
+html body.home-v17 .home-bed-lifestyle > picture {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+html body.home-v17 .home-contract-complete .home-bed-lifestyle img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+html body.circle-v10 .circle-public-card > figure {
+  aspect-ratio: 16 / 10 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #f4eee8 !important;
+}
+html body.circle-v10 .circle-public-card > figure > a,
+html body.circle-v10 .circle-public-card > figure picture {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+html body.circle-v10 .circle-public-card > figure img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+html body.loss-v7 .loss-first-days article figure,
+html body.match-v6 .match-issues article figure {
+  position: relative !important;
+  aspect-ratio: 16 / 10 !important;
+  overflow: hidden !important;
+}
+html body.loss-v7 .loss-first-days article figure img,
+html body.match-v6 .match-issues article figure img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  object-fit: cover !important;
+}
+
+@media (max-width: 620px) {
+  html body.home-v17 .home-contract-complete {
+    aspect-ratio: 16 / 10 !important;
+  }
+}

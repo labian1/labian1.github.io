@@ -22,6 +22,9 @@ export async function onRequestOptions() {
 }
 
 export async function onRequestPost(context) {
+  if (!context.env.CARE_CIRCLE_MEDIA) {
+    return json({ error: "Care Circle uploads are temporarily unavailable. Your file was not uploaded." }, 503);
+  }
   const contentType = context.request.headers.get("content-type") || "";
   if (!contentType.includes("multipart/form-data")) return json({ error: "Choose a photo, video, or voice recording to upload." }, 415);
 

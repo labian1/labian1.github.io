@@ -381,7 +381,7 @@ async function checkGlobal(page, route, viewport, failures) {
         fit: style.objectFit,
         editorialCrop: Boolean(
           image.closest(
-            ".home-contract-support, .home-contract-complete, .loss-first-days, .directory-hero-v6, .practice-band-v6, .health-hero",
+            ".home-contract-support, .home-contract-complete, .circle-public-card, .loss-first-days, .match-issues, .directory-hero-v6, .practice-band-v6, .health-hero",
           ),
         ),
         visible,
@@ -566,7 +566,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
     failures.push("/: Silvan Urfer credential is missing");
   if (
     (await page.locator('.home-contract-complete img[src*="product-prototype-golden-full-v2.png"]').count()) !== 1 ||
-    (await page.locator('.home-bed-pair-card img[src*="bed-smart-base-system-branded.png"]').count()) !== 1 ||
+    (await page.locator('.home-bed-pair-card').count()) !== 0 ||
     (await page.locator('.home-contract-product img[src*="bed-layers.png"]').count()) !== 1 ||
     (await page.locator('.home-contract-insights img[src*="product-visualization-smart-base.png"]').count()) !== 1 ||
     (await page.locator('main img[src*="smart-base-weekly-trend-v1.png"]').count()) !== 0
@@ -1380,28 +1380,25 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
       failures.push("/guide/: six image-led guide topics missing");
     if (viewport.width === 1440) {
       const guideForm = page.locator("#guide-download");
-      if (
-        (await guideForm.locator('[name="marketingConsent"]').count()) !== 1 ||
-        (await guideForm.locator('[name="marketingConsent"]').isChecked())
-      )
-        failures.push("/guide/: optional updates consent is missing or preselected");
+      if ((await guideForm.locator('[name="marketingConsent"]').count()) !== 0)
+        failures.push("/guide/: removed marketing consent is still visible");
       const deliveryCall = await submitGeneric(
         page,
         "#guide-download",
         { email: "guide@example.com" },
-        "https://woafypet-senior-care.pages.dev/api/newsletter",
+        "https://woafypet-senior-care-8kt.pages.dev/api/newsletter",
         apiCalls,
         failures,
       );
       const deliveryPayload = JSON.parse(deliveryCall?.body || "{}");
       if (
         deliveryPayload.guideConsent !== true ||
-        deliveryPayload.marketingConsent !== false ||
+        Object.hasOwn(deliveryPayload, "marketingConsent") ||
         !String(deliveryPayload.guideUrl || "").includes(
           "WoafMeow_Senior_Dog_Care_Field_Guide.pdf",
         )
       )
-        failures.push("/guide/: delivery request omitted the PDF or separate consent state");
+        failures.push("/guide/: delivery request omitted the PDF or included removed marketing consent");
       const successNote = normalize(
         await guideForm.locator("[data-form-note]").innerText(),
       );
@@ -1444,7 +1441,7 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
           message: "I would like to meet someone navigating mobility changes.",
           consent: true,
         },
-        "https://woafypet-senior-care.pages.dev/api/contact",
+        "https://woafypet-senior-care-8kt.pages.dev/api/contact",
         apiCalls,
         failures,
       );
@@ -1544,7 +1541,7 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
         email: "taylor@example.com",
         message: "I need help choosing the right care lesson.",
       },
-      "https://woafypet-senior-care.pages.dev/api/contact",
+      "https://woafypet-senior-care-8kt.pages.dev/api/contact",
       apiCalls,
       failures,
     );
@@ -1568,7 +1565,7 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
       await checkoutForm.evaluate((node) => node.requestSubmit());
       await page.waitForTimeout(150);
       const checkoutCall = apiCalls.slice(checkoutCallsBefore).find(
-        (item) => item.url === "https://woafypet-senior-care.pages.dev/api/memorial-tree-checkout",
+        (item) => item.url === "https://woafypet-senior-care-8kt.pages.dev/api/memorial-tree-checkout",
       );
       if (!checkoutCall || checkoutCall.method !== "POST")
         failures.push(`${route}: memorial form did not open Stripe checkout`);
@@ -1729,7 +1726,7 @@ async function main() {
         }
       };
       await context.route("https://www.woafmeow.com/api/**", mockApi);
-      await context.route("https://woafypet-senior-care.pages.dev/api/**", mockApi);
+      await context.route("https://woafypet-senior-care-8kt.pages.dev/api/**", mockApi);
       await context.route("https://checkout.stripe.com/**", async (route) => {
         await route.fulfill({
           status: 200,

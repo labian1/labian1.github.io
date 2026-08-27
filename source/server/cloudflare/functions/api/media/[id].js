@@ -7,6 +7,9 @@ const json = (payload, status = 200) =>
 import { authenticatedMember } from "../../_lib/members.js";
 
 export async function onRequestGet(context) {
+  if (!context.env.CARE_CIRCLE_MEDIA) {
+    return json({ error: "Care Circle attachments are temporarily unavailable." }, 503);
+  }
   try {
     const media = await context.env.WAITLIST_DB
       .prepare("SELECT r2_key AS r2Key, mime_type AS mimeType, status, member_id AS memberId FROM care_circle_media WHERE id = ?1 AND status IN ('approved', 'private')")

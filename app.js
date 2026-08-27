@@ -2941,6 +2941,8 @@
     "[data-directory-resource-empty]",
   );
   const loadMore = document.querySelector("[data-directory-load-more]");
+  const applyButton = directory.querySelector("[data-directory-apply]");
+  const resultsSection = document.querySelector("[data-directory-results]");
   let profileLimit = 9;
   let resourceLimit = 3;
 
@@ -3033,6 +3035,11 @@
     });
   };
 
+  const showResults = () => {
+    updateDirectory();
+    resultsSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   search?.addEventListener("input", updateDirectory);
   category?.addEventListener("change", () => {
     profileLimit = 9;
@@ -3055,9 +3062,10 @@
       }
       profileLimit = 9;
       resourceLimit = 3;
-      updateDirectory();
+      showResults();
     });
   });
+  applyButton?.addEventListener("click", showResults);
   loadMore?.addEventListener("click", () => {
     profileLimit += 9;
     resourceLimit += 3;

@@ -330,28 +330,29 @@ if (
 )
   fail("home: personalized account and dog profile form is incomplete");
 if (
-  !home.includes("product-prototype-golden.webp") ||
+  !home.includes("product-prototype-golden-full-v2.png") ||
+  !home.includes("bed-smart-base-system-branded.png") ||
   !home.includes("bed-layers.png") ||
-  !home.includes("Ultra-premium rest. Earlier alerts.") ||
-  !home.includes("The bed dogs want to rest in.") ||
-  !home.includes("Low-entry washable shell") ||
-  !home.includes("Supportive bolsters") ||
-  !home.includes("Pressure-relief foam") ||
-  !home.includes("Stable orthopedic core") ||
-  !home.includes("Machine-washable") ||
-  !home.includes("scratch-resistant") ||
+  !home.includes("Better rest. Earlier health alerts.") ||
+  !home.includes("Full orthopedic bed + Smart Base") ||
+  !home.includes('aria-label="Layer 5: Smart Base"') ||
+  !home.includes("Step in with less effort") ||
+  !home.includes("Reduce joint pressure") ||
+  !home.includes("Turn and rise more easily") ||
+  !home.includes("machine washing") ||
+  !home.includes("Scratch-resistant") ||
   !home.includes("Smart Base")
 )
   fail("home: Bed + Smart Base system is incomplete");
 if (
   !home.includes("product-visualization-smart-base.png") ||
-  !home.includes("Detect meaningful changes earlier.") ||
-  !home.includes("almost any existing dog bed") ||
-  !home.includes("Shorter or broken") ||
-  !home.includes("More restless") ||
-  !home.includes("Less frequent") ||
-  !home.includes("Gain or loss") ||
-  !home.includes("It does not diagnose a condition")
+  !home.includes("Get health-change alerts sooner.") ||
+  !home.includes("another dog bed") ||
+  !home.includes("Broken sleep may signal discomfort") ||
+  !home.includes("pain or bathroom needs") ||
+  !home.includes("harder entry or reduced mobility") ||
+  !home.includes("chronic-disease change") ||
+  home.includes("Flags sustained changes. It does not diagnose a condition.")
 )
   fail("home: verified Smart Base product story is missing");
 if (

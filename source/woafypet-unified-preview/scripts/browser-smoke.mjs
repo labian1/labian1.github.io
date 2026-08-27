@@ -565,7 +565,8 @@ async function checkHome(page, viewport, baseUrl, failures) {
   if ((await page.getByText("Silvan R. Urfer, Dr. med. vet.", { exact: true }).count()) !== 1)
     failures.push("/: Silvan Urfer credential is missing");
   if (
-    (await page.locator('.home-contract-complete img[src*="product-prototype-golden.webp"]').count()) !== 1 ||
+    (await page.locator('.home-contract-complete img[src*="product-prototype-golden-full-v2.png"]').count()) !== 1 ||
+    (await page.locator('.home-bed-pair-card img[src*="bed-smart-base-system-branded.png"]').count()) !== 1 ||
     (await page.locator('.home-contract-product img[src*="bed-layers.png"]').count()) !== 1 ||
     (await page.locator('.home-contract-insights img[src*="product-visualization-smart-base.png"]').count()) !== 1 ||
     (await page.locator('main img[src*="smart-base-weekly-trend-v1.png"]').count()) !== 0
@@ -573,7 +574,8 @@ async function checkHome(page, viewport, baseUrl, failures) {
     failures.push("/: homepage product visuals are not grounded in the verified WoafyPet system");
   if (
     (await page.locator(".home-bed-proof > div").count()) !== 5 ||
-    (await page.locator(".home-insight-metrics > div").count()) !== 4
+    (await page.locator(".home-insight-metrics > div").count()) !== 4 ||
+    (await page.locator('.home-bed-fifth-marker[aria-label="Layer 5: Smart Base"]').count()) !== 1
   )
     failures.push("/: complete five-layer bed or four-signal Smart Base explanation is missing");
   const smartBedHref = await page
@@ -628,7 +630,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
       );
   if (viewport.width === 1440) {
     const completeSystemWidth = await page
-      .locator(".home-contract-complete img")
+      .locator(".home-bed-lifestyle img")
       .evaluate((node) => node.getBoundingClientRect().width);
     const layerSystemWidth = await page
       .locator(".home-contract-product img")

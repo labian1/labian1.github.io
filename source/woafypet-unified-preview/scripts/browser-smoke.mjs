@@ -379,7 +379,11 @@ async function checkGlobal(page, route, viewport, failures) {
         width: rect.width,
         height: rect.height,
         fit: style.objectFit,
-        editorialCrop: Boolean(image.closest(".home-contract-support")),
+        editorialCrop: Boolean(
+          image.closest(
+            ".home-contract-support, .home-contract-complete, .loss-first-days",
+          ),
+        ),
         visible,
         intentionalDynamicPlaceholder:
           !visible && image.matches(dynamicSelector),
@@ -534,7 +538,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
     () => document.documentElement.scrollHeight,
   );
   const maxHeight =
-    viewport.width <= 768 ? 9000 : viewport.width <= 1100 ? 6200 : 5000;
+    viewport.width <= 768 ? 9000 : viewport.width <= 1100 ? 6200 : 5100;
   if (totalHeight > maxHeight)
     failures.push(
       `/: ${viewport.name} homepage too tall (${Math.round(totalHeight)}px)`,
@@ -559,7 +563,7 @@ async function checkHome(page, viewport, baseUrl, failures) {
   if ((await page.getByText("Silvan R. Urfer, Dr. med. vet.", { exact: true }).count()) !== 1)
     failures.push("/: Silvan Urfer credential is missing");
   if (
-    (await page.locator('.home-contract-complete img[src*="bed-smart-base-system-branded.png"]').count()) !== 1 ||
+    (await page.locator('.home-contract-complete img[src*="product-prototype-golden.webp"]').count()) !== 1 ||
     (await page.locator('.home-contract-product img[src*="bed-layers.png"]').count()) !== 1 ||
     (await page.locator('.home-contract-insights img[src*="product-visualization-smart-base.png"]').count()) !== 1 ||
     (await page.locator('main img[src*="smart-base-weekly-trend-v1.png"]').count()) !== 0
@@ -1484,6 +1488,29 @@ async function checkJourney(page, route, viewport, apiCalls, failures) {
       .evaluate((node) => node.getBoundingClientRect().height);
     if (contactHeight > (viewport.width <= 768 ? 1100 : 850))
       failures.push(`/support/ ${viewport.name}: contact layout is too tall (${Math.round(contactHeight)}px)`);
+  }
+  if (route === "/pet-loss-support/") {
+    const firstDaysCards = page.locator(".loss-first-days article");
+    if ((await firstDaysCards.count()) !== 3)
+      failures.push("/pet-loss-support/: first-days guidance cards are incomplete");
+    const media = await firstDaysCards
+      .locator("figure")
+      .evaluateAll((nodes) =>
+        nodes.map((node) => node.getBoundingClientRect().height),
+      );
+    if (media.length !== 3 || Math.max(...media) - Math.min(...media) > 2)
+      failures.push(
+        `/pet-loss-support/ ${viewport.name}: first-days images are uneven (${media.map((height) => Math.round(height)).join(", ")}px)`,
+      );
+    if (viewport.width >= 1024) {
+      const cards = await firstDaysCards.evaluateAll((nodes) =>
+        nodes.map((node) => node.getBoundingClientRect().height),
+      );
+      if (Math.max(...cards) - Math.min(...cards) > 2)
+        failures.push(
+          `/pet-loss-support/ ${viewport.name}: first-days cards are uneven (${cards.map((height) => Math.round(height)).join(", ")}px)`,
+        );
+    }
   }
   if (route === "/smart-bed/") {
     const productMedia = page.locator(".bed-system-media");

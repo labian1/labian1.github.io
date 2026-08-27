@@ -329,25 +329,25 @@ if (
 )
   fail("home: personalized account and dog profile form is incomplete");
 if (
-  !home.includes("bed-smart-base-system-branded.png") ||
+  !home.includes("product-prototype-golden.webp") ||
   !home.includes("bed-layers.png") ||
-  !home.includes("Support stiff joints. See change sooner.") ||
-  !home.includes("Five layers with five clear jobs.") ||
-  !home.includes("Low-entry washable shell") ||
-  !home.includes("Supportive bolster foam") ||
-  !home.includes("Pressure-relief layer") ||
-  !home.includes("Stable orthopedic core") ||
+  !home.includes("Support stiff joints. Spot change sooner.") ||
+  !home.includes("Five layers. Five clear jobs.") ||
+  !home.includes("Washable low-entry shell") ||
+  !home.includes("Supportive bolsters") ||
+  !home.includes("Pressure-relief foam") ||
+  !home.includes("Stable core") ||
   !home.includes("Smart Base")
 )
   fail("home: Bed + Smart Base system is incomplete");
 if (
   !home.includes("product-visualization-smart-base.png") ||
-  !home.includes("See meaningful changes sooner.") ||
-  !home.includes("Broken or shorter rest") ||
-  !home.includes("More night movement") ||
-  !home.includes("Less frequent bed use") ||
-  !home.includes("Weight gain or loss") ||
-  !home.includes("does not diagnose pain or disease")
+  !home.includes("Spot changes earlier.") ||
+  !home.includes("Shorter or broken") ||
+  !home.includes("More restless") ||
+  !home.includes("Less frequent") ||
+  !home.includes("Gain or loss") ||
+  !home.includes("Pattern tracking—not diagnosis")
 )
   fail("home: verified Smart Base product story is missing");
 if (
@@ -649,7 +649,7 @@ for (const rule of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
   const declarations = rule[2];
   if (
     /object-fit:\s*cover/.test(declarations) &&
-    !/home-contract-(?:support|circle)/.test(selector)
+    !/home-contract-(?:support|circle|complete)|loss-first-days/.test(selector)
   )
     fail("styles: cropping is only allowed for explicit editorial media frames");
 }

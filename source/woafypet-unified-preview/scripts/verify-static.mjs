@@ -151,7 +151,7 @@ for (const route of routes) {
     fail(`${route}: Care Circle navigation target is wrong`);
   if (
     !primaryNavigation.includes(
-      'class="wm-bed-link" href="https://www.woafy.pet/"',
+      'class="wm-bed-link" href="/smart-bed/"',
     )
   )
     fail(`${route}: WoafyPet Smart Bed navigation link is missing`);
@@ -376,8 +376,8 @@ for (const path of [
 ])
   if (!home.includes(`href="${path}"`))
     fail(`home: missing bottom support pathway ${path}`);
-if (count(home, /href="https:\/\/www\.woafy\.pet\/"/g) < 1)
-  fail("home: Smart Bed call to action must open woafy.pet");
+if (count(home, /href="\/smart-bed\/"/g) < 2)
+  fail("home: Smart Bed calls to action must stay on the canonical domain");
 const homeImages = [...home.matchAll(/<img src="([^"]+)"/g)].map(
   (match) => match[1],
 ).filter((source) => source !== "/assets/woafmeow-logo-coral.png");

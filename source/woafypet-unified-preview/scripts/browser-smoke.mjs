@@ -489,7 +489,7 @@ async function checkNavigation(page, route, viewport, failures) {
     failures.push(
       `${route} ${viewport.name}: Care Circle navigation target is wrong`,
     );
-  const bedLink = page.locator('.wm-bed-link[href="https://www.woafy.pet/"]');
+  const bedLink = page.locator('.wm-bed-link[href="/smart-bed/"]');
   if ((await bedLink.count()) !== 1)
     failures.push(`${route} ${viewport.name}: WoafyPet Smart Bed tab missing`);
 }
@@ -579,11 +579,11 @@ async function checkHome(page, viewport, baseUrl, failures) {
   )
     failures.push("/: complete five-layer bed or four-signal Smart Base explanation is missing");
   const smartBedHref = await page
-    .locator('.home-contract-bed a[href="https://www.woafy.pet/"]')
+    .locator('.home-contract-bed a[href="/smart-bed/"]')
     .first()
     .getAttribute("href");
-  if (smartBedHref !== "https://www.woafy.pet/")
-    failures.push("/: Smart Bed CTA does not open woafy.pet");
+  if (smartBedHref !== "/smart-bed/")
+    failures.push("/: Smart Bed CTA does not stay on the canonical domain");
   if (
     (await page.locator('.home-contract-guide img[src*="senior-dog-care-guide-book-v2.png"]').count()) !== 1 ||
     (await page.locator('.home-contract-guide a[href="/guide/"]').count()) !== 1

@@ -58,7 +58,7 @@ const guideEmailBody = () => `<div style="font-family:Arial,sans-serif;max-width
   <div style="background:#f6efe8;border-radius:10px;padding:18px 20px;margin:24px 0">
     <p style="margin:0 0 8px;font-weight:700;color:#1f4b3d">If weight, mobility, or a chronic condition is making rest harder</p>
     <p style="margin:0 0 12px">See how the WoafyPet orthopedic bed and Smart Base are being designed to support aging joints and help owners follow meaningful rest, movement, bed-use, and weight changes.</p>
-    <a href="https://www.woafy.pet/" style="display:inline-block;padding:12px 18px;background:#b64f31;color:#fff;text-decoration:none;border-radius:6px;font-weight:700">Explore the WoafyPet Bed + Smart Base</a>
+    <a href="https://www.woafmeow.com/smart-bed/" style="display:inline-block;padding:12px 18px;background:#b64f31;color:#fff;text-decoration:none;border-radius:6px;font-weight:700">Explore the WoafyPet Bed + Smart Base</a>
   </div>
   <p style="font-size:14px;color:#6d625d">WoafMeow offers educational support, not diagnosis or treatment. Contact your veterinarian promptly for sudden, severe, or worsening changes.</p>
   <p>With care,<br><strong>The WoafMeow team</strong><br><a href="mailto:${GUIDE_SENDER}" style="color:#b64f31">${GUIDE_SENDER}</a></p>

@@ -1554,8 +1554,14 @@
       "[data-question-image-preview], [data-public-question-image], [data-tailored-question-image]",
     ),
   ];
-  let pendingQuestionImageDataUrl =
-    getPublicQuestion()?.questionImageDataUrl || "";
+  const questionImageRemove = document.querySelector(
+    "[data-question-image-remove]",
+  );
+  const isQuestionComposer = Boolean(askForm && questionImageInput);
+  const storedPublicQuestion = getPublicQuestion();
+  let pendingQuestionImageDataUrl = isQuestionComposer
+    ? ""
+    : storedPublicQuestion?.questionImageDataUrl || "";
   const renderQuestionImage = (dataUrl, petName = "") => {
     questionImageNodes.forEach((node) =>
       renderStoredImage(
@@ -1564,11 +1570,20 @@
         petName ? `${petName}'s owner-shared care photo` : "Owner-shared care photo",
       ),
     );
+    if (questionImageRemove) questionImageRemove.hidden = !dataUrl;
   };
   renderQuestionImage(
     pendingQuestionImageDataUrl,
-    getPublicQuestion()?.petName || "",
+    storedPublicQuestion?.petName || "",
   );
+  const resetQuestionComposerImage = () => {
+    if (!isQuestionComposer) return;
+    pendingQuestionImageDataUrl = "";
+    questionImageInput.value = "";
+    renderQuestionImage("", getAccount()?.petName || "");
+  };
+  resetQuestionComposerImage();
+  window.addEventListener("pageshow", resetQuestionComposerImage);
   questionImageInput?.addEventListener("change", async () => {
     const file = questionImageInput.files?.[0];
     if (!file) return;
@@ -1587,14 +1602,14 @@
       if (note) note.textContent = "Photo ready to include.";
     } catch (error) {
       questionImageInput.value = "";
+      pendingQuestionImageDataUrl = "";
+      renderQuestionImage("", getAccount()?.petName || "");
       if (note)
         note.textContent =
           error instanceof Error ? error.message : "This image could not be read.";
     }
   });
-  document
-    .querySelector("[data-question-image-remove]")
-    ?.addEventListener("click", () => {
+  questionImageRemove?.addEventListener("click", () => {
       pendingQuestionImageDataUrl = "";
       if (questionImageInput) questionImageInput.value = "";
       renderQuestionImage("", getAccount()?.petName || "");
@@ -3055,7 +3070,7 @@
 
   const showResults = () => {
     updateDirectory();
-    resultsSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+    resultsSection?.scrollIntoView({ behavior: "auto", block: "start" });
   };
 
   search?.addEventListener("input", updateDirectory);

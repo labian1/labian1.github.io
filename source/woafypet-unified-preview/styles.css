@@ -24161,3 +24161,73 @@ html body.match-v6 .match-issues article figure img {
     aspect-ratio: 16 / 10 !important;
   }
 }
+
+/* 2026-08-27.8 — centered section introductions and even memorial evidence. */
+html {
+  scroll-behavior: auto !important;
+}
+
+html body main > section > .wm-wrap > header,
+html body main > section > header,
+html body main > section > .wm-wrap > .editorial-heading {
+  width: min(100%, 1100px) !important;
+  max-width: none !important;
+  margin-inline: auto !important;
+  text-align: center !important;
+}
+
+html body main > section > .wm-wrap > header :is(h1, h2, h3, p),
+html body main > section > header :is(h1, h2, h3, p),
+html body main > section > .wm-wrap > .editorial-heading :is(h1, h2, h3, p) {
+  width: 100% !important;
+  max-width: none !important;
+  margin-inline: auto !important;
+  text-wrap: balance !important;
+}
+
+html body.memorial-v7 .memorial-partner-gallery {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  align-items: stretch !important;
+}
+
+html body.memorial-v7 .memorial-partner-gallery figure {
+  aspect-ratio: 4 / 3 !important;
+  min-width: 0 !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+html body.memorial-v7 .memorial-partner-gallery :is(picture, img) {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+html body.memorial-v7 .memorial-partner-gallery picture {
+  overflow: hidden !important;
+}
+
+html body.memorial-v7 .memorial-partner-gallery img {
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+html body.memorial-v7 .memorial-partner-gallery figure > img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@media (max-width: 900px) {
+  html body.memorial-v7 .memorial-partner-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 620px) {
+  html body.memorial-v7 .memorial-partner-gallery {
+    grid-template-columns: 1fr !important;
+  }
+}

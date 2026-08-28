@@ -77,27 +77,33 @@ try {
   const corsResponse = await corsMiddleware({
     request: new Request("https://woafypet-senior-care-8kt.pages.dev/api/contact", {
       method: "OPTIONS",
-      headers: { origin: "https://labian1.github.io" },
+      headers: { origin: "https://www.woafmeow.com" },
     }),
     next: async () => new Response("unused"),
   });
   assert.equal(corsResponse.status, 204);
-  assert.equal(corsResponse.headers.get("access-control-allow-origin"), "https://labian1.github.io");
+  assert.equal(corsResponse.headers.get("access-control-allow-origin"), "https://www.woafmeow.com");
   assert.match(corsResponse.headers.get("access-control-allow-methods"), /POST/);
 
   const checkoutResponse = await createMemorialCheckout({
     request: new Request("https://woafypet-senior-care-8kt.pages.dev/api/memorial-tree-checkout", {
       method: "POST",
-      headers: { "content-type": "application/json", origin: "https://labian1.github.io" },
+      headers: { "content-type": "application/json", origin: "https://www.woafmeow.com" },
       body: JSON.stringify({
         name: "Taylor Example",
         email: "taylor@example.com",
         petName: "Bobby",
         meaning: "He made every ordinary walk feel important.",
-        pageContext: "https://labian1.github.io/memorial-tree/",
+        pageContext: "https://www.woafmeow.com/memorial-tree/",
       }),
     }),
-    env: { WAITLIST_DB: db, STRIPE_SECRET_KEY: "sk_test_not_real", BREVO_API_KEY: "brevo-test" },
+    env: {
+      WAITLIST_DB: db,
+      STRIPE_SECRET_KEY: "sk_test_not_real",
+      BREVO_API_KEY: "brevo-test",
+      BREVO_SENDER_EMAIL: "hello@woafmeow.com",
+      FORM_NOTIFICATION_EMAIL: "robert@example.com",
+    },
   });
   assert.equal(checkoutResponse.status, 200);
   const checkoutPayload = await checkoutResponse.json();
@@ -139,8 +145,11 @@ try {
   const webhookResponse = await receiveStripeWebhook({ request: webhookRequest(), env: webhookEnv });
   assert.equal(webhookResponse.status, 200);
   const emailCalls = fetchCalls.filter((call) => call.url.endsWith("/smtp/email"));
-  assert.equal(emailCalls.length, 1);
-  const email = JSON.parse(emailCalls[0].options.body);
+  assert.equal(emailCalls.length, 2);
+  const memorialRequestEmail = emailCalls.map((call) => JSON.parse(call.options.body)).find((item) => /Memorial tree request/.test(item.subject));
+  assert.ok(memorialRequestEmail, "memorial form must notify the WoafMeow owner");
+  const email = emailCalls.map((call) => JSON.parse(call.options.body)).find((item) => /Bobby's memorial tree/.test(item.subject));
+  assert.ok(email, "paid memorial must send a customer confirmation");
   assert.equal(email.sender.email, "hello@woafmeow.com");
   assert.match(email.subject, /Bobby's memorial tree/);
   assert.match(email.htmlContent, /does not claim the tree has already been planted/);
@@ -148,7 +157,7 @@ try {
 
   const duplicateResponse = await receiveStripeWebhook({ request: webhookRequest(), env: webhookEnv });
   assert.equal(duplicateResponse.status, 200);
-  assert.equal(fetchCalls.filter((call) => call.url.endsWith("/smtp/email")).length, 1, "duplicate event must not send a second email");
+  assert.equal(fetchCalls.filter((call) => call.url.endsWith("/smtp/email")).length, 2, "duplicate event must not send a second email");
 
   const contactRunCount = state.runs.length;
   const contactResponse = await submitContact({
@@ -170,17 +179,30 @@ try {
         matchGoal: "Someone a few steps ahead",
       }),
     }),
-    env: { WAITLIST_DB: db },
+    env: {
+      WAITLIST_DB: db,
+      BREVO_API_KEY: "brevo-test",
+      BREVO_SENDER_EMAIL: "hello@woafmeow.com",
+      FORM_NOTIFICATION_EMAIL: "robert@example.com",
+    },
   });
   assert.equal(contactResponse.status, 201);
   const contactPayload = await contactResponse.json();
   assert.match(contactPayload.message, /request is saved/);
+  assert.equal(contactPayload.teamNotification, "sent");
   const contactInsert = state.runs.slice(contactRunCount).find((run) => run.sql.startsWith("INSERT INTO contact_messages"));
   assert.ok(contactInsert);
   assert.match(contactInsert.values[4], /ZIP\/postal code: 91789/);
   assert.match(contactInsert.values[4], /Preferred first contact: Calm public walk/);
+  const wednesdayNotification = fetchCalls
+    .filter((call) => call.url.endsWith("/smtp/email"))
+    .map((call) => JSON.parse(call.options.body))
+    .find((item) => /Wednesday meetup request/.test(item.subject));
+  assert.ok(wednesdayNotification, "Wednesday form must notify the WoafMeow owner");
+  assert.equal(wednesdayNotification.to[0].email, "robert@example.com");
+  assert.match(wednesdayNotification.htmlContent, /91789/);
 
-  console.log("Memorial checkout, signed webhook email, idempotency, CORS, and Wednesday storage passed.");
+  console.log("Memorial checkout, owner notification, signed webhook email, idempotency, CORS, Wednesday storage, and Wednesday owner notification passed.");
 } finally {
   globalThis.fetch = originalFetch;
 }

@@ -80,25 +80,28 @@ export async function onRequestPost(context) {
   if (!consent) return respond({ error: "Confirm that we may contact you about this request." }, 400);
 
   const now = new Date().toISOString();
+  let teamNotification = "skipped";
   try {
     const db = context.env.WAITLIST_DB;
     await db
       .prepare("INSERT INTO provider_inquiries (id, organization, contact_name, email, request_type, website, service_type, coverage, message, status, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, 'received', ?10, ?10)")
       .bind(crypto.randomUUID(), organization, contactName, email, requestType, website || null, serviceType, coverage, message || null, now)
       .run();
-    await syncBrevoContact({
+    const sync = await syncBrevoContact({
       env: context.env,
       db,
       email,
       firstName: contactName.split(" ")[0] || "",
       eventType: "provider_listing_request",
+      notificationSubject: `WoafMeow: Practice listing request — ${organization}`,
       eventProperties: { organization, request_type: requestType, website, service_type: serviceType, coverage },
       notificationProperties: { organization, contact_name: contactName, request_type: requestType, service_type: serviceType, coverage },
       listKeys: ["BREVO_PROVIDER_LIST_ID"],
     });
+    teamNotification = sync.notification;
   } catch {
     return respond({ error: "We could not save that request right now. Please try again." }, 503);
   }
 
-  return respond({ message: "Your request is saved. We will review the official information before contacting you about the next step." });
+  return respond({ message: "Your request is saved. We will review the official information before contacting you about the next step.", teamNotification });
 }

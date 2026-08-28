@@ -16,6 +16,42 @@ const recipients = (value) => [...new Set(String(value || "robert.luo@woafmeow.c
   .map((email) => email.trim().toLowerCase())
   .filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)))];
 
+export async function sendOwnerFormNotification({
+  env,
+  eventType,
+  email,
+  subject = "",
+  notificationProperties = {},
+}) {
+  const apiKey = env.BREVO_API_KEY;
+  const senderEmail = String(env.BREVO_SENDER_EMAIL || "").trim().toLowerCase();
+  if (!apiKey) return { status: "skipped", code: "missing_api_key" };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(senderEmail)) {
+    return { status: "skipped", code: "missing_sender_email" };
+  }
+  const to = recipients(env.FORM_NOTIFICATION_EMAIL).map((recipient) => ({ email: recipient }));
+  if (!to.length) return { status: "skipped", code: "missing_recipient" };
+  const rows = Object.entries(notificationProperties || {})
+    .slice(0, 24)
+    .map(([key, value]) => `<tr><th align="left" style="padding:6px 12px 6px 0">${escapeHtml(key)}</th><td style="padding:6px 0">${escapeHtml(typeof value === "object" ? JSON.stringify(value) : value)}</td></tr>`)
+    .join("");
+  try {
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: { "content-type": "application/json", "api-key": apiKey },
+      body: JSON.stringify({
+        sender: { email: senderEmail, name: "WoafMeow Forms" },
+        to,
+        subject: subject || `WoafMeow: ${String(eventType || "website submission").replaceAll("_", " ")}`,
+        htmlContent: `<h2>New WoafMeow submission</h2><p><strong>Type:</strong> ${escapeHtml(eventType || "website_submission")}</p><p><strong>Contact:</strong> ${escapeHtml(email)}</p>${rows ? `<table>${rows}</table>` : "<p>Open the private operations dashboard for details.</p>"}`,
+      }),
+    });
+    return { status: response.ok ? "sent" : "failed", code: String(response.status) };
+  } catch {
+    return { status: "failed", code: "network_error" };
+  }
+}
+
 export async function sendBrevoEmail({ env, to, subject, htmlContent, recipientName = "", attachments = [], senderEmail = "" }) {
   const apiKey = env.BREVO_API_KEY;
   const fromEmail = String(senderEmail || env.BREVO_SENDER_EMAIL || "").trim().toLowerCase();
@@ -50,6 +86,7 @@ export async function syncBrevoContact({
   eventType,
   eventProperties = {},
   notificationProperties = {},
+  notificationSubject = "",
   listKeys = [],
   sendOwnerNotification = true,
 }) {
@@ -102,37 +139,16 @@ export async function syncBrevoContact({
     if (eventType && !sendOwnerNotification) {
       notification.status = "skipped";
       notification.code = "suppressed";
-    } else if (eventType && env.BREVO_SENDER_EMAIL) {
-      const to = recipients(env.FORM_NOTIFICATION_EMAIL).map((recipient) => ({ email: recipient }));
-      if (!to.length) {
-        notification.status = "skipped";
-        notification.code = "missing_recipient";
-      } else {
-        const rows = Object.entries(notificationProperties || {})
-          .slice(0, 24)
-          .map(([key, value]) => `<tr><th align="left" style="padding:6px 12px 6px 0">${escapeHtml(key)}</th><td style="padding:6px 0">${escapeHtml(typeof value === "object" ? JSON.stringify(value) : value)}</td></tr>`)
-          .join("");
-        try {
-          const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-            method: "POST",
-            headers: { "content-type": "application/json", "api-key": apiKey },
-            body: JSON.stringify({
-              sender: { email: env.BREVO_SENDER_EMAIL, name: "WoafMeow Forms" },
-              to,
-              subject: `WoafMeow: ${String(eventType).replaceAll("_", " ")}`,
-              htmlContent: `<h2>New WoafMeow submission</h2><p><strong>Type:</strong> ${escapeHtml(eventType)}</p><p><strong>Contact:</strong> ${escapeHtml(email)}</p>${rows ? `<table>${rows}</table>` : "<p>Open the private operations dashboard for details.</p>"}`,
-            }),
-          });
-          notification.status = response.ok ? "sent" : "failed";
-          notification.code = String(response.status);
-        } catch {
-          notification.status = "failed";
-          notification.code = "network_error";
-        }
-      }
     } else if (eventType) {
-      notification.status = "skipped";
-      notification.code = "missing_sender_email";
+      const result = await sendOwnerFormNotification({
+        env,
+        eventType,
+        email,
+        subject: notificationSubject,
+        notificationProperties,
+      });
+      notification.status = result.status;
+      notification.code = result.code;
     }
   }
 

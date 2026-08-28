@@ -1,4 +1,4 @@
-import { sendBrevoEmail } from "../_lib/brevo.js";
+import { sendBrevoEmail, sendOwnerFormNotification } from "../_lib/brevo.js";
 
 const allowedOrigins = new Set([
   "https://labian1.github.io",
@@ -32,7 +32,7 @@ const json = (payload, status = 200, request) =>
 
 const cleanText = (value, maxLength) => String(value || "").trim().replace(/\s+/g, " ").slice(0, maxLength);
 const validEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-const GUIDE_URL = "https://labian1.github.io/assets/WoafMeow_Senior_Dog_Care_Field_Guide.pdf";
+const GUIDE_URL = "https://www.woafmeow.com/assets/WoafMeow_Senior_Dog_Care_Field_Guide.pdf";
 const GUIDE_NAME = "WoafMeow_Senior_Dog_Care_Field_Guide.pdf";
 const GUIDE_SENDER = "hello@woafmeow.com";
 const GUIDE_SUBJECT = "Your 2026 Senior Dog Care Field Guide | WoafMeow";
@@ -123,6 +123,14 @@ export async function onRequestPost(context) {
     }, 202, context.request);
   }
 
+  const notification = await sendOwnerFormNotification({
+    env: context.env,
+    eventType: "senior_dog_guide_requested",
+    email,
+    subject: `WoafMeow: Senior Dog Care Guide requested — ${email}`,
+    notificationProperties: { requested_guide: GUIDE_NAME, delivery: "sent" },
+  });
+
   return json({
     message: updates === "not_saved"
       ? `The guide was emailed from ${GUIDE_SENDER}. We could not save your optional update request, so please try that again later.`
@@ -132,5 +140,6 @@ export async function onRequestPost(context) {
     subject: GUIDE_SUBJECT,
     attachment: GUIDE_NAME,
     updates,
+    teamNotification: notification.status,
   }, 200, context.request);
 }

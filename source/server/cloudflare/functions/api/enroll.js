@@ -77,12 +77,13 @@ export async function onRequestPost(context) {
       .bind(dogId, memberId, dogName, species, breed || null, ageYears, rawWeight, focus, healthConditions || null, medications || null, routineNotes || null, now)
       .run();
 
-    await syncBrevoContact({
+    const sync = await syncBrevoContact({
       env: context.env,
       db,
       email,
       firstName: ownerName,
       eventType: "pet_profile_created",
+      notificationSubject: `WoafMeow: New care profile — ${dogName}`,
       eventProperties: {
         member_id: memberId,
         pet_id: dogId,
@@ -100,6 +101,7 @@ export async function onRequestPost(context) {
 
     return json({
       message: `${dogName}'s care account is ready. Save one ordinary observation whenever you need a clearer record.`,
+      teamNotification: sync.notification,
       member: { id: memberId, token: memberToken, dogId, dogName, species, breed, ageYears, weightLbs: rawWeight, focus, firstName: ownerName, email, location, healthConditions, medications, routineNotes },
     });
   } catch {

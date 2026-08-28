@@ -1,4 +1,4 @@
-import { syncBrevoContact } from "../_lib/brevo.js";
+import { sendOwnerFormNotification, syncBrevoContact } from "../_lib/brevo.js";
 import { cleanText, corsHeaders, createStripeCheckout, json, validEmail } from "../_lib/commerce.js";
 
 const amountCents = 1000;
@@ -15,7 +15,7 @@ const returnOrigin = (value) => {
   } catch {
     // Fall through to the currently published GitHub Pages origin.
   }
-  return "https://labian1.github.io";
+  return "https://www.woafmeow.com";
 };
 
 export async function onRequestPost(context) {
@@ -47,6 +47,14 @@ export async function onRequestPost(context) {
     await db.prepare("INSERT INTO memorial_tree_orders (id, email, customer_name, pet_name, memory, amount_cents, status, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, 'checkout_pending', ?7, ?7)")
       .bind(orderId, email, customerName, petName, memory, amountCents, now)
       .run();
+
+    await sendOwnerFormNotification({
+      env: context.env,
+      eventType: "memorial_tree_request",
+      email,
+      subject: `WoafMeow: Memorial tree request — ${petName}`,
+      notificationProperties: { customer_name: customerName, pet_name: petName, order_id: orderId, amount_usd: "10.00" },
+    });
 
     if (!context.env.STRIPE_SECRET_KEY) {
       await db.prepare("UPDATE memorial_tree_orders SET status = 'stripe_not_configured', updated_at = ?1 WHERE id = ?2")

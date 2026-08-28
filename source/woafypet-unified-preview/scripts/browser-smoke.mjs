@@ -196,7 +196,7 @@ async function checkGlobal(page, route, viewport, failures) {
   const robots = (
     (await page.locator('meta[name="robots"]').getAttribute("content")) || ""
   ).toLowerCase();
-  for (const directive of ["noindex", "nofollow", "noarchive"])
+  for (const directive of ["index", "follow", "max-image-preview:large"])
     if (!robots.includes(directive))
       failures.push(`${route}: robots missing ${directive}`);
   const bodyText = await page.locator("body").innerText();
@@ -381,7 +381,7 @@ async function checkGlobal(page, route, viewport, failures) {
         fit: style.objectFit,
         editorialCrop: Boolean(
           image.closest(
-            ".home-contract-support, .home-contract-complete, .circle-public-card, .loss-first-days, .match-issues, .directory-hero-v6, .practice-band-v6, .health-hero",
+            ".home-contract-support, .home-contract-complete, .circle-public-card, .loss-first-days, .match-issues, .directory-hero-v6, .practice-band-v6, .health-hero, .memorial-partner-gallery",
           ),
         ),
         visible,

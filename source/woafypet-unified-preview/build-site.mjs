@@ -11,9 +11,10 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, "dist");
-const ASSET_VERSION = "20260827.7";
+const ASSET_VERSION = "20260827.8";
 const GUIDE_PDF_NAME = "WoafMeow_Senior_Dog_Care_Field_Guide.pdf";
 const BACKEND_ORIGIN = "https://woafypet-senior-care-8kt.pages.dev";
+const PUBLIC_ORIGIN = "https://www.woafmeow.com";
 const REFINEMENT_MARKER =
   "/* 2026-08-24 reference-contract refinement: natural images, compact rhythm, premium product storytelling */";
 
@@ -1533,7 +1534,7 @@ function legacyPage({ route, title, description, body, bodyClass = "" }) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="description" content="${escapeHtml(description)}">
   <meta name="theme-color" content="#fbf7ef">
   <link rel="canonical" href="${canonical}">
@@ -2513,12 +2514,12 @@ function footer() {
 }
 
 function page({ route, title, description, body, bodyClass = "" }) {
-  const canonical = `https://www.woafmeow.com${route}`;
+  const canonical = `${PUBLIC_ORIGIN}${route}`;
   const runtimeBody = body.replaceAll(
     "https://www.woafmeow.com/api/",
     `${BACKEND_ORIGIN}/api/`,
   );
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="description" content="${escapeHtml(description)}"><meta name="theme-color" content="#fffaf6"><link rel="canonical" href="${canonical}"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css?v=${ASSET_VERSION}"><title>${escapeHtml(title)} · WoafMeow</title></head><body class="${escapeHtml(bodyClass)}"><a class="skip-link" href="#main-content">Skip to content</a>${header()}<main id="main-content">${runtimeBody}</main>${footer()}<script src="/app.js?v=${ASSET_VERSION}" defer></script></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="index,follow,max-image-preview:large"><meta name="description" content="${escapeHtml(description)}"><meta name="theme-color" content="#fffaf6"><link rel="canonical" href="${canonical}"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/styles.css?v=${ASSET_VERSION}"><title>${escapeHtml(title)} · WoafMeow</title></head><body class="${escapeHtml(bodyClass)}"><a class="skip-link" href="#main-content">Skip to content</a>${header()}<main id="main-content">${runtimeBody}</main>${footer()}<script src="/app.js?v=${ASSET_VERSION}" defer></script></body></html>`;
 }
 
 function editorialHeading(title, copy = "", action = "") {
@@ -2530,7 +2531,7 @@ function emailCapture(
   title = "Get the complete Senior Dog Care Guide",
 ) {
   const guideUrl = `/assets/${GUIDE_PDF_NAME}`;
-  return `<form class="email-capture" id="${escapeHtml(id)}" data-preview-form data-guide-delivery data-guide-url="${guideUrl}" data-submit-api="${BACKEND_ORIGIN}/api/newsletter" data-success-message="Your guide was sent from hello@woafmeow.com. Please check your inbox and spam folder." data-form-title="Senior Dog Care Guide"><input type="hidden" name="requestType" value="senior-dog-guide"><input type="hidden" name="guideUrl" value="https://labian1.github.io${guideUrl}"><input type="hidden" name="guideConsent" value="true"><div><h2>${escapeHtml(title)}</h2><p>Movement, sleep, eating, drinking, bathroom changes and daily life—in one practical guide.</p></div><label class="guide-email-field"><span class="sr-only">Email or Gmail address</span><input name="email" type="email" autocomplete="email" placeholder="Email or Gmail address" required></label><button class="button primary" type="submit">Email me the complete guide <span aria-hidden="true">→</span></button><p class="form-note" data-form-note role="status" aria-live="polite"></p></form>`;
+  return `<form class="email-capture" id="${escapeHtml(id)}" data-preview-form data-guide-delivery data-guide-url="${guideUrl}" data-submit-api="${BACKEND_ORIGIN}/api/newsletter" data-success-message="Your guide was sent from hello@woafmeow.com. Please check your inbox and spam folder." data-form-title="Senior Dog Care Guide"><input type="hidden" name="requestType" value="senior-dog-guide"><input type="hidden" name="guideUrl" value="${PUBLIC_ORIGIN}${guideUrl}"><input type="hidden" name="guideConsent" value="true"><div><h2>${escapeHtml(title)}</h2><p>Movement, sleep, eating, drinking, bathroom changes and daily life—in one practical guide.</p></div><label class="guide-email-field"><span class="sr-only">Email or Gmail address</span><input name="email" type="email" autocomplete="email" placeholder="Email or Gmail address" required></label><button class="button primary" type="submit">Email me the complete guide <span aria-hidden="true">→</span></button><p class="form-note" data-form-note role="status" aria-live="polite"></p></form>`;
 }
 
 function compactLessonCard(lesson, index = 0) {
@@ -3897,11 +3898,22 @@ const notFound = page({
   body: `<section class="page-intro compact"><h1>We could not find that page.</h1><p>Return home or open Care Circle to find a useful starting point.</p><div class="actions">${button("Return home", "/")}${button("Open Care Circle", "/care-circle/", "secondary")}</div></section>`,
 });
 writeFileSync(join(DIST, "404.html"), notFound);
-writeFileSync(join(DIST, "robots.txt"), "User-agent: *\nDisallow: /\n");
+writeFileSync(
+  join(DIST, "robots.txt"),
+  `User-agent: *\nAllow: /\nSitemap: ${PUBLIC_ORIGIN}/sitemap.xml\n`,
+);
 writeFileSync(join(DIST, ".nojekyll"), "");
+writeFileSync(join(DIST, "CNAME"), "www.woafmeow.com\n");
+writeFileSync(
+  join(DIST, "sitemap.xml"),
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages
+    .filter(({ route }) => route !== "/404.html")
+    .map(({ route }) => `  <url><loc>${PUBLIC_ORIGIN}${route}</loc></url>`)
+    .join("\n")}\n</urlset>\n`,
+);
 writeFileSync(
   join(DIST, "_headers"),
-  "/*\n  X-Robots-Tag: noindex, nofollow, noarchive\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Content-Type-Options: nosniff\n",
+  "/*\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Content-Type-Options: nosniff\n",
 );
 writeFileSync(
   join(DIST, "routes.json"),

@@ -27,11 +27,17 @@ const db = {
 };
 
 const originalFetch = globalThis.fetch;
-let capturedEmail;
+const capturedEmails = [];
 globalThis.fetch = async (url, options = {}) => {
   if (String(url).includes("/smtp/email")) {
-    capturedEmail = JSON.parse(options.body);
+    capturedEmails.push(JSON.parse(options.body));
     return new Response("{}", { status: 201 });
+  }
+  if (String(url).includes("WoafMeow_Senior_Dog_Care_Field_Guide.pdf")) {
+    return new Response(Buffer.from("%PDF-1.7\nverified guide fixture\n"), {
+      status: 200,
+      headers: { "content-type": "application/pdf" },
+    });
   }
   return new Response("{}", { status: 201 });
 };
@@ -53,15 +59,35 @@ const vetResult = await vetResponse.json();
 assert.equal(vetResponse.status, 200);
 assert.equal(vetResult.delivery, "sent");
 assert.equal(vetResult.sender, "hello@woafmeow.com");
-assert.equal(capturedEmail.sender.email, "hello@woafmeow.com");
-assert.match(capturedEmail.subject, /Luna's health timeline and original records/);
-assert.match(capturedEmail.subject, /Aug 24, 2026/);
-assert.match(capturedEmail.htmlContent, /WoafMeow helps dog families organize changes noticed at home/);
-assert.match(capturedEmail.htmlContent, /Please review the attached records/);
-assert.equal(capturedEmail.attachment.length, 2);
-assert.match(Buffer.from(capturedEmail.attachment[0].content, "base64").toString(), /WOAFMEOW HEALTH SUMMARY/);
-assert.match(Buffer.from(capturedEmail.attachment[1].content, "base64").toString(), /known_health_conditions/);
-assert.match(Buffer.from(capturedEmail.attachment[1].content, "base64").toString(), /Needed help after rest/);
+const vetEmail = capturedEmails.at(-1);
+assert.equal(vetEmail.sender.email, "hello@woafmeow.com");
+assert.match(vetEmail.subject, /Luna's health timeline and original records/);
+assert.match(vetEmail.subject, /Aug 24, 2026/);
+assert.match(vetEmail.htmlContent, /WoafMeow helps dog families organize changes noticed at home/);
+assert.match(vetEmail.htmlContent, /Please review the attached records/);
+assert.equal(vetEmail.attachment.length, 2);
+assert.match(Buffer.from(vetEmail.attachment[0].content, "base64").toString(), /WOAFMEOW HEALTH SUMMARY/);
+assert.match(Buffer.from(vetEmail.attachment[1].content, "base64").toString(), /known_health_conditions/);
+assert.match(Buffer.from(vetEmail.attachment[1].content, "base64").toString(), /Needed help after rest/);
+
+const sentGuideResponse = await sendGuide({
+  env: {
+    WAITLIST_DB: db,
+    BREVO_API_KEY: "test-key",
+    BREVO_SENDER_EMAIL: "hello@woafmeow.com",
+    FORM_NOTIFICATION_EMAIL: "robert@example.com",
+  },
+  request: new Request("https://example.test/api/newsletter", { method: "POST", headers: { "content-type": "application/json", origin: "https://www.woafmeow.com" }, body: JSON.stringify({ email: "owner@example.com", guideConsent: true }) }),
+});
+const sentGuideResult = await sentGuideResponse.json();
+assert.equal(sentGuideResponse.status, 200);
+assert.equal(sentGuideResult.delivery, "sent");
+assert.equal(sentGuideResult.teamNotification, "sent");
+const guideEmail = capturedEmails.find((item) => item.subject === sentGuideResult.subject);
+assert.equal(guideEmail.attachment.length, 1);
+assert.equal(guideEmail.attachment[0].name, sentGuideResult.attachment);
+const guideOwnerNotification = capturedEmails.find((item) => /Senior Dog Care Guide requested/.test(item.subject));
+assert.ok(guideOwnerNotification, "guide request must notify the WoafMeow owner");
 
 globalThis.fetch = async () => new Response("service unavailable", { status: 503 });
 const failedVetResponse = await sendVetSummary({
@@ -85,4 +111,4 @@ assert.match(guideResult.guideUrl, /^https:\/\//);
 assert.doesNotMatch(guideResult.message, /emailed to you/i);
 
 globalThis.fetch = originalFetch;
-console.log(JSON.stringify({ vetEmail: { status: vetResponse.status, sender: vetResult.sender, subject: vetResult.subject, attachments: capturedEmail.attachment.map((item) => item.name), truthfulFailureStatus: failedVetResponse.status }, guideFallback: { status: guideResponse.status, delivery: guideResult.delivery, guideUrl: guideResult.guideUrl } }, null, 2));
+console.log(JSON.stringify({ vetEmail: { status: vetResponse.status, sender: vetResult.sender, subject: vetResult.subject, attachments: vetEmail.attachment.map((item) => item.name), truthfulFailureStatus: failedVetResponse.status }, guideEmail: { status: sentGuideResponse.status, delivery: sentGuideResult.delivery, attachment: sentGuideResult.attachment, teamNotification: sentGuideResult.teamNotification }, guideFallback: { status: guideResponse.status, delivery: guideResult.delivery, guideUrl: guideResult.guideUrl } }, null, 2));

@@ -92,21 +92,37 @@ export async function onRequestPost(context) {
   }
 
   const now = new Date().toISOString();
+  let teamNotification = "skipped";
   try {
     const db = context.env.WAITLIST_DB;
     await db.prepare("INSERT INTO contact_messages (id, name, email, topic, message, status, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, 'new', ?6, ?6)")
       .bind(crypto.randomUUID(), name, email, topic, storedMessage, now)
       .run();
-    await syncBrevoContact({
+    const sync = await syncBrevoContact({
       env: context.env,
       db,
       email,
       firstName: name.split(" ")[0] || "",
-      eventType: "contact_message",
+      eventType: topic === "wednesday-match" ? "wednesday_meetup_request" : "contact_message",
       eventProperties: { topic, ...(requestId ? { request_id: requestId } : {}) },
-      notificationProperties: { name, topic, ...(requestId ? { requestId } : {}) },
+      notificationSubject: topic === "wednesday-match"
+        ? `WoafMeow: Wednesday meetup request — ${name} — ${cleanText(body.zip, 20)}`
+        : `WoafMeow: Contact form — ${name}`,
+      notificationProperties: topic === "wednesday-match"
+        ? {
+            name,
+            request_id: requestId,
+            zip_or_postal_code: cleanText(body.zip, 20),
+            dog_age: cleanText(body.dogAge, 40),
+            care_issue: cleanText(body.issue, 120),
+            availability: cleanText(body.availability, 80),
+            preferred_first_contact: cleanText(body.contact, 100),
+            useful_match: cleanText(body.matchGoal, 140),
+          }
+        : { name, topic },
       listKeys: ["BREVO_WEBSITE_LIST_ID"],
     });
+    teamNotification = sync.notification;
   } catch {
     return respond({ error: "We could not save that message right now. Please try again." }, 503);
   }
@@ -115,7 +131,8 @@ export async function onRequestPost(context) {
     return respond({
       message: "Your introduction request is saved. Our team will email you if a suitable match is ready for both people to review.",
       requestId,
+      teamNotification,
     }, 201);
   }
-  return respond({ message: "Your message is with the WoafMeow team." }, 201);
+  return respond({ message: "Your message is saved for the WoafMeow team.", teamNotification }, 201);
 }

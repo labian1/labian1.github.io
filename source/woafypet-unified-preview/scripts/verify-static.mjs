@@ -128,8 +128,8 @@ for (const route of routes) {
   const html = readFileSync(file, "utf8");
   routeHtml.set(route, html);
   const visible = strip(html);
-  if (!/<meta name="robots" content="noindex,nofollow,noarchive">/.test(html))
-    fail(`${route}: missing preview noindex`);
+  if (!/<meta name="robots" content="index,follow,max-image-preview:large">/.test(html))
+    fail(`${route}: missing production index directives`);
   if (
     !html.includes(
       `<link rel="canonical" href="https://www.woafmeow.com${route}">`,
@@ -655,7 +655,7 @@ for (const rule of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
   const declarations = rule[2];
   if (
     /object-fit:\s*cover/.test(declarations) &&
-    !/home-contract-(?:support|circle|complete)|circle-public-card|match-issues|loss-first-days|directory-hero-v6|practice-band-v6|health-hero/.test(selector)
+    !/home-contract-(?:support|circle|complete)|circle-public-card|match-issues|loss-first-days|directory-hero-v6|practice-band-v6|health-hero|memorial-partner-gallery/.test(selector)
   )
     fail("styles: cropping is only allowed for explicit editorial media frames");
 }
@@ -670,11 +670,13 @@ const routeManifest = JSON.parse(
 );
 if (routeManifest.length !== routes.length)
   fail(`routes.json: expected ${routes.length} routes`);
-if (
-  readFileSync(resolve(dist, "robots.txt"), "utf8").trim() !==
-  "User-agent: *\nDisallow: /"
-)
-  fail("robots.txt: preview must be blocked");
+const robots = readFileSync(resolve(dist, "robots.txt"), "utf8");
+if (!robots.includes("Allow: /") || !robots.includes("https://www.woafmeow.com/sitemap.xml"))
+  fail("robots.txt: production crawl and sitemap directives missing");
+if (!existsSync(resolve(dist, "CNAME")) || readFileSync(resolve(dist, "CNAME"), "utf8").trim() !== "www.woafmeow.com")
+  fail("CNAME: production domain missing");
+if (!existsSync(resolve(dist, "sitemap.xml")))
+  fail("sitemap.xml: production sitemap missing");
 
 if (failures.length) {
   console.error(`Static verification failed (${failures.length}):`);

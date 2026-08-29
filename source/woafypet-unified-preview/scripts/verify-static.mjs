@@ -478,8 +478,8 @@ if (
   !account.includes("data-private-lessons-list")
 )
   fail("account: structured dog profile or private lesson library is incomplete");
-if (!account.includes('data-account-api="https://woafypet-senior-care-8kt.pages.dev/api/enroll"'))
-  fail("account: profile API is missing");
+if (account.includes("data-account-api"))
+  fail("account: profile must not perform an account-wide server sync");
 if (
   !account.includes('href="/health-timeline/"') ||
   !account.includes("data-account-submit")

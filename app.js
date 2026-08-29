@@ -1421,48 +1421,6 @@
           "This browser blocked profile storage. Please allow site storage and try again.";
       return;
     }
-    const ageYears =
-      {
-        "Under 1 year": 0.5,
-        "1–3 years": 2,
-        "4–6 years": 5,
-        "7–9 years": 8,
-        "10–12 years": 11,
-        "13–15 years": 14,
-        "16+ years": 16,
-      }[account.petAge] || 1;
-    const accountEndpoint = accountForm.dataset.accountApi;
-    if (accountEndpoint) {
-      try {
-        await fetch(accountEndpoint, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain;charset=UTF-8" },
-          body: JSON.stringify({
-            ownerName: account.ownerName,
-            email: account.email,
-            city: "",
-            region: "",
-            dogName: account.petName,
-            species: "dog",
-            breed: account.breed,
-            weightRange: account.weightRange,
-            ageYears,
-            focus: "not-sure",
-            healthConditions: account.conditions,
-            medications: account.medications,
-            hasPetPhoto: Boolean(account.petPhotoDataUrl),
-            routineNotes: "Created from the WoafMeow Care Circle profile.",
-            consent: true,
-            pageContext: window.location.href,
-          }),
-        });
-      } catch {
-        if (accountNote)
-          accountNote.textContent =
-            "Your profile is saved in this browser, but we could not sync it right now.";
-      }
-    }
     pendingPetPhotoDataUrl = account.petPhotoDataUrl;
     editingAccount = false;
     renderAccount();

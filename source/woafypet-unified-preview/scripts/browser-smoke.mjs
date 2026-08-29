@@ -833,7 +833,7 @@ async function checkLesson(page, route, viewport, failures) {
     failures.push(`${route}: quiz did not confirm correct answer`);
 }
 
-async function checkAccountFlow(page, viewport, baseUrl, failures) {
+async function checkAccountFlow(page, viewport, baseUrl, apiCalls, failures) {
   if ((await page.locator("[data-account-form]").count()) !== 1)
     failures.push("/account/: account form missing");
   if ((await page.locator('[data-pet-photo-input][type="file"]').count()) !== 1)
@@ -862,6 +862,7 @@ async function checkAccountFlow(page, viewport, baseUrl, failures) {
   await form
     .locator('[name="medications"]')
     .fill("anti-inflammatory medicine changed last week");
+  const profileCallsBefore = apiCalls.length;
   await Promise.all([
     page.waitForURL(
       (url) =>
@@ -871,6 +872,14 @@ async function checkAccountFlow(page, viewport, baseUrl, failures) {
     ),
     form.evaluate((node) => node.requestSubmit()),
   ]);
+  if (
+    apiCalls
+      .slice(profileCallsBefore)
+      .some((call) => call.url.endsWith("/api/enroll"))
+  )
+    failures.push(
+      "/account/: profile creation performed a hidden account-wide server sync",
+    );
   const askForm = page.locator("[data-account-ask-form]");
   await askForm.locator('[name="lessonVisibility"][value="public"]').check();
   await Promise.all([
@@ -1619,7 +1628,7 @@ async function inspect(page, route, viewport, options, apiCalls) {
   if (LESSON_ROUTE.test(route))
     await checkLesson(page, route, viewport, failures);
   if (route === "/account/")
-    await checkAccountFlow(page, viewport, options.baseUrl, failures);
+    await checkAccountFlow(page, viewport, options.baseUrl, apiCalls, failures);
   if (route === "/health-timeline/")
     await checkHealthTimeline(
       page,

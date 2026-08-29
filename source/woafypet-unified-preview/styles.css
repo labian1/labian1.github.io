@@ -24231,3 +24231,42 @@ html body.memorial-v7 .memorial-partner-gallery figure > img {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* 2026-08-29.1 — warm product construction panel and aligned Smart Base marker. */
+html body.home-v17 .home-bed-construction {
+  background: #efe2d3 !important;
+}
+
+html body.home-v17 .home-bed-construction-copy {
+  background: #f3e8dc !important;
+}
+
+html body.home-v17 .home-contract-product {
+  background: #ead8c7 !important;
+}
+
+html body.home-v17 .home-bed-proof {
+  background: #f5e9dd !important;
+}
+
+html body.home-v17 .home-bed-layer-figure .home-bed-fifth-marker {
+  left: 80.5% !important;
+  top: 83.5% !important;
+}
+
+html body.home-v17 .home-bed-proof strong {
+  margin-bottom: 4px !important;
+  font-size: clamp(1.06rem, 1.08vw, 1.2rem) !important;
+  line-height: 1.18 !important;
+}
+
+html body.home-v17 .home-bed-proof p {
+  font-size: 0.9rem !important;
+  line-height: 1.42 !important;
+}
+
+@media (max-width: 1100px) {
+  html body.home-v17 .home-bed-proof strong {
+    font-size: 1rem !important;
+  }
+}

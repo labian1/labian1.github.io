@@ -337,8 +337,9 @@ if (
   !home.includes("Step in with less effort") ||
   !home.includes("Reduce joint pressure") ||
   !home.includes("Turn and rise more easily") ||
-  !home.includes("machine washing") ||
+  !home.includes("machine washable") ||
   !home.includes("Scratch-resistant") ||
+  !home.includes("waterproof") ||
   !home.includes("Smart Base")
 )
   fail("home: Bed + Smart Base system is incomplete");
@@ -376,8 +377,15 @@ for (const path of [
 ])
   if (!home.includes(`href="${path}"`))
     fail(`home: missing bottom support pathway ${path}`);
-if (count(home, /href="\/smart-bed\/"/g) < 2)
-  fail("home: Smart Bed calls to action must stay on the canonical domain");
+if (
+  !home.includes(
+    'href="https://www.woafy.pet/smart-bed/">Explore Bed + Smart Base →',
+  ) ||
+  !home.includes(
+    'href="https://www.woafy.pet/smart-base/">See how early alerts work →',
+  )
+)
+  fail("home: product calls to action must use the WoafyPet domain");
 const homeImages = [...home.matchAll(/<img src="([^"]+)"/g)].map(
   (match) => match[1],
 ).filter((source) => source !== "/assets/woafmeow-logo-coral.png");

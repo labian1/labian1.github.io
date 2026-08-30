@@ -351,7 +351,8 @@ if (
   !home.includes("another dog bed") ||
   !home.includes("Broken sleep may signal discomfort") ||
   !home.includes("pain or bathroom needs") ||
-  !home.includes("harder entry or reduced mobility") ||
+  !home.includes("Heart rate") ||
+  !home.includes("resting-rate shifts that may signal stress or health changes") ||
   !home.includes("chronic-disease change") ||
   home.includes("Flags sustained changes. It does not diagnose a condition.")
 )

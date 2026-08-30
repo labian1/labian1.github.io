@@ -83,7 +83,7 @@ try {
   assert.equal(smtpPayload.sender.email, "hello@woafmeow.com");
   assert.equal(smtpPayload.subject, sent.subject);
   assert.match(smtpPayload.htmlContent, /10,000\+ pet owners/);
-  assert.match(smtpPayload.htmlContent, /Explore the WoafyPet bed/);
+  assert.match(smtpPayload.htmlContent, /Explore the WoafyPet Bed/);
   assert.match(smtpPayload.htmlContent, /will not add you to future updates/);
   assert.equal(smtpPayload.attachment.length, 1);
   assert.equal(smtpPayload.attachment[0].name, sent.attachment);
@@ -115,7 +115,7 @@ try {
   assert.equal(fallback.delivery, "fallback");
   assert.equal(
     fallback.guideUrl,
-    "https://labian1.github.io/assets/WoafMeow_Senior_Dog_Care_Field_Guide.pdf",
+    "https://woafypet-senior-care-8kt.pages.dev/assets/WoafMeow_Senior_Dog_Care_Field_Guide.pdf",
   );
 } finally {
   globalThis.fetch = originalFetch;

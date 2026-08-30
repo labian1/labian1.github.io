@@ -32,7 +32,7 @@ const json = (payload, status = 200, request) =>
 
 const cleanText = (value, maxLength) => String(value || "").trim().replace(/\s+/g, " ").slice(0, maxLength);
 const validEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-const GUIDE_URL = "https://labian1.github.io/assets/WoafMeow_Senior_Dog_Care_Field_Guide.pdf";
+const GUIDE_URL = "https://woafypet-senior-care-8kt.pages.dev/assets/WoafMeow_Senior_Dog_Care_Field_Guide.pdf";
 const GUIDE_NAME = "WoafMeow_Senior_Dog_Care_Field_Guide.pdf";
 const GUIDE_SENDER = "hello@woafmeow.com";
 const GUIDE_SUBJECT = "Your 2026 Senior Dog Care Field Guide | WoafMeow";

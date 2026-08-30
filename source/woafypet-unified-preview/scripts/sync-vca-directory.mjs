@@ -7,6 +7,8 @@ const root = resolve(import.meta.dirname, "..");
 const cache = "/tmp/vca-dir.html";
 const sourceUrl = "https://vcahospitals.com/find-a-hospital/location-directory";
 const output = resolve(root, "data", "find-care-profiles.vca.json");
+const targetProfileCount = 420;
+const checkedDate = "2026-08-30";
 
 const decode = (value = "") =>
   value
@@ -16,6 +18,7 @@ const decode = (value = "") =>
     .replace(/&#39;|&apos;/g, "'")
     .replace(/&quot;/g, '"')
     .replace(/\s+/g, " ")
+    .replace(/\s+,/g, ",")
     .trim();
 
 const slug = (value) =>
@@ -25,13 +28,16 @@ const slug = (value) =>
     .replace(/^-|-$/g, "");
 
 let html;
-if (existsSync(cache)) html = readFileSync(cache, "utf8");
-else {
+try {
   const response = await fetch(sourceUrl, {
     headers: { "user-agent": "WoafMeow directory research/1.0" },
   });
   if (!response.ok) throw new Error(`VCA directory returned ${response.status}`);
   html = await response.text();
+  writeFileSync(cache, html);
+} catch (error) {
+  if (!existsSync(cache)) throw error;
+  html = readFileSync(cache, "utf8");
 }
 
 const states = [];
@@ -55,6 +61,13 @@ for (const chunk of stateChunks) {
     const categories = ["senior-veterinarians"];
     if (/emergency|urgent/i.test(title)) categories.push("emergency-vets");
     if (/specialty|specialist|referral/i.test(title)) categories.push("specialty-hospitals");
+    const isEmergency = categories.includes("emergency-vets");
+    const isSpecialty = categories.includes("specialty-hospitals");
+    const visitFit = isEmergency
+      ? "For urgent symptoms, use the official page to confirm whether this location is accepting emergency cases now, then call before traveling when possible."
+      : isSpecialty
+        ? "For referral or advanced care, use the official page to confirm the specialty team, referral requirements, records to bring and appointment route."
+        : "For an examination, ongoing senior-dog care or a new change, use the official page to confirm services, hours and the best appointment route.";
     entries.push({
       id: `vca-${slug(link[1])}`,
       title,
@@ -62,37 +75,43 @@ for (const chunk of stateChunks) {
       city,
       region,
       coverage: address || `${city}, ${region}`,
+      phone,
       coverageKey: "united-states",
       categories,
       mode: phone ? `Call ${phone}; confirm current hours and services` : "Confirm current hours and services",
-      summary: `Official VCA hospital profile for ${title}.`,
-      useWhen: "Use the official hospital page to confirm the current care team, services, hours, phone number and appointment route.",
+      summary: `${title} publishes this official hospital profile for ${address || `${city}, ${region}`}${phone ? ` and lists ${phone} as its contact number` : ""}.`,
+      useWhen: visitFit,
       url: `https://vcahospitals.com${link[1]}`,
       sourceType: "Provider-published hospital profile",
-      profileType: "Verified official clinic profile",
-      checked: "2026-08-24",
+      profileType: "Official-source clinic profile",
+      checked: checkedDate,
     });
   }
   if (entries.length) states.push(entries);
 }
 
 const selected = [];
+const selectedUrls = new Set();
 let cursor = 0;
-while (selected.length < 260) {
+while (selected.length < targetProfileCount) {
   let added = false;
   for (const entries of states) {
-    if (entries[cursor]) {
-      selected.push(entries[cursor]);
+    const entry = entries[cursor];
+    if (entry && !selectedUrls.has(entry.url)) {
+      selected.push(entry);
+      selectedUrls.add(entry.url);
       added = true;
-      if (selected.length === 260) break;
+      if (selected.length === targetProfileCount) break;
     }
   }
   if (!added) break;
   cursor += 1;
 }
 
-if (selected.length < 200) {
-  throw new Error(`Only parsed ${selected.length} VCA profiles; expected at least 200`);
+if (selected.length < targetProfileCount) {
+  throw new Error(
+    `Only parsed ${selected.length} unique VCA profiles; expected ${targetProfileCount}`,
+  );
 }
 
 writeFileSync(output, `${JSON.stringify(selected, null, 2)}\n`);

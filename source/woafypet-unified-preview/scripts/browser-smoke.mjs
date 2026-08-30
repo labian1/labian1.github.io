@@ -451,7 +451,11 @@ async function checkGlobal(page, route, viewport, failures) {
     );
   const repeatedContentSources = repeatedSources.filter((source) => {
     try {
-      return new URL(source).pathname !== SHARED_LOGO_PATH;
+      return ![
+        SHARED_LOGO_PATH,
+        "/assets/vca-official-brand.webp",
+        "/assets/bluepearl-official-brand.png",
+      ].includes(new URL(source).pathname);
     } catch {
       return true;
     }
@@ -1210,8 +1214,10 @@ async function checkHealthTimeline(
 }
 
 async function checkDirectory(page, viewport, apiCalls, failures) {
-  if ((await page.locator("[data-directory-profile]").count()) < 300)
-    failures.push("/find-care/: expected at least 300 official profiles");
+  if ((await page.locator("[data-directory-profile]").count()) < 500)
+    failures.push("/find-care/: expected at least 500 official profiles");
+  if ((await page.locator("[data-directory-profile] figure").count()) < 500)
+    failures.push("/find-care/: official profile imagery or organization marks are missing");
   if ((await page.locator("[data-directory-resource]").count()) < 32)
     failures.push("/find-care/: expected at least 32 official resources");
   if ((await page.locator("[data-directory-search]").count()) !== 0)

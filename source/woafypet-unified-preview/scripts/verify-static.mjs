@@ -197,6 +197,8 @@ for (const route of routes) {
         imageSources.filter(
           (source, index) =>
             source !== "/assets/woafmeow-logo-coral.png" &&
+            source !== "/assets/vca-official-brand.webp" &&
+            source !== "/assets/bluepearl-official-brand.png" &&
             imageSources.indexOf(source) !== index,
         ),
       ),
@@ -528,10 +530,14 @@ if (
   fail("health timeline: privacy or non-diagnostic boundary is unclear");
 
 const directory = routeHtml.get("/find-care/") || "";
-if (count(directory, /<article\b[^>]*\bdata-directory-profile\b/g) < 300)
+if (count(directory, /<article\b[^>]*\bdata-directory-profile\b/g) < 500)
   fail(
-    `find care: expected at least 300 official profiles, found ${count(directory, /<article\b[^>]*\bdata-directory-profile\b/g)}`,
+    `find care: expected at least 500 official profiles, found ${count(directory, /<article\b[^>]*\bdata-directory-profile\b/g)}`,
   );
+if (count(directory, /<figure class="provider-logo">/g) < 500)
+  fail("find care: official organization marks are missing from provider profiles");
+if (!directory.includes("Official source checked") || !directory.includes("When this may fit"))
+  fail("find care: source-check receipts or decision details are missing");
 if (count(directory, /data-directory-resource\b/g) < 32)
   fail("find care: expected at least 32 official resources");
 if (
@@ -600,6 +606,12 @@ if (dialogIndex < 0 || !memorial.slice(dialogIndex).includes("$10 per tree"))
 if (!memorial.includes("Stripe collects the $10 payment"))
   fail("memorial: secure-payment price disclosure is missing");
 if (
+  !memorial.includes("Let their love keep growing.") ||
+  !memorial.includes("tree-dialog-emotion") ||
+  !memorial.includes("What do you never want to forget?")
+)
+  fail("memorial: emotional tribute story or checkout composition is incomplete");
+if (
   !memorial.includes("Usambara") ||
   !memorial.includes("api/memorial-tree-checkout") ||
   !memorial.includes("data-checkout-form")
@@ -664,7 +676,7 @@ for (const rule of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
   const declarations = rule[2];
   if (
     /object-fit:\s*cover/.test(declarations) &&
-    !/home-contract-(?:support|circle|complete)|circle-public-card|match-issues|loss-first-days|directory-hero-v6|practice-band-v6|health-hero|memorial-partner-gallery/.test(selector)
+    !/home-contract-(?:support|circle|complete)|circle-public-card|match-issues|loss-first-days|directory-hero-v6|practice-band-v6|health-hero|provider-(?:photo|card-v6\.has-photo)|memorial-(?:hero-v6|meaning|story-grid|partner-gallery)|tree-dialog-emotion/.test(selector)
   )
     fail("styles: cropping is only allowed for explicit editorial media frames");
 }

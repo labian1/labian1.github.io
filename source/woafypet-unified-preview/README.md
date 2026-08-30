@@ -1,6 +1,6 @@
 # WoafyPet unified private preview
 
-This isolated rebuild combines the focused senior-dog product, condition-first lessons, a public preview Care Circle, the Senior Dog Guide, Find Care, pet-loss support, memorial-tree transparency, and offline Wednesday introductions. It does not change either official domain.
+This rebuild combines the focused senior-dog product, condition-first lessons, a public Care Circle, the Senior Dog Guide, 500+ official-source Find Care profiles, pet-loss support, living memorial trees, and offline Wednesday introductions.
 
 ## Authoritative implementation
 

@@ -9,7 +9,7 @@ node build-site.mjs
 node scripts/verify-static.mjs
 ```
 
-The static verifier checks all 30 routes, six public Care Circle lessons, 104 provider profiles, 34 official care resources, local links and assets, no-index directives, required image metadata, prohibited copy, unique homepage imagery, active guide delivery forms, the account/pet-profile contract, lesson-personalization hooks, the private Health Timeline, and the provider directory.
+The static verifier checks every generated route, six public Care Circle lessons, at least 500 provider profiles, 34 official care resources, local links and assets, required image metadata, prohibited copy, unique homepage imagery, active guide delivery forms, the account/pet-profile contract, lesson-personalization hooks, the private Health Timeline, and the provider directory.
 
 ## Browser verification
 

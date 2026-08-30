@@ -48,7 +48,7 @@ export async function onRequestPost(context) {
       .bind(orderId, email, customerName, petName, memory, amountCents, now)
       .run();
 
-    await sendOwnerFormNotification({
+    const ownerNotification = await sendOwnerFormNotification({
       env: context.env,
       eventType: "memorial_tree_request",
       email,
@@ -59,7 +59,11 @@ export async function onRequestPost(context) {
     if (!context.env.STRIPE_SECRET_KEY) {
       await db.prepare("UPDATE memorial_tree_orders SET status = 'stripe_not_configured', updated_at = ?1 WHERE id = ?2")
         .bind(new Date().toISOString(), orderId).run();
-      return respond({ error: "Secure payment is temporarily unavailable. No payment was taken. Please try again later.", orderId }, 503);
+      return respond({
+        error: "Secure payment is temporarily unavailable. No payment was taken. Please try again later.",
+        orderId,
+        teamNotification: ownerNotification.status,
+      }, 503);
     }
 
     const origin = returnOrigin(body.pageContext);
@@ -93,7 +97,7 @@ export async function onRequestPost(context) {
       listKeys: ["BREVO_MEMORIAL_LIST_ID"],
       sendOwnerNotification: false,
     });
-    return respond({ checkoutUrl: session.url, orderId });
+    return respond({ checkoutUrl: session.url, orderId, teamNotification: ownerNotification.status });
   } catch (error) {
     return respond({ error: error?.message || "Secure Stripe checkout could not be opened. No payment was taken." }, 503);
   }

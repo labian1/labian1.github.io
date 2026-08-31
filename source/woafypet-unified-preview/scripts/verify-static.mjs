@@ -389,6 +389,20 @@ if (
   )
 )
   fail("home: product calls to action must use the WoafyPet domain");
+const smartBed = routeHtml.get("/smart-bed/") || "";
+const smartBase = routeHtml.get("/smart-base/") || "";
+if (
+  !smartBed.includes(
+    'href="https://www.woafy.pet/smart-bed/">Explore Bed + Smart Base',
+  ) ||
+  !smartBed.includes(
+    'href="https://www.woafy.pet/smart-base/">Explore Smart Base',
+  ) ||
+  !smartBase.includes(
+    'href="https://www.woafy.pet/smart-bed/">Explore the complete bed',
+  )
+)
+  fail("product pages: calls to action must use the matching WoafyPet routes");
 const homeImages = [...home.matchAll(/<img src="([^"]+)"/g)].map(
   (match) => match[1],
 ).filter((source) => source !== "/assets/woafmeow-logo-coral.png");

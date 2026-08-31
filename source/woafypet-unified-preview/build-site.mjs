@@ -149,10 +149,21 @@ const vcaDirectoryProfiles = loadJson(
   brandAlt: "VCA Animal Hospitals official brand mark",
   verified: true,
 }));
+
+function interleaveProfiles(...groups) {
+  const ordered = [];
+  const longest = Math.max(...groups.map((group) => group.length));
+  for (let index = 0; index < longest; index += 1) {
+    for (const group of groups) {
+      if (group[index]) ordered.push(group[index]);
+    }
+  }
+  return ordered;
+}
+
 const directoryProfiles = [
   ...originalDirectoryProfiles,
-  ...expandedDirectoryProfiles,
-  ...vcaDirectoryProfiles,
+  ...interleaveProfiles(expandedDirectoryProfiles, vcaDirectoryProfiles),
 ];
 const directoryResources = loadJson(
   join(seniorCareData, "directoryEntries.json"),
@@ -1034,7 +1045,7 @@ const lessons = [
     title: "A new cough or breathing change",
     eyebrow: "Breathing · 3 chapters + quizzes",
     intro:
-      "Separate an occasional sound from a repeated breathing pattern and know which signs should not wait.",
+      "Call your veterinary team first for a new or repeated cough at rest. Breathing trouble or distress needs emergency care now.",
     image: "real-home-owner-dog.jpg",
     imageAlt: "Dog resting near a caregiver who is observing breathing comfort",
     conditionLabel: "Which change is closest?",
@@ -1050,43 +1061,45 @@ const lessons = [
       "Happens daily",
       "Breathing looks difficult now",
     ],
+    triage:
+      "New or repeated coughing while resting can accompany heart or airway disease. Call your veterinarian today for triage and a prompt examination; do not spend days building a record first. Go to emergency care now for difficult or fast breathing that does not settle, blue, gray or pale gums, collapse, severe weakness, inability to lie down or settle, or a constant severe cough.",
     chapters: [
       {
-        title: "Record one natural breathing moment",
+        title: "Call today before you track",
         result:
-          "You will capture timing, sound, posture, and recovery without provoking another episode.",
-        copy: "Observe your dog at rest. Note what happened immediately before the change, how long it lasted, and how your dog recovered.",
+          "You will contact the veterinary team first and describe the change clearly without delaying care.",
+        copy: "A new or repeated cough while resting deserves same-day veterinary triage. The veterinary team can decide whether your dog needs immediate, same-day, or prompt next-day assessment.",
         steps: [
-          "Record whether your dog was asleep, resting, eating, drinking, or active.",
-          "Note cough sound, breathing effort, posture, gum color, and time to settle.",
-          "Never exercise or excite your dog to recreate a breathing change.",
+          "Call today and lead with whether the cough happened during sleep or quiet rest, how often it repeated, and whether breathing looks harder or faster.",
+          "Go to emergency care now for difficult breathing, blue, gray or pale gums, collapse, severe weakness, inability to settle, or a constant severe cough.",
+          "Do not wait for a complete log or try to recreate the cough before calling.",
         ],
         quiz: {
-          question: "Which record is most useful?",
+          question: "What is the safest first response to a new cough at rest?",
           options: [
             [
-              "specific",
-              "While asleep, he coughed three times, sat upright, and settled again after 40 seconds.",
+              "call",
+              "Call the veterinary team today, describe the event, and follow its triage advice.",
             ],
-            ["vague", "His breathing was weird."],
-            ["test", "I made him run to see if it happened again."],
+            ["wait", "Build a ten-day record before contacting anyone."],
+            ["test", "Exercise the dog to see whether the cough returns."],
           ],
-          answer: "specific",
+          answer: "call",
           correct:
-            "Correct. Context, duration, posture, and recovery make the observation useful.",
+            "Correct. Call first; a short observation can help only when it does not delay care.",
           retry:
-            "Choose the natural observation with timing and no forced test.",
+            "Choose same-day veterinary triage. Do not wait for a log or force a repeat event.",
         },
       },
       {
-        title: "Count resting breaths safely",
+        title: "Add one safe observation after the call",
         result:
-          "You will have one calm resting count to share with the care team.",
-        copy: "When your dog is fully asleep or quietly resting, count chest rises without touching or waking them.",
+          "You will have a brief natural video or resting-breath count only if your dog is stable and the veterinary team says it is appropriate.",
+        copy: "A record is secondary to care. If it does not delay the appointment and your dog is breathing comfortably, capture one natural event or count breaths during true sleep.",
         steps: [
           "Count one rise and fall as one breath for 30 seconds, then double it.",
-          "Repeat only at another naturally calm time if your veterinarian asks.",
-          "Stop counting and seek help if breathing looks difficult, gums change color, or your dog cannot settle.",
+          "Take one short natural video only if it is safe; never exercise, excite, or repeatedly test your dog.",
+          "Stop immediately and seek emergency help if breathing looks difficult, gums change color, or your dog cannot settle.",
         ],
         quiz: {
           question: "When should you count?",
@@ -1126,12 +1139,12 @@ const lessons = [
       },
     ],
     urgent:
-      "Labored breathing, blue or gray gums, collapse, inability to settle, severe weakness, or choking needs immediate veterinary care.",
+      "Difficult or fast breathing that does not settle, blue, gray or pale gums, collapse, inability to lie down or settle, severe weakness, choking, or a constant severe cough needs immediate veterinary care.",
     community: {
       question:
-        "My dog has started coughing while resting. What details should I capture?",
+        "My dog started coughing while resting. How quickly should I call the vet?",
       excerpt:
-        "Record the natural moment, sound, breathing effort, posture, gum color, duration, and recovery—without recreating it.",
+        "Call today for triage. If your dog is stable and it does not delay care, one short natural video and a resting-breath count can help.",
       helpful: 31,
       replies: [
         [
@@ -2829,7 +2842,7 @@ function wmHomePage() {
     body: `
     <div class="home-contract">
       <section class="home-contract-hero" aria-labelledby="home-contract-title">
-        <div class="home-contract-hero-copy"><span class="home-kicker">SENIOR DOG CARE</span><h1 id="home-contract-title"><span>Senior dog care.</span><span>Start with understanding.</span></h1><p>Notice a change? Ask anything. Get practical next steps, trusted care and support—together.</p><form class="home-hero-chat" action="/care-circle/" method="get" aria-label="Ask Care Circle about a change in your dog"><label for="home-care-question">What changed with your dog?</label><div><input id="home-care-question" name="q" type="search" maxlength="500" required placeholder="e.g., slower after rest, waking at night, eating less"><input name="ask" type="hidden" value="1"><button type="submit" aria-label="Ask Care Circle">→</button></div><small>Care Circle organizes what to notice, track and ask next.</small></form></div>
+        <div class="home-contract-hero-copy"><span class="home-kicker">SENIOR DOG CARE</span><h1 id="home-contract-title"><span>Senior dog care.</span><span>Start with understanding.</span></h1><p>Notice a change? Ask anything. Get practical next steps, trusted care and support—together.</p><form class="home-hero-chat" action="/care-circle/" method="get" aria-label="Ask Care Circle about a change in your dog"><label for="home-care-question">What changed with your dog?</label><div><input id="home-care-question" name="q" type="search" maxlength="500" required placeholder="e.g., slower after rest, waking at night, eating less"><input name="ask" type="hidden" value="1"><button type="submit" aria-label="Ask Care Circle">→</button></div><small>Care Circle checks urgency first, then organizes what to ask or track.</small></form></div>
         <figure>${image("problem-mobility-senior-lab.jpg", "Senior Labrador resting comfortably at home", { eager: true })}</figure>
       </section>
 
@@ -2843,17 +2856,17 @@ function wmHomePage() {
 
       <section class="home-contract-bed" aria-labelledby="home-bed-title">
         <div class="home-bed-system">
-          <div class="home-contract-bed-copy"><span class="home-kicker">ORTHOPEDIC BED + SMART BASE</span><h2 id="home-bed-title">Better rest. Earlier health alerts.</h2><p class="home-bed-lead">The bed supports stiff joints. Smart Base alerts you when rest, movement, bed use or weight shifts from your dog’s normal pattern.</p><ul class="home-bed-results"><li><strong>Easier entry</strong><span>Low front edge for stiff legs.</span></li><li><strong>Joint pressure relief</strong><span>Firm orthopedic foam supports turning and rising.</span></li><li><strong>Easy cleanup</strong><span>Scratch-resistant, waterproof cover. Removable and machine washable.</span></li></ul><a class="button primary" href="https://www.woafy.pet/smart-bed/">Explore Bed + Smart Base →</a></div>
+          <div class="home-contract-bed-copy"><span class="home-kicker">ORTHOPEDIC BED + SMART BASE</span><h2 id="home-bed-title">Better rest. Earlier health alerts.</h2><p class="home-bed-lead">The bed supports stiff joints. Smart Base alerts you when rest, night movement, breathing rate, heart rate or weight shifts from your dog’s normal pattern.</p><ul class="home-bed-results"><li><strong>Easier entry</strong><span>Low front edge for stiff legs.</span></li><li><strong>Joint pressure relief</strong><span>Firm orthopedic foam supports turning and rising.</span></li><li><strong>Easy cleanup</strong><span>Scratch-resistant, waterproof cover. Removable and machine washable.</span></li></ul><a class="button primary" href="https://www.woafy.pet/smart-bed/">Explore Bed + Smart Base →</a></div>
           <figure class="home-contract-complete"><div class="home-bed-lifestyle">${image("product-prototype-golden-full-v2.png", "Golden retriever sleeping in the full WoafyPet orthopedic bed on its Smart Base")}</div></figure>
         </div>
         <div class="home-bed-construction">
           <div class="home-bed-construction-copy"><span class="home-kicker">ULTRA-PREMIUM ORTHOPEDIC COMFORT</span><h3>Deeper rest. Easier rising.</h3><p>Every layer helps an older dog settle, reposition and rise with less effort.</p></div>
           <figure class="home-contract-product home-bed-layer-figure">${image("bed-layers.png", "Exploded WoafyPet orthopedic bed and Smart Base construction")}<b class="home-bed-fifth-marker" aria-label="Layer 5: Smart Base">5</b></figure>
-          <aside class="home-bed-proof" aria-label="WoafyPet Bed and Smart Base benefits"><div><p><strong>Step in with less effort</strong>Low front edge reduces the lift for stiff legs.</p></div><div><p><strong>Rest without sliding</strong>Firm sides support the head, neck and hips.</p></div><div><p><strong>Reduce joint pressure</strong>Foam cushions shoulders and hips without deep sinking.</p></div><div><p><strong>Turn and rise more easily</strong>Stable support gives older dogs leverage to reposition.</p></div><div><p><strong>Catch routine changes earlier</strong>Smart Base alerts you to lasting shifts in rest, movement, bed use and weight.</p></div></aside>
+          <aside class="home-bed-proof" aria-label="WoafyPet Bed and Smart Base benefits"><div><p><strong>Step in with less effort</strong>Low front edge reduces the lift for stiff legs.</p></div><div><p><strong>Rest without sliding</strong>Firm sides support the head, neck and hips.</p></div><div><p><strong>Reduce joint pressure</strong>Foam cushions shoulders and hips without deep sinking.</p></div><div><p><strong>Turn and rise more easily</strong>Stable support gives older dogs leverage to reposition.</p></div><div><p><strong>Catch health changes earlier</strong>Smart Base alerts you to lasting shifts in rest, movement, breathing, heart rate and weight.</p></div></aside>
         </div>
       </section>
 
-      <section class="home-contract-close" aria-label="Smart Base insights and care profile"><article class="home-contract-insights"><figure>${image("product-visualization-smart-base.png", "Verified dark WoafyPet Smart Base shown flat and folded for use beneath a dog bed")}</figure><div><span class="home-kicker">EARLIER HEALTH-CHANGE ALERTS</span><h2>Get health-change alerts sooner.</h2><p>Slide Smart Base under the WoafyPet Bed or another dog bed. It learns your dog’s normal routine and alerts you when a change lasts.</p><dl class="home-insight-metrics"><div><dt>Rest</dt><dd>Broken sleep may signal discomfort.</dd></div><div><dt>Night movement</dt><dd>More wake-ups can point to pain or bathroom needs.</dd></div><div><dt>Heart rate</dt><dd>Spot resting-rate shifts that may signal stress or health changes.</dd></div><div><dt>Weight</dt><dd>Ongoing gain or loss can accompany appetite or chronic-disease change.</dd></div></dl><p class="home-insight-action"><strong>Get the alert. Save the trend. Show your veterinarian exactly what changed.</strong></p><a href="https://www.woafy.pet/smart-base/">See how early alerts work →</a></div></article><article class="home-contract-profile"><div><span aria-hidden="true">♡</span><p><strong>Build your dog’s care profile</strong>Add your dog once. Keep private lessons and health history together.</p></div><a href="/account/">Create my care profile →</a></article></section>
+      <section class="home-contract-close" aria-label="Smart Base insights and care profile"><article class="home-contract-insights"><figure>${image("product-visualization-smart-base.png", "Verified dark WoafyPet Smart Base shown flat and folded for use beneath a dog bed")}</figure><div><span class="home-kicker">EARLIER HEALTH-CHANGE ALERTS</span><h2>Get health-change alerts sooner.</h2><p>Slide Smart Base under the WoafyPet Bed or another dog bed. It learns your dog’s normal routine and alerts you when a change lasts.</p><dl class="home-insight-metrics"><div><dt>Rest</dt><dd>See when sleep becomes shorter or broken.</dd></div><div><dt>Night movement</dt><dd>Spot more wake-ups or restlessness.</dd></div><div><dt>Breathing rate</dt><dd>Catch a sustained rise during rest.</dd></div><div><dt>Heart rate</dt><dd>See when the resting trend shifts.</dd></div><div><dt>Weight</dt><dd>Catch ongoing gain or loss.</dd></div></dl><p class="home-insight-action"><strong>Get the alert. Contact your veterinarian when a change is new, concerning or worsening.</strong></p><a href="https://www.woafy.pet/smart-base/">See how early alerts work →</a></div></article><article class="home-contract-profile"><div><span aria-hidden="true">♡</span><p><strong>Build your dog’s care profile</strong>Add your dog once. Keep private lessons and health history together.</p></div><a href="/account/">Create my care profile →</a></article></section>
 
       <section class="home-support-paths home-contract-support" aria-label="More ways WoafMeow can help">${supportPaths.map(([title, copy, asset, href, action]) => "<a href=\"" + escapeHtml(href) + "\"><figure>" + image(asset, title) + "</figure><div><h2>" + escapeHtml(title) + "</h2><p>" + escapeHtml(copy) + "</p><span>" + escapeHtml(action) + " →</span></div></a>").join("")}</section>
 
@@ -2921,7 +2934,7 @@ function wmGuidePage() {
   ];
   const shareByTopic = {
     Movement: "Save a 10–20 second natural-rise video plus the surface, pause, first five steps and recovery time.",
-    Sleep: "Create a seven-night wake-up timeline with time, first behavior, bathroom trip, breathing and what helped settling.",
+    Sleep: "If your veterinary team says home monitoring is safe, record wake time, first behavior, bathroom trip, breathing and what helped settling.",
     Eating: "Record food offered, amount eaten, chewing side, dropped food, nausea clues and a dated weight when available.",
     Water: "Measure one ordinary day's intake and pair it with urination, appetite, medicines and energy changes.",
     Bathroom: "Track time, urgency, posture, output, accidents and the exact route your dog must travel.",
@@ -2934,11 +2947,12 @@ function wmGuidePage() {
       "A detailed, visual guide to the most common changes in senior dogs, what to notice, what to do today, and when to call a veterinarian.",
     bodyClass: "guide-v6 guide-v7 guide-v8",
     body: `
-    <section class="guide-hero-v6"><div class="guide-hero-photo">${image("guide-recognize-older-golden.jpg", "Older golden retriever receiving a calm daily check-in", { eager: true })}</div><div class="guide-hero-copy"><h1>The complete Senior Dog Care Guide</h1><p>Understand the changes aging dogs face. Know what to check, what to make easier today, and what deserves a faster call.</p>${emailCapture("guide-download", "Email me the guide")}</div></section>
+    <section class="guide-hero-v6"><div class="guide-hero-photo">${image("guide-recognize-older-golden.jpg", "Older golden retriever receiving a calm daily check-in", { eager: true })}</div><div class="guide-hero-copy"><h1>The complete Senior Dog Care Guide</h1><p>Understand the changes aging dogs face. Know what to check, what to make easier today, and what deserves a faster call.</p><a class="guide-mobile-triage" href="/find-care/?care=emergency-vets"><strong>Call first for a new cough or breathing change.</strong><span>Do not wait for a tracker if signs are severe or worsening. Find urgent care →</span></a>${emailCapture("guide-download", "Email me the guide")}</div></section>
+    <section class="guide-triage-first"><div class="wm-wrap"><div><span>TRIAGE BEFORE TRACKING</span><h2>Call first. Track safely.</h2></div><p><strong>Call your veterinarian today</strong> for a new or repeated cough at rest, new faster breathing, marked weakness, or a sudden worsening change. <strong>Go to emergency care now</strong> for breathing difficulty, blue, gray or pale gums, collapse, inability to settle, or severe distress. A tracker must never delay care.</p><a class="button secondary" href="/find-care/?care=emergency-vets">Find urgent care →</a></div></section>
     <section class="guide-outcomes"><div class="wm-wrap"><article><span>1</span><h2>Recognize the exact change.</h2><p>Replace vague worry with a specific behavior, time and routine.</p></article><article><span>2</span><h2>Make today easier.</h2><p>Use low-risk changes that protect access, traction, rest and dignity.</p></article><article><span>3</span><h2>Know when to call.</h2><p>Separate useful tracking from signs that should not wait.</p></article><article><span>4</span><h2>Share a useful care summary.</h2><p>Organize the timeline, records and questions your veterinarian needs.</p></article></div></section>
     <section class="guide-topics-v6"><div class="wm-wrap">${editorialHeading("Six changes. Four clear decisions for each.", "What to watch, what to do today, what to share and when to call sooner.")}<div>${topics.map(([title, notice, today, sooner, asset]) => `<article><figure>${image(asset, `${title} section of the Senior Dog Care Guide`)}</figure><div><h3>${title}</h3><dl><div><dt>Watch</dt><dd>${notice}</dd></div><div><dt>Do today</dt><dd>${today}</dd></div><div><dt>Track and share</dt><dd>${shareByTopic[title]}</dd></div><div><dt>Call sooner</dt><dd>${sooner}</dd></div></dl></div></article>`).join("")}</div></div></section>
-    <section class="guide-method"><div class="wm-wrap image-text"><figure>${image("guide-observe-beagle-owner.jpg", "Owner observing a dog's ordinary home routine")}</figure><div><h2>Your seven-day change record</h2><ol><li><strong>Day 1 — Set the baseline.</strong> Film or note one ordinary routine without prompting.</li><li><strong>Days 2–3 — Repeat at the same time.</strong> Look for frequency, effort and recovery.</li><li><strong>Days 4–5 — Change one safe detail.</strong> Add traction, access or a shorter route; record the result.</li><li><strong>Day 6 — Connect the systems.</strong> Add sleep, appetite, water, bathroom and medicines.</li><li><strong>Day 7 — Write the summary.</strong> State what changed, how often, what helped and what is harder now.</li></ol><button class="button secondary" type="button" data-print-guide>Print this plan →</button></div></div></section>
-    <section class="guide-vet-note"><div class="wm-wrap"><div><h2>Start the vet visit clearly.</h2><span class="guide-script-label">A clear way to begin</span><p class="guide-visit-script">For ten days, she pauses after naps, has slipped twice in the hallway, and now avoids the two kitchen steps. A runner helps, but the change is still happening daily.</p><ul><li>Bring the timeline and short natural videos.</li><li>List medicines, supplements and recent changes.</li><li>Ask which causes need evaluation and what to monitor next.</li></ul></div><figure>${image("real-senior-care-at-home.jpg", "Senior dog receiving attentive care at home")}</figure></div></section>
+    <section class="guide-method"><div class="wm-wrap image-text"><figure>${image("guide-observe-beagle-owner.jpg", "Owner observing a dog's ordinary home routine")}</figure><div><h2>Seven-day tracking—only when safe</h2><p class="guide-method-safety"><strong>Call first for a new, severe or worsening change.</strong> Use this plan only after urgent signs are ruled out or when your veterinary team says home monitoring is appropriate. Stop and call if the sign worsens.</p><ol><li><strong>Day 1 — Set the baseline.</strong> Film or note one ordinary routine without prompting.</li><li><strong>Days 2–3 — Repeat at the same time.</strong> Look for frequency, effort and recovery.</li><li><strong>Days 4–5 — Change one safe detail.</strong> Add traction, access or a shorter route; record the result.</li><li><strong>Day 6 — Connect the systems.</strong> Add sleep, appetite, water, bathroom and medicines.</li><li><strong>Day 7 — Write the summary.</strong> State what changed, how often, what helped and what is harder now.</li></ol><button class="button secondary" type="button" data-print-guide>Print this plan →</button></div></div></section>
+    <section class="guide-vet-note"><div class="wm-wrap"><div><h2>Start the vet visit clearly.</h2><span class="guide-script-label">A clear way to begin</span><p class="guide-visit-script">I called when her movement first changed. While waiting for the appointment, I recorded three difficult rises, two hallway slips and new avoidance of the kitchen steps. A runner helps, but the change continues.</p><ul><li>Lead with the most urgent sign and when it began.</li><li>Bring the timeline and short natural videos only when they did not delay care.</li><li>List medicines, supplements and recent changes.</li></ul></div><figure>${image("real-senior-care-at-home.jpg", "Senior dog receiving attentive care at home")}</figure></div></section>
     <section class="guide-vet-trust"><div class="wm-wrap"><header><h2>Veterinary-supported guidance you can use.</h2><p>Notice the pattern, make the day safer and bring a clearer story to the professional who knows your dog.</p></header><article><figure>${image("vet-silvan-urfer.jpg", "Silvan R. Urfer, veterinarian and dog-aging researcher")}</figure><div><blockquote>“Dogs often compensate until changes become obvious. Long-term tracking can give owners and veterinarians more context.”</blockquote><strong>Silvan R. Urfer, Dr. med. vet.</strong><span>Veterinarian &amp; dog-aging researcher · Dog Aging Project</span></div></article><article><figure>${image("vet-annika-bremhorst-official.jpg", "Dr. Annika Bremhorst, veterinarian and canine-pain researcher")}</figure><div><blockquote>“Pain can be difficult to detect, especially when it is prolonged. Long-term monitoring can help reveal subtle changes.”</blockquote><strong>Dr. Annika Bremhorst</strong><span>Veterinarian &amp; canine-pain researcher</span></div></article></div></section>`,
   });
 }
@@ -3037,7 +3051,7 @@ function wmCareCirclePage() {
       "Public questions, pet conditions and complete care lessons in one place.",
     bodyClass: "circle-v7 circle-v8 circle-v9 circle-v10",
     body: `
-    <section class="circle-hero-v7" id="ask"><div class="circle-intro-v10"><span>CARE CIRCLE</span><h1><span>Tell us what changed.</span> <span>Get a clear next step.</span></h1><p>Share one moment from your dog’s day. We’ll organize what to notice, track and ask next.</p><a class="text-link" href="#public-lessons">Browse real owner questions →</a></div><figure>${image("real-care-circle-owner-dog.jpg", "Real dog owner sharing a close moment with her dog", { eager: true })}</figure><form class="circle-question-form circle-hero-question" data-account-ask-form><header><span>YOUR CONVERSATION</span><h2>What changed with your dog?</h2><p data-active-pet-summary></p></header><label class="circle-question-main"><span>Describe the change</span><textarea name="question" maxlength="500" required placeholder="What happened, when did it start, and which familiar routine is now harder?"></textarea><small>Include timing, frequency and what happens before or after.</small></label><label class="question-image-field"><span>Add a recent photo <em>(optional)</em></span><input type="file" name="questionImage" accept="image/jpeg,image/png,image/webp" data-question-image-input><small>A photo is shared publicly only if you choose Public below.</small><img data-question-image-preview hidden alt="Question photo preview"><button type="button" class="text-button" data-question-image-remove hidden>Remove photo</button></label><fieldset class="lesson-visibility"><legend>Choose privacy for this question</legend><label><input type="radio" name="lessonVisibility" value="private" checked><span><strong>Private</strong><small>Only you can open this lesson.</small></span></label><label><input type="radio" name="lessonVisibility" value="public"><span><strong>Share in Care Circle</strong><small>Share the question and details you choose.</small></span></label></fieldset><div class="circle-question-result"><strong>Your result</strong><span>A four-part care lesson shaped around your dog.</span><button class="button primary" type="submit">Create my tailored care lesson →</button></div><p class="form-note" data-account-ask-note role="status" aria-live="polite"></p></form><div class="circle-account-gate" data-account-gate><div><h2>Create one care profile.</h2><p>Add age, breed, known conditions and medicines once so each lesson can account for the dog you actually know.</p></div><a class="button secondary" href="/account/?next=ask">Create or edit my care profile →</a></div></section>
+    <section class="circle-hero-v7" id="ask"><div class="circle-intro-v10"><span>CARE CIRCLE</span><h1><span>Tell us what changed.</span> <span>Get a clear next step.</span></h1><p>Share one moment from your dog’s day. We’ll check urgency first, then organize what to ask, do or safely track.</p><a class="text-link" href="#public-lessons">Browse real owner questions →</a></div><figure>${image("real-care-circle-owner-dog.jpg", "Real dog owner sharing a close moment with her dog", { eager: true })}</figure><form class="circle-question-form circle-hero-question" data-account-ask-form><header><span>YOUR CONVERSATION</span><h2>What changed with your dog?</h2><p data-active-pet-summary></p></header><label class="circle-question-main"><span>Describe the change</span><textarea name="question" maxlength="500" required placeholder="What happened, when did it start, and which familiar routine is now harder?"></textarea><small>Include timing, frequency and what happens before or after.</small></label><label class="question-image-field"><span>Add a recent photo <em>(optional)</em></span><input type="file" name="questionImage" accept="image/jpeg,image/png,image/webp" data-question-image-input><small>A photo is shared publicly only if you choose Public below.</small><img data-question-image-preview hidden alt="Question photo preview"><button type="button" class="text-button" data-question-image-remove hidden>Remove photo</button></label><fieldset class="lesson-visibility"><legend>Choose privacy for this question</legend><label><input type="radio" name="lessonVisibility" value="private" checked><span><strong>Private</strong><small>Only you can open this lesson.</small></span></label><label><input type="radio" name="lessonVisibility" value="public"><span><strong>Share in Care Circle</strong><small>Share the question and details you choose.</small></span></label></fieldset><div class="circle-question-result"><strong>Your result</strong><span>Urgency guidance and a four-part lesson shaped around your dog.</span><button class="button primary" type="submit">Create my tailored care lesson →</button></div><p class="form-note" data-account-ask-note role="status" aria-live="polite"></p></form><div class="circle-account-gate" data-account-gate><div><h2>Create one care profile.</h2><p>Add age, breed, known conditions and medicines once so each lesson can account for the dog you actually know.</p></div><a class="button secondary" href="/account/?next=ask">Create or edit my care profile →</a></div></section>
     <section class="circle-feed-v7" id="public-lessons"><div class="wm-wrap"><div class="circle-filter-bar"><h2>Public questions and complete lessons</h2><div role="group" aria-label="Filter Care Circle questions">${topics.map((topic, index) => `<button type="button" data-circle-filter="${escapeHtml(topic.toLowerCase())}" aria-pressed="${index === 0 ? "true" : "false"}">${escapeHtml(topic)}</button>`).join("")}</div></div><div class="circle-public-grid" data-circle-public-grid>${lessons
       .map((lesson, index) => {
         const profile = publicProfiles[index];
@@ -3312,13 +3326,13 @@ function wmLessonPage(lesson) {
       },
     },
     "new-cough-or-breathing-change": {
-      title: "Send a breathing-event summary",
-      result: "Show when the cough or breathing change happens and what your dog was doing before it began.",
-      copy: "Breathing changes deserve precise timing and a low threshold for urgent veterinary care.",
+      title: "Call first, then send a brief breathing summary",
+      result: "Get veterinary triage now, then share a safe observation only if it does not delay care.",
+      copy: "A new or repeated cough at rest deserves a same-day call. Breathing difficulty, collapse, abnormal gum color or severe distress needs emergency care now.",
       steps: [
-        "When your dog is fully asleep, count chest rises for 30 seconds and double the number; stop if this causes disturbance.",
-        "Record posture, effort, sound, duration, activity, temperature and whether gums look normally colored.",
-        "Share a safe short video, the resting count, medicines and the exact first date with the veterinary team.",
+        "Call first and report whether the event happened during sleep or quiet rest, how often it repeated, and whether breathing looks harder or faster.",
+        "If your dog is stable and the veterinary team agrees, count chest rises for 30 seconds during true sleep and double the number.",
+        "Share one safe short video, the resting count, medicines and the exact first date only when doing so did not delay care.",
       ],
       quiz: {
         question: "Which action gives useful breathing context without provoking symptoms?",
@@ -3425,13 +3439,17 @@ function wmLessonPage(lesson) {
   const mobilitySupport = mobilityRelated
     ? `<section class="mobility-bed-path"><div class="wm-wrap"><div><span>WoafyPet Bed + Smart Base</span><h2>Easier entry. Better support.</h2><p>Low entry and orthopedic foam support stiff dogs. Smart Base tracks rest, bed use and weight changes.</p><ul><li>Low front entry</li><li>Orthopedic foam</li><li>Washable cover</li><li>Passive pattern tracking</li></ul><a class="button primary" href="https://www.woafy.pet/smart-bed/">Explore Bed + Smart Base →</a></div><figure class="mobility-bed-system">${image("product-hero-official.png", "Complete WoafyPet Smart Bed resting on its Smart Base")} ${image("product-visualization-smart-base.png", "WoafyPet Smart Base shown separately")}</figure></div></section>`
     : "";
+  const triageCopy =
+    lesson.triage ||
+    `Before tracking, check whether the change is sudden, severe or worsening. ${lesson.urgent} Recording can support a veterinary conversation, but it must not delay care.`;
+  const triageFirst = `<aside class="lesson-triage-v9"><div class="wm-wrap"><div><span>TRIAGE FIRST</span><h2>${lesson.triage ? "Do not wait to build a record." : "Check urgency before tracking."}</h2></div><p>${escapeHtml(triageCopy)}</p>${button("Find urgent veterinary care", "/find-care/?care=emergency-vets", "secondary")}</div></aside>`;
   return page({
     route: `/care-circle/${lesson.slug}/`,
     title: lesson.title,
     description: lesson.intro,
     bodyClass: "lesson-v7 lesson-v8 lesson-v9",
     body: `
-    <article><header class="lesson-hero-v7"><div><a class="back-link" href="/care-circle/">← All Care Circle lessons</a><h1>${escapeHtml(lesson.title)}</h1><p>${escapeHtml(lesson.intro)}</p><dl class="public-pet-profile" data-public-pet-profile><div><dt>Dog</dt><dd data-public-dog>${escapeHtml(profile[0])} · ${escapeHtml(profile[1])} · ${escapeHtml(profile[2])}</dd></div><div><dt>Owner-shared conditions</dt><dd data-public-conditions>${escapeHtml(profile[3])}</dd></div><div><dt>What changed</dt><dd data-public-change>${escapeHtml(profile[4])}</dd></div></dl></div><figure>${image(lesson.image, lesson.imageAlt, { eager: true })}</figure></header>
+    <article><header class="lesson-hero-v7"><div><a class="back-link" href="/care-circle/">← All Care Circle lessons</a><h1>${escapeHtml(lesson.title)}</h1><p>${escapeHtml(lesson.intro)}</p>${lesson.triage ? '<a class="lesson-mobile-triage" href="/find-care/?care=emergency-vets"><strong>Call your veterinarian today.</strong><span>Do not wait to build a record. Breathing trouble needs emergency care now →</span></a>' : ""}<dl class="public-pet-profile" data-public-pet-profile><div><dt>Dog</dt><dd data-public-dog>${escapeHtml(profile[0])} · ${escapeHtml(profile[1])} · ${escapeHtml(profile[2])}</dd></div><div><dt>Owner-shared conditions</dt><dd data-public-conditions>${escapeHtml(profile[3])}</dd></div><div><dt>What changed</dt><dd data-public-change>${escapeHtml(profile[4])}</dd></div></dl></div><figure>${image(lesson.image, lesson.imageAlt, { eager: true })}</figure></header>${triageFirst}
     <aside class="lesson-personal-context"><div class="wm-wrap"><strong>Why this matters for <span data-tailored-pet-name>${escapeHtml(profile[0])}</span></strong><p data-tailored-context>${escapeHtml(profile[0])} is ${escapeHtml(profile[1])}, a ${escapeHtml(profile[2])}, with ${escapeHtml(profile[3])}; the owner reports ${escapeHtml(profile[4])}.</p></div></aside>
     <section class="lesson-owner-actions" data-lesson-owner-actions hidden><div class="wm-wrap"><div><strong>Your public Care Circle post</strong><p>You can remove this post and its public lesson whenever you choose.</p></div><button class="text-button danger" type="button" data-delete-public-lesson>Delete my public post</button><p class="form-note" data-delete-public-note role="status" aria-live="polite"></p></div></section>
     <div class="lesson-chapters-v7">${lessonChapters.map((chapter, index) => `<section id="chapter-${index + 1}" data-lesson-chapter="${index + 1}" data-tailored-part="${index + 1}"><div class="wm-wrap lesson-chapter-layout"><figure>${image(imgs[index], `${chapter.title} for ${lesson.title}`)}</figure><div><h2>${escapeHtml(chapter.title)}</h2><p class="chapter-result" data-tailored-chapter-summary="${index + 1}">${escapeHtml(chapter.result)}</p><p>${escapeHtml(chapter.copy)}</p><ol data-tailored-chapter-steps="${index + 1}">${chapter.steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol><fieldset class="chapter-quiz" data-chapter-quiz data-answer="${escapeHtml(chapter.quiz.answer)}" data-correct-message="${escapeHtml(chapter.quiz.correct)}" data-retry-message="${escapeHtml(chapter.quiz.retry)}"><legend>${escapeHtml(chapter.quiz.question)}</legend>${chapter.quiz.options.map(([value, label]) => `<label><input type="radio" name="${lesson.slug}-quiz-${index + 1}" value="${escapeHtml(value)}"><span>${escapeHtml(label)}</span></label>`).join("")}<button type="button" data-check-quiz>Check answer</button><p role="status" aria-live="polite" data-quiz-feedback></p></fieldset></div></div></section>`).join("")}</div>${mobilitySupport}<section class="call-sooner-v7"><div class="wm-wrap"><h2>Call sooner when you see this</h2><p>${escapeHtml(lesson.urgent)}</p>${button("Find care now", "/find-care/")}</div></section></article>`,
@@ -3461,7 +3479,8 @@ function wmHealthTimelinePage() {
     <section class="health-shell" data-health-root><h1 class="sr-only">My dog's Health Timeline</h1>
       <div class="health-gate" data-health-account-gate hidden><div><h2>Create your dog's care profile first.</h2><p>Your dog's profile keeps every record and change connected to the right care story.</p></div><a class="button primary" href="/account/?next=health">Create profile and continue →</a></div>
       <div class="health-workspace" data-health-workspace hidden>
-        <section class="health-hero"><figure>${image("real-companion-moment.jpg", "Dog owner sitting closely with a dog while reviewing its health story", { eager: true })}</figure><div class="health-hero-copy"><p class="health-kicker">Health Timeline</p><h2>Keep <span data-health-pet-name>your dog</span>'s health story in one place.</h2><p>Bring records, medicines, weight and daily changes together—so the pattern is easier to see and explain at the next veterinary visit.</p><div class="health-summary-grid"><div><strong data-health-condition-count>0</strong><span>Known conditions</span></div><div><strong data-health-medicine-count>0</strong><span>Medicines noted</span></div><div><strong data-health-change-count>0</strong><span>Changes logged</span></div></div><div class="health-hero-actions"><a class="button primary" href="#add-record">Add health record →</a><a class="button secondary" href="#log-change">Log a change →</a></div><p class="health-local-note">Private to this browser. You decide what to share.</p></div></section>
+        <aside class="health-triage-first"><strong>Address urgency before records.</strong><p>Do not stop to build a timeline if your dog has breathing difficulty, blue, gray or pale gums, collapse, inability to settle, severe distress, or another sudden severe change. Contact emergency veterinary care now.</p><a href="/find-care/?care=emergency-vets">Find urgent care →</a></aside>
+        <section class="health-hero"><figure>${image("real-companion-moment.jpg", "Dog owner sitting closely with a dog while reviewing its health story", { eager: true })}</figure><div class="health-hero-copy"><p class="health-kicker">Health Timeline</p><h2>Keep <span data-health-pet-name>your dog</span>'s health story in one place.</h2><p>After urgent needs are addressed, bring records, medicines, weight and daily changes together for the next veterinary conversation.</p><div class="health-summary-grid"><div><strong data-health-condition-count>0</strong><span>Known conditions</span></div><div><strong data-health-medicine-count>0</strong><span>Medicines noted</span></div><div><strong data-health-change-count>0</strong><span>Changes logged</span></div></div><div class="health-hero-actions"><a class="button primary" href="#add-record">Add health record →</a><a class="button secondary" href="#log-change">Log a change →</a></div><p class="health-local-note">Private to this browser. You decide what to share.</p></div></section>
 
         <section class="health-tools">
           <article class="health-form-card" id="add-record"><header><span aria-hidden="true">01</span><div><h2>Add a health record</h2><p>PDF, image, text or CSV · up to 15 MB</p></div></header><form data-health-record-form><div class="form-grid"><label><span>Record date</span><input type="date" name="recordDate" required></label><label><span>Record type</span><select name="recordType" required><option value="">Choose one</option><option>Veterinary visit</option><option>Lab result</option><option>Medication</option><option>Imaging</option><option>Discharge instructions</option><option>Other</option></select></label><label class="field-wide health-file-field"><span>Choose record</span><input type="file" name="recordFile" accept=".pdf,.txt,.csv,.jpg,.jpeg,.png,application/pdf,text/plain,text/csv,image/jpeg,image/png" required><small>Text in TXT and CSV records can be organized automatically. Image and PDF files stay attached to their date and your note.</small></label><label class="field-wide"><span>What should you remember?</span><textarea name="recordNote" maxlength="700" placeholder="Diagnosis shared by the veterinarian, result, new medicine, follow-up date, or question to ask."></textarea></label></div><button class="button primary" type="submit">Save record →</button><p class="form-note" data-health-record-note role="status" aria-live="polite"></p></form></article>
@@ -3571,7 +3590,8 @@ function wmDirectoryCard(entry, index = 0, resource = false) {
         timeZone: "UTC",
       }).format(new Date(`${entry.checked}T00:00:00Z`))
     : "";
-  return `<article class="provider-card-v6${resource ? " official-resource" : ""}${visualAsset ? " has-photo" : " no-photo"}${entry.brandAsset ? " has-logo" : ""}" data-directory-item ${resource ? "data-directory-resource" : "data-directory-profile"} data-search="${escapeHtml(searchText)}" data-categories="${escapeHtml(categories.join("|"))}" data-region="${escapeHtml(region)}">${visual}<div><span class="provider-source-type">${sourceType}</span><h3>${escapeHtml(entry.title)}</h3>${entry.organization && entry.organization !== entry.title ? `<p class="organization">${escapeHtml(entry.organization)}</p>` : ""}<p class="location">${escapeHtml(directoryDisplayLocation(entry))}</p>${entry.mode ? `<p class="provider-contact">${escapeHtml(entry.mode)}</p>` : ""}${entry.summary ? `<p class="provider-summary">${escapeHtml(entry.summary)}</p>` : ""}<p class="provider-fit"><strong>When this may fit</strong>${escapeHtml(entry.useWhen || entry.summary || "")}</p>${checkedLabel ? `<span class="provider-checked">Official source checked ${escapeHtml(checkedLabel)}</span>` : ""}<a href="${escapeHtml(entry.url)}" target="_blank" rel="noreferrer">${resource ? "Open official directory" : "Open official profile"} →</a></div></article>`;
+  const organization = entry.organization || entry.title;
+  return `<article class="provider-card-v6${resource ? " official-resource" : ""}${visualAsset ? " has-photo" : " no-photo"}${entry.brandAsset ? " has-logo" : ""}" data-directory-item ${resource ? "data-directory-resource" : "data-directory-profile"} data-organization="${escapeHtml(organization)}" data-search="${escapeHtml(searchText)}" data-categories="${escapeHtml(categories.join("|"))}" data-region="${escapeHtml(region)}">${visual}<div><span class="provider-source-type">${sourceType}</span><h3>${escapeHtml(entry.title)}</h3>${entry.organization && entry.organization !== entry.title ? `<p class="organization">${escapeHtml(entry.organization)}</p>` : ""}<p class="location">${escapeHtml(directoryDisplayLocation(entry))}</p>${entry.mode ? `<p class="provider-contact">${escapeHtml(entry.mode)}</p>` : ""}${entry.summary ? `<p class="provider-summary">${escapeHtml(entry.summary)}</p>` : ""}<p class="provider-fit"><strong>When this may fit</strong>${escapeHtml(entry.useWhen || entry.summary || "")}</p>${checkedLabel ? `<span class="provider-checked">Official source checked ${escapeHtml(checkedLabel)}</span>` : ""}<a href="${escapeHtml(entry.url)}" target="_blank" rel="noreferrer">${resource ? "Open official directory" : "Open official profile"} →</a></div></article>`;
 }
 
 function wmFindCarePage() {
@@ -3605,7 +3625,7 @@ function wmFindCarePage() {
     <section class="directory-hero-v6"><header class="directory-hero-heading"><span>500+ OFFICIAL-SOURCE PROFILES</span><h1>Find trusted care for your dog.</h1><p>Choose the support and region. Compare published location, phone and service details, then open the provider's official page.</p></header><div class="directory-selectors" data-directory-controls><label><span>Care type</span><select data-directory-category>${careTypes.map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}</select></label><label><span>State or region</span><select data-directory-region><option value="all">All states and regions</option>${regions.map((region) => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`).join("")}</select></label><button class="button primary directory-apply" type="button" data-directory-apply>Show matching care →</button><p class="directory-control-status" aria-live="polite"><strong data-directory-profile-count></strong> and <strong data-directory-resource-count></strong> ready to review.</p></div><figure>${image("guide-vet-care-brown-dog.jpg", "Real dog receiving attentive veterinary care", { eager: true })}</figure></section>
     <section class="emergency-strip-v6"><div class="wm-wrap"><div>${icon("care")}<p><strong>Trouble breathing, collapse, repeated unproductive retching, seizure, severe bleeding, inability to urinate or sudden inability to stand needs immediate veterinary care.</strong></p></div><button type="button" data-directory-filter="emergency-vets">Show emergency care</button></div></section>
     <section class="directory-results-v6" data-directory-results><div class="wm-wrap">${editorialHeading("Care matched to your choices.", "Open a profile or directory to confirm services, hours and the best first step.")}<div class="provider-grid-v6">${directoryProfiles.map((entry, index) => wmDirectoryCard(entry, index)).join("")}${directoryResources.map((entry, index) => wmDirectoryCard(entry, index, true)).join("")}</div><p class="care-directory-empty" data-directory-profile-empty hidden>No option matches both selections. Try another region or care type.</p><button class="button secondary care-directory-more" type="button" data-directory-load-more>Search more →</button></div></section>
-    <section class="directory-note-v6"><div class="wm-wrap"><p><strong>What “source checked” means:</strong> each profile links to a provider-published page and shows the date that source was checked. It is not a clinical endorsement. Confirm credentials, hours, prices, referral requirements and availability directly.</p></div></section>
+    <section class="directory-note-v6"><div class="wm-wrap"><p><strong>No provider partnership or sponsored placement:</strong> WoafMeow has no directory partnership with VCA, BluePearl or any listed provider. Their locations appear because public official pages met the same source check. Results are mixed by organization and are not rankings or clinical endorsements. Confirm credentials, hours, prices, referral requirements and availability directly.</p></div></section>
     <section class="practice-band-v6" id="list-your-practice"><div class="wm-wrap"><figure>${image("real-companion-moment.jpg", "Caregiver sitting beside a dog while considering professional support")}</figure>${wmProviderInquiryForm()}</div></section>`,
   });
 }
@@ -3703,13 +3723,13 @@ function wmSmartBedPage() {
     route: "/smart-bed/",
     title: "WoafyPet Smart Bed",
     description:
-      "Supportive comfort for senior dogs with quiet insights into rest, night movement, bed use and weight trend.",
+      "Supportive comfort for senior dogs with quiet insights into rest, night movement, breathing rate, heart rate and weight trend.",
     bodyClass: "bed-v6 bed-v7",
     body: `
     <section class="bed-hero-v6"><div><span>WoafyPet Smart Bed</span><h1>Support stiff joints. Track rest changes.</h1><p>Orthopedic comfort with quiet Smart Base tracking.</p>${button("Explore Bed + Smart Base", "https://www.woafy.pet/smart-bed/")}</div><figure class="bed-system-media"><div>${image("product-hero-official.png", "Complete WoafyPet Smart Bed resting on its Smart Base", { eager: true })}<strong>Full Smart Bed</strong></div><div>${image("smart-base.webp", "WoafyPet Smart Base shown separately", { eager: true })}<strong>Smart Base</strong></div></figure></section>
     <section class="bed-comfort-v6"><div class="wm-wrap"><figure>${image("product-prototype-akita.webp", "Complete WoafyPet prototype bed with a dog resting comfortably")}</figure><div><h2>Low entry. Stable support.</h2><div class="bed-benefits"><article><strong>Low entry</strong><span>Easier access</span></article><article><strong>Bolsters</strong><span>Support for settling</span></article><article><strong>Orthopedic foam</strong><span>Joint pressure relief</span></article><article><strong>Washable cover</strong><span>Simple daily care</span></article></div></div></div></section>
     <section class="bed-layers-v7"><div class="wm-wrap"><div><h2>Five layers. One complete system.</h2><ol><li><strong>Washable cover</strong><span>Everyday comfort</span></li><li><strong>Comfort foam</strong><span>Surface relief</span></li><li><strong>Orthopedic core</strong><span>Stable support</span></li><li><strong>Smart Base</strong><span>Rest and weight trends</span></li><li><strong>Non-slip base</strong><span>Steadier entry</span></li></ol></div><figure>${image("bed-layers.png", "Layer visualization of the WoafyPet Smart Bed foam and sensing system")}</figure></div></section>
-    <section class="bed-insights-v6"><div class="wm-wrap"><div><h2>Track rest. Flag discomfort.</h2><p>No collar or camera.</p><div class="metric-grid"><article><span>Rest</span><strong>Total duration</strong></article><article><span>Night</span><strong>Wake-ups</strong></article><article><span>Heart rate</span><strong>Resting trend</strong></article><article><span>Weight</span><strong>Longer trends</strong></article></div>${button("Explore Smart Base", "https://www.woafy.pet/smart-base/")}</div><figure>${image("product-visualization-smart-base.png", "WoafyPet Smart Base passive wellness insight system")}</figure></div></section>
+    <section class="bed-insights-v6"><div class="wm-wrap"><div><h2>Track rest. Flag discomfort.</h2><p>No collar or camera.</p><div class="metric-grid"><article><span>Rest</span><strong>Total duration</strong></article><article><span>Night</span><strong>Wake-ups</strong></article><article><span>Breathing rate</span><strong>Resting trend</strong></article><article><span>Heart rate</span><strong>Resting trend</strong></article><article><span>Weight</span><strong>Longer trends</strong></article></div>${button("Explore Smart Base", "https://www.woafy.pet/smart-base/")}</div><figure>${image("product-visualization-smart-base.png", "WoafyPet Smart Base passive rest, breathing-rate, heart-rate and weight insight system")}</figure></div></section>
     <section class="bed-boundary-v6"><div class="wm-wrap"><h2>Awareness, not diagnosis.</h2><p>Use pattern changes to prepare a clearer veterinary conversation.</p></div></section>`,
   });
 }
@@ -3719,12 +3739,12 @@ function wmSmartBasePage() {
     route: "/smart-base/",
     title: "WoafyPet Smart Base",
     description:
-      "Quiet sensing beneath the bed for rest duration, night movement, bed use and weight trend.",
+      "Quiet sensing beneath the bed for rest duration, night movement, breathing rate, heart rate and weight trend.",
     bodyClass: "base-v6",
     body: `
     <section class="base-hero-v6"><div><span>WoafyPet Smart Base</span><h1>Track rest without another wearable.</h1><p>The sensing layer sits beneath the bed and turns repeated use into a calmer weekly view.</p>${button("Explore the complete bed", "https://www.woafy.pet/smart-bed/")}</div><figure>${image("product-visualization-smart-base.png", "WoafyPet Smart Base product visualization", { eager: true })}</figure></section>
     <section class="base-flow"><div class="wm-wrap">${editorialHeading("From ordinary rest to a useful pattern", "No collar. No camera. No constant checking.")}<div><article><span>1</span><h2>Your dog rests normally</h2></article><article><span>2</span><h2>The base follows repeated patterns</h2></article><article><span>3</span><h2>You see a simple weekly summary</h2></article><article><span>4</span><h2>You decide what deserves attention</h2></article></div></div></section>
-    <section class="base-visual"><div class="wm-wrap image-text"><figure>${image("bed-layers.png", "Exploded visualization of the WoafyPet bed and Smart Base")}</figure><div><h2>Four signals, one clearer conversation.</h2><ul><li>Rest duration</li><li>Night movement</li><li>Resting heart rate</li><li>Weight trend</li></ul><p>Look for sustained change, then bring the timeline and the whole daily routine to the professional who knows your dog.</p></div></div></section>`,
+    <section class="base-visual"><div class="wm-wrap image-text"><figure>${image("bed-layers.png", "Exploded visualization of the WoafyPet bed and Smart Base")}</figure><div><h2>Five signals, one clearer conversation.</h2><ul><li>Rest duration</li><li>Night movement</li><li>Resting breathing rate</li><li>Resting heart rate</li><li>Weight trend</li></ul><p>See a change sooner, then contact the professional who knows your dog when it is new, concerning or worsening.</p></div></div></section>`,
   });
 }
 

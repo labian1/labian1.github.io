@@ -578,10 +578,10 @@ async function checkHome(page, viewport, baseUrl, failures) {
     failures.push("/: homepage product visuals are not grounded in the verified WoafyPet system");
   if (
     (await page.locator(".home-bed-proof > div").count()) !== 5 ||
-    (await page.locator(".home-insight-metrics > div").count()) !== 4 ||
+    (await page.locator(".home-insight-metrics > div").count()) !== 5 ||
     (await page.locator('.home-bed-fifth-marker[aria-label="Layer 5: Smart Base"]').count()) !== 1
   )
-    failures.push("/: complete five-layer bed or four-signal Smart Base explanation is missing");
+    failures.push("/: complete five-layer bed or five-signal Smart Base explanation is missing");
   const smartBedHref = await page
     .locator('.home-contract-bed a[href="https://www.woafy.pet/smart-bed/"]')
     .first()

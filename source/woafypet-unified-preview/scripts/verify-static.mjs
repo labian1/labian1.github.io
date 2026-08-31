@@ -351,11 +351,10 @@ if (
   !home.includes("product-visualization-smart-base.png") ||
   !home.includes("Get health-change alerts sooner.") ||
   !home.includes("another dog bed") ||
-  !home.includes("Broken sleep may signal discomfort") ||
-  !home.includes("pain or bathroom needs") ||
+  !home.includes("Breathing rate") ||
+  !home.includes("Catch a sustained rise during rest") ||
   !home.includes("Heart rate") ||
-  !home.includes("resting-rate shifts that may signal stress or health changes") ||
-  !home.includes("chronic-disease change") ||
+  !home.includes("Contact your veterinarian when a change is new, concerning or worsening") ||
   home.includes("Flags sustained changes. It does not diagnose a condition.")
 )
   fail("home: verified Smart Base product story is missing");
@@ -542,6 +541,12 @@ if (
   /diagnos(?:e|is|tic)/i.test(strip(health))
 )
   fail("health timeline: privacy or non-diagnostic boundary is unclear");
+if (
+  !health.includes('class="health-triage-first"') ||
+  !health.includes("Address urgency before records") ||
+  !health.includes('href="/find-care/?care=emergency-vets"')
+)
+  fail("health timeline: urgency must come before record keeping");
 
 const directory = routeHtml.get("/find-care/") || "";
 if (count(directory, /<article\b[^>]*\bdata-directory-profile\b/g) < 500)
@@ -552,6 +557,30 @@ if (count(directory, /<figure class="provider-logo">/g) < 500)
   fail("find care: official organization marks are missing from provider profiles");
 if (!directory.includes("Official source checked") || !directory.includes("When this may fit"))
   fail("find care: source-check receipts or decision details are missing");
+if (
+  !directory.includes("No provider partnership or sponsored placement") ||
+  !directory.includes("no directory partnership with VCA, BluePearl") ||
+  count(directory, /data-organization="[^"]+"/g) < 500
+)
+  fail("find care: provider independence or source-mixing metadata is missing");
+const directoryOrganizations = [
+  ...directory.matchAll(
+    /data-directory-profile\s+data-organization="([^"]+)"/g,
+  ),
+].map((match) => match[1]);
+const firstBluePearl = directoryOrganizations.indexOf("BluePearl Pet Hospital");
+const firstVca = directoryOrganizations.indexOf("VCA Animal Hospitals");
+const secondBluePearl = directoryOrganizations.indexOf(
+  "BluePearl Pet Hospital",
+  firstBluePearl + 1,
+);
+if (
+  firstBluePearl < 0 ||
+  firstVca < 0 ||
+  secondBluePearl < 0 ||
+  !(firstBluePearl < firstVca && firstVca < secondBluePearl)
+)
+  fail("find care: major network profiles are not interleaved");
 if (count(directory, /data-directory-resource\b/g) < 32)
   fail("find care: expected at least 32 official resources");
 if (
@@ -598,6 +627,33 @@ if (
   count(guide, /<section class="guide-/g) < 5
 )
   fail("guide: visual outcome structure incomplete");
+if (
+  !guide.includes('class="guide-triage-first"') ||
+  !guide.includes('class="guide-mobile-triage"') ||
+  !guide.includes("Call first. Track safely") ||
+  !guide.includes("A tracker must never delay care") ||
+  !guide.includes("Seven-day tracking—only when safe") ||
+  guide.includes("For ten days, she pauses after naps")
+)
+  fail("guide: clinical urgency must come before optional tracking");
+
+const coughLesson = routeHtml.get("/care-circle/new-cough-or-breathing-change/") || "";
+if (
+  !coughLesson.includes('class="lesson-triage-v9"') ||
+  !coughLesson.includes('class="lesson-mobile-triage"') ||
+  !coughLesson.includes("Call today before you track") ||
+  !coughLesson.includes("Do not wait to build a record") ||
+  !coughLesson.includes("same-day veterinary triage") ||
+  coughLesson.includes("What details should I capture?")
+)
+  fail("cough lesson: same-day triage is not the primary action");
+
+if (
+  !smartBed.includes("Breathing rate") ||
+  !smartBase.includes("Five signals, one clearer conversation") ||
+  !smartBase.includes("Resting breathing rate")
+)
+  fail("Smart Base: resting breathing-rate insight is missing");
 
 const runtime = readFileSync(resolve(dist, "app.js"), "utf8");
 if (

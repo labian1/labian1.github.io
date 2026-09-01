@@ -891,10 +891,13 @@ export async function onRequestPost(context) {
       email: member.email,
       firstName: member.firstName,
       eventType: "care_lesson_created",
+      notificationSubject: privacy === "public"
+        ? `WoafMeow: Public Care Lesson created — ${pet.dogName}`
+        : `WoafMeow: Private Care Lesson created — ${pet.dogName}`,
       eventProperties: { conversation_id: conversationId, pet_id: dogId, topic: answer.topic, privacy },
       notificationProperties: { pet_name: pet.dogName, topic: answer.topic, privacy },
       listKeys: ["BREVO_CARE_CIRCLE_LIST_ID"],
-      sendOwnerNotification: !intake?.id,
+      sendOwnerNotification: privacy === "public" || !intake?.id,
     });
     return json({ conversationId, question, privacy, published: privacy === "public", answer, saved: true, quota: { used: used + 1, limit: dailyLessonLimit, remaining: Math.max(0, dailyLessonLimit - used - 1) } });
   } catch {

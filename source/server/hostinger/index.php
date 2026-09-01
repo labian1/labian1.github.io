@@ -172,7 +172,8 @@ function notifyOwner(string $subject, array $record): array {
         'type', 'email', 'ownerName', 'name', 'firstName', 'contactName', 'organization', 'requestType',
         'serviceType', 'coverage', 'sessionTitle', 'petName', 'dogName', 'species', 'action', 'topic',
         'collection', 'timing', 'city', 'region', 'country', 'status', 'result', 'postId',
-        'conversationId', 'matchId', 'hasMedia', 'createdAt',
+        'conversationId', 'matchId', 'hasMedia', 'createdAt', 'eventType', 'pagePath',
+        'visibility', 'lessonId', 'lessonSlug', 'entryKind', 'recordType', 'category',
     ];
     $rows = '';
     foreach ($allowed as $field) {
@@ -239,7 +240,7 @@ function sendGuideEmail(string $email): array {
     return ['status' => 'sent', 'detail' => 'Brevo accepted the Senior Dog Care Guide email.'];
 }
 
-function saveSubmission(string $type, array $record, bool $sendOwnerNotification = true): void {
+function saveSubmission(string $type, array $record, bool $sendOwnerNotification = true): array {
     $record['id'] = $record['id'] ?? id('submission');
     $record['type'] = $type;
     $record['createdAt'] = $record['createdAt'] ?? gmdate('c');
@@ -262,6 +263,7 @@ function saveSubmission(string $type, array $record, bool $sendOwnerNotification
     ];
     if (count($log) > 5000) $log = array_slice($log, -5000);
     saveRows('notification-log', $log);
+    return $delivery;
 }
 
 function saveMemberAction(string $type, array $owner, array $pet = [], array $properties = [], bool $sendOwnerNotification = true): void {
@@ -635,6 +637,37 @@ if (in_array($path, $retiredCommerceApiPaths, true)) {
     respond(410, ['error' => 'This commerce service has been retired. WoafMeow now focuses on education, care connections, Wednesday matching, and memorial-tree updates.']);
 }
 
+// Browser-local account and care actions use this endpoint so the owner receives
+// the same operational email as server-backed forms without uploading private content.
+if ($path === '/api/activity' && $method === 'POST') {
+    $input = inputBody();
+    $eventType = strtolower(clean($input['eventType'] ?? '', 80));
+    $allowedEvents = [
+        'care_account_created', 'care_account_updated', 'public_care_lesson_created',
+        'private_care_lesson_created', 'public_care_lesson_deleted',
+        'care_circle_reaction_added', 'care_circle_reaction_removed', 'care_circle_comment_added',
+        'health_record_saved', 'health_timeline_change_saved', 'health_timeline_entry_removed',
+        'veterinary_email_draft_created', 'health_timeline_shared', 'notification_test',
+    ];
+    if (!in_array($eventType, $allowedEvents, true)) respond(422, ['error' => 'That website action is not available.']);
+    $email = strtolower(clean($input['email'] ?? '', 254));
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) respond(422, ['error' => 'A valid account email is required.']);
+    $record = [
+        'email' => $email,
+        'ownerName' => clean($input['ownerName'] ?? '', 80),
+        'petName' => clean($input['petName'] ?? '', 80),
+        'eventType' => $eventType,
+    ];
+    $properties = is_array($input['properties'] ?? null) ? array_slice($input['properties'], 0, 16, true) : [];
+    foreach ($properties as $field => $value) {
+        if (!is_scalar($value)) continue;
+        $record[clean($field, 60)] = clean($value, 300);
+    }
+    $delivery = saveSubmission($eventType, $record);
+    if (($delivery['status'] ?? '') !== 'sent') respond(503, ['error' => 'The owner notification was not sent.', 'notification' => $delivery['status'] ?? 'failed']);
+    respond(201, ['message' => 'Owner notification sent.', 'notification' => 'sent']);
+}
+
 // Account and pet profiles.
 if ($path === '/api/enroll' && $method === 'POST') {
     $input = inputBody();
@@ -668,7 +701,7 @@ if ($path === '/api/enroll' && $method === 'POST') {
     if ($existingIndex === null) $members[] = $record; else $members[$existingIndex] = $record;
     saveRows('members', $members);
     $pets[] = ['id' => $petId, 'memberId' => $memberId] + $record; saveRows('pets', $pets);
-    saveSubmission('website-account', $record);
+    saveSubmission($existingMember ? 'pet-profile-added' : 'care-account-created', $record);
     respond(201, ['member' => $record, 'message' => $record['dogName'] . "'s account is ready."]);
 }
 
@@ -752,7 +785,7 @@ if ($path === '/api/care-chat' && $method === 'POST') {
     $conversation = ['id' => $intake['id'] ?? id('conversation'), 'memberId' => $owner['id'], 'dogId' => $petId, 'question' => $question, 'privacy' => $privacy, 'answer' => buildLesson($pet, $question, $topic, $context), 'published' => false, 'status' => 'active', 'createdAt' => $now, 'updatedAt' => $now];
     if ($intakeIndex === null) $rows[] = $conversation; else $rows[$intakeIndex] = $conversation;
     saveRows('conversations', $rows); $used++;
-    saveMemberAction('care-lesson-created', $owner, $pet, ['action' => 'care lesson created', 'topic' => topicName($topic), 'status' => $privacy], $intakeIndex === null);
+    saveMemberAction('care-lesson-created', $owner, $pet, ['action' => 'care lesson created', 'topic' => topicName($topic), 'status' => $privacy], $privacy === 'public' || $intakeIndex === null);
     respond(201, $conversation + ['conversationId' => $conversation['id'], 'quota' => ['used' => $used, 'remaining' => max(0, $limit - $used), 'limit' => $limit]]);
 }
 

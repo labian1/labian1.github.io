@@ -1,4 +1,4 @@
-import { sendBrevoEmail } from "../_lib/brevo.js";
+import { sendBrevoEmail, sendOwnerFormNotification } from "../_lib/brevo.js";
 import { authenticatedMember, memberDog } from "../_lib/members.js";
 
 const allowedOrigins = new Set([
@@ -143,6 +143,13 @@ export async function onRequestPost(context) {
       senderEmail: "hello@woafmeow.com",
     });
     if (delivery.status !== "sent") return json({ error: "The veterinary email was not sent. No delivery was claimed; check the address and try again.", delivery: "failed" }, 503, context.request);
+    await sendOwnerFormNotification({
+      env: context.env,
+      eventType: "veterinary_summary_sent",
+      email: member.email,
+      subject: `WoafMeow: Veterinary summary sent — ${pet.dogName}`,
+      notificationProperties: { pet_name: pet.dogName, attachment_count: 2, delivery: "sent" },
+    });
     return json({ message: `Sent from hello@woafmeow.com to ${email} with the health summary and original health records attached.`, delivery: "sent", sender: "hello@woafmeow.com", subject, attachmentCount: 2 }, 200, context.request);
   } catch (error) {
     if (error instanceof Response) throw error;

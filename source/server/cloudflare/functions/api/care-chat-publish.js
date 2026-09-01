@@ -39,6 +39,7 @@ export async function onRequestPost(context) {
       email: member.email,
       firstName: member.firstName,
       eventType: "care_lesson_published",
+      notificationSubject: `WoafMeow: Public Care Lesson created — ${pet.dogName}`,
       eventProperties: { conversation_id: conversationId, post_id: postId, pet_id: dogId, topic: conversation.topic },
       notificationProperties: { pet_name: pet.dogName, topic: conversation.topic },
       listKeys: ["BREVO_CARE_CIRCLE_LIST_ID"],

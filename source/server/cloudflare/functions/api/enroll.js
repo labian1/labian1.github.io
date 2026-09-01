@@ -77,13 +77,16 @@ export async function onRequestPost(context) {
       .bind(dogId, memberId, dogName, species, breed || null, ageYears, rawWeight, focus, healthConditions || null, medications || null, routineNotes || null, now)
       .run();
 
+    const eventType = existing?.id ? "pet_profile_created" : "care_account_created";
     const sync = await syncBrevoContact({
       env: context.env,
       db,
       email,
       firstName: ownerName,
-      eventType: "pet_profile_created",
-      notificationSubject: `WoafMeow: New care profile — ${dogName}`,
+      eventType,
+      notificationSubject: existing?.id
+        ? `WoafMeow: New pet profile — ${dogName}`
+        : `WoafMeow: New account created — ${dogName}`,
       eventProperties: {
         member_id: memberId,
         pet_id: dogId,

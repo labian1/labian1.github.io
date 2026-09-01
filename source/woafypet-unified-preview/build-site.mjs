@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, "dist");
-const ASSET_VERSION = "20260830.1";
+const ASSET_VERSION = "20260901.1";
 const GUIDE_PDF_NAME = "WoafMeow_Senior_Dog_Care_Field_Guide.pdf";
 const BACKEND_ORIGIN = "https://woafypet-senior-care-8kt.pages.dev";
 const PUBLIC_ORIGIN = "https://www.woafmeow.com";
